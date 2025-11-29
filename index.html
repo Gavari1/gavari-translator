@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- NEW: make it mobile-friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>English - Gavári Translator</title>
   <style>
     body {
@@ -110,6 +112,49 @@
       background: #111727;
       padding: 0.05rem 0.3rem;
       border-radius: 4px;
+    }
+
+    /* ---------- MOBILE TWEAKS (phones, small screens) ---------- */
+    @media (max-width: 600px) {
+      body {
+        padding: 1.25rem 0.5rem 2rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+        text-align: center;
+      }
+
+      .subtitle {
+        font-size: 0.85rem;
+        text-align: center;
+        margin-bottom: 1.1rem;
+      }
+
+      .card {
+        padding: 1rem;
+        border-radius: 10px;
+      }
+
+      textarea {
+        min-height: 140px;
+        font-size: 0.9rem;
+      }
+
+      button {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.4rem;
+      }
+
+      .output {
+        min-height: 80px;
+        font-size: 0.95rem;
+      }
+
+      .hint {
+        font-size: 0.75rem;
+      }
     }
   </style>
 </head>
@@ -412,7 +457,6 @@
       "sad": "sasu", 
     };
 
-    
     const ignoreWords = new Set(["a", "an", "the", "is", "are"]);
 
     function translateToken(word, lower) {
@@ -462,7 +506,7 @@
 
         // "would be able to"
         if (lower === "would" && nextLower === "be" && 
-          next2Lower === "able" && tokens [i + 3]?.toLowerCase() === "to") {
+            next2Lower === "able" && tokens[i + 3]?.toLowerCase() === "to") {
           out.push("wa", "polno");
           i += 3; // skip "would be able to"
           continue;
@@ -470,12 +514,12 @@
 
         // "will be able to"
         if (lower === "will" && nextLower === "be" && 
-          next2Lower === "able" && tokens [i + 3]?.toLowerCase() === "to") {
+            next2Lower === "able" && tokens[i + 3]?.toLowerCase() === "to") {
           out.push("fa", "polno");
           i += 3; // skip "will be able to"
           continue;
         }
-      
+
         // --- 3-WORD PHRASES ---
         if (nextOriginal && next2Original) {
           const base1 = lower.replace(/[.,!?]$/, "");
