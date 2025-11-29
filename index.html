@@ -218,13 +218,8 @@
       "you all": "tin",
       "you all's": "tin", 
       "that i am": "ke mi",
-      "that i wasn't": "ke mi noa pa", 
       "that you are": "ke ti", 
       "that you're": "ke ti",
-      "that you weren't": "ke ti noa pa",
-      "that we are": "ke min",
-      "that we're": "ke min", 
-      "that we weren't": "ke min noa pa", 
       "that he is": "ke io", 
       "that she is": "ke yona", 
       "that they are": "ke lin", 
@@ -496,86 +491,56 @@
       return word;
     }
 
-    // --- FULL 3-WORD TRANSLATION ENGINE ---
+    // --- MAX 5-WORD TRANSLATION ENGINE ---
     function translateSentence(input) {
       if (!input || !input.trim()) return "";
 
       const tokens = input.trim().split(/\s+/);
       const out = [];
+      const maxLen = 5; // up to 5-word phrases
 
       for (let i = 0; i < tokens.length; i++) {
-        const original = tokens[i];
-        if (!original.trim()) continue;
+        const originals = [];
+        const lowers = [];
 
-        const lower = original.toLowerCase();
-        const nextOriginal  = tokens[i + 1] || "";
-        const nextLower     = nextOriginal.toLowerCase() || "";
-        const next2Original = tokens[i + 2] || "";
-        const next2Lower    = next2Original.toLowerCase() || "";
+        // collect up to 5 tokens ahead
+        for (let k = 0; k < maxLen; k++) {
+          const tok = tokens[i + k];
+          if (!tok) break;
+          originals.push(tok);
+          lowers.push(tok.toLowerCase());
+        }
 
+        let matched = false;
+
+        // Try 5-word → 4-word → 3-word → 2-word phrases
+        for (let len = maxLen; len >= 2; len--) {
+          if (lowers.length < len) continue;
+
+          const bases = [];
+          for (let k = 0; k < len; k++) {
+            bases.push(lowers[k].replace(/[.,!?]$/, ""));
+          }
+          const phrase = bases.join(" ");
+
+          if (lexicon[phrase]) {
+            const lastOriginal = originals[len - 1];
+            const punctMatch = lastOriginal.match(/[.,!?]$/);
+            const punct = punctMatch ? punctMatch[0] : "";
+            out.push(lexicon[phrase] + punct);
+            i += len - 1; // skip consumed words
+            matched = true;
+            break;
+          }
+        }
+
+        if (matched) continue;
+
+        // single-word handling
+        const lower = tokens[i].toLowerCase();
         if (ignoreWords.has(lower)) continue;
 
-        // "would have"
-        if (lower === "would" && nextLower === "have") {
-          out.push("wa", "tavo");
-          i++;
-          continue;
-        }
-
-        // "will have"
-        if (lower === "will" && nextLower === "have") {
-          out.push("fa", "tavo");
-          i++;
-          continue;
-        }
-
-        // "would be able to"
-        if (lower === "would" && nextLower === "be" && 
-            next2Lower === "able" && tokens[i + 3]?.toLowerCase() === "to") {
-          out.push("wa", "polno");
-          i += 3; // skip "would be able to"
-          continue;
-        }
-
-        // "will be able to"
-        if (lower === "will" && nextLower === "be" && 
-            next2Lower === "able" && tokens[i + 3]?.toLowerCase() === "to") {
-          out.push("fa", "polno");
-          i += 3; // skip "will be able to"
-          continue;
-        }
-
-        // --- 3-WORD PHRASES ---
-        if (nextOriginal && next2Original) {
-          const base1 = lower.replace(/[.,!?]$/, "");
-          const base2 = nextLower.replace(/[.,!?]$/, "");
-          const base3 = next2Lower.replace(/[.,!?]$/, "");
-          const phrase3 = base1 + " " + base2 + " " + base3;
-
-          if (lexicon[phrase3]) {
-            const punct = next2Original.match(/[.,!?]$/)?.[0] || "";
-            out.push(lexicon[phrase3] + punct);
-            i += 2;
-            continue;
-          }
-        }
-
-        // --- 2-WORD PHRASES ---
-        if (nextOriginal) {
-          const base1 = lower.replace(/[.,!?]$/, "");
-          const base2 = nextLower.replace(/[.,!?]$/, "");
-          const phrase2 = base1 + " " + base2;
-
-          if (lexicon[phrase2]) {
-            const punct = nextOriginal.match(/[.,!?]$/)?.[0] || "";
-            out.push(lexicon[phrase2] + punct);
-            i++;
-            continue;
-          }
-        }
-
-        // fallback
-        out.push(translateToken(original, lower));
+        out.push(translateToken(tokens[i], lower));
       }
 
       return out.join(" ");
