@@ -299,6 +299,7 @@
       "can": "polno",
       "be able to": "polno", 
       "was able to": "pa polno", 
+      "would be able to": "wa polno",
       "could": "pa polno",
       "to bring": "tanluo",
       "bring": "tanluo",
@@ -442,6 +443,14 @@
           continue;
         }
 
+        // "would be able to"
+        if (lower === "would" && nextLower === "be" && 
+          next2Lower === "able" && tokens [i + 3]?.toLowerCase() === "to") {
+          out.push("wa", "polno");
+          i += 3; // skip "would be able to"
+          continue;
+        }
+
         // --- 3-WORD PHRASES ---
         if (nextOriginal && next2Original) {
           const base1 = lower.replace(/[.,!?]$/, "");
@@ -486,6 +495,7 @@
   </script>
 </body>
 </html>
+
 
 
 
