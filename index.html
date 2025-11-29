@@ -303,7 +303,7 @@
       "left": "leroa"
     };
 
-    const ignoreWords = new Set(["a", "an", "the"]);
+    const ignoreWords = new Set(["a", "an", "the", "is", "are"]);
 
     function translateToken(word, lower) {
       if (lexicon[lower]) return lexicon[lower];
@@ -394,6 +394,7 @@
   </script>
 </body>
 </html>
+
 
 
 
