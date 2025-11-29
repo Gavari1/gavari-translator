@@ -136,195 +136,193 @@
   <script>
     // --- BASIC GAVÁRI LEXICON ---
     const lexicon = {
-  // pronouns
-  "this morning": "veran",
-  "i": "mi",
-  "me": "mi",
-  "mine": "mi",
-  "my": "mi",
-  "you": "ti",
-  "your": "ti",
-  "yours": "ti",
-  "we": "min",
-  "our": "min",
-  "ours": "min",
-  "they": "lin",
-  "their": "lin",
-  "theirs": "lin",
-  "it": "lo",
-  "its": "lo",
-  "he": "io",
-  "his": "io",
-  "she": "yona",
-  "her": "yona",
-  "hers": "yona",
-  "you all": "tin",
-  "you all's": "tin",
+      // PHRASES (English → Gavári)
+      "this morning": "veran",
 
-  // connectors / helpers
-  "not": "noa",
-  "no": "noa",
-  "and": "onu",
-  "but": "beli",
-  "also": "tambu",
-  "too": "tambu",
-  "because": "noku",
-  "here": "nia",
-  "there": "nua",
-  "when": "nagu",
-  "where": "lam",
-  "why": "kap",
-  "which": "wohu",
-  "what": "wohanu",
-  "how": "kalu",
-  "with": "talu",
-  "inside": "hanu", 
-  "outside": "lanu",
-  "in": "ke", 
-  "on": "ke", 
-  "at": "ke",
-  "this": "ni", 
-  "that": "na", 
-  "these": "niis", 
-  "those": "naas", 
-  "of": "mo", 
-  "about": "mo", 
-  "from": "mo", 
-  "above": "alun",
-  "below": "belun", 
-  "duran": "during",
-  "to": "sap",
+      // pronouns
+      "i": "mi",
+      "me": "mi",
+      "mine": "mi",
+      "my": "mi",
+      "you": "ti",
+      "your": "ti",
+      "yours": "ti",
+      "we": "min",
+      "our": "min",
+      "ours": "min",
+      "they": "lin",
+      "their": "lin",
+      "theirs": "lin",
+      "it": "lo",
+      "its": "lo",
+      "he": "io",
+      "his": "io",
+      "she": "yona",
+      "her": "yona",
+      "hers": "yona",
+      "you all": "tin",
+      "you all's": "tin",
 
-  // time
-  "day": "ramua",
-  "later": "larug",
-  "after": "yalu",
-  "before": "baru",
-  "always": "saru",
-  "now": "keia",
-  "today": "ramu",
-  "morning": "veru",
-  "sun": "veru",
-  "afternoon": "daru", 
-  "this-afternoon": "daran", 
-  "evening": "noru", 
-  "night": "noru",
-  "this-evening": "noran",
-  "tonight": "noran", 
-  "tomorrow": "apono", 
-  "yesterday": "nehine", 
-  "verdag": "weekend", 
+      // connectors / helpers
+      "not": "noa",
+      "no": "noa",
+      "and": "onu",
+      "but": "beli",
+      "also": "tambu",
+      "too": "tambu",
+      "because": "noku",
+      "here": "nia",
+      "there": "nua",
+      "when": "nagu",
+      "where": "lam",
+      "why": "kap",
+      "which": "wohu",
+      "what": "wohanu",
+      "how": "kalu",
+      "with": "talu",
+      "inside": "hanu", 
+      "outside": "lanu",
+      "in": "ke", 
+      "on": "ke", 
+      "at": "ke",
+      "this": "ni", 
+      "that": "na", 
+      "these": "niis", 
+      "those": "naas", 
+      "of": "mo", 
+      "about": "mo", 
+      "from": "mo", 
+      "above": "alun",
+      "below": "belun", 
+      "duran": "during",
+      "to": "sap",
 
-  // verbs (base -o)
-  "be": "navo",
-  "was": "pa",
-  "will": "fa",
-  "would": "wa",
-  "am": "navo",
-  "are": "navo",
-  "is": "navo",
-  "have": "tavo",
-  "go": "gavo",
-  "going": "gavo",
-  "went": "pa gavo",
-  "see": "wero",
-  "eat": "kailo",
-  "ate": "pa kailo",
-  "drink": "inuo",
-  "drank": "pa inuo",
-  "love": "aluo",
-  "loved": "pa aluo",
-  "want": "wivo",
-  "wanted": "pa wivo",
-  "do": "pavo",
-  "did": "pa pavo",
-  "make": "pavo",
-  "made": "pa pavo",
-  "work": "vahro",
-  "worked": "pa vahro",
-  "study": "haluno",
-  "studied": "pa haluno",
-  "buy": "nuaio",
-  "bought": "pa nuaio",
-  "tell": "savo",
-  "told": "pa savo",
-  "say": "savo",
-  "said": "pa savo",
-  "like": "haluo",
-  "likes": "haluo",
-  "liked": "pa haluo",
-  "need": "lango",
-  "get": "maguo",
-  "can": "polno",
-  "be able to": "polno", 
-  "bring": "tanluo", 
-  "take": "tanluo", 
-  "sleep": "napao",
-  "drive": "keheo",
-  "help": "ajulo", 
-  "give": "daro",
-  "gives": "daro", 
-  
+      // time
+      "day": "ramua",
+      "later": "larug",
+      "after": "yalu",
+      "before": "baru",
+      "always": "saru",
+      "now": "keia",
+      "today": "ramu",
+      "morning": "veru",
+      "sun": "veru",
+      "afternoon": "daru", 
+      "this-afternoon": "daran", 
+      "evening": "noru", 
+      "night": "noru",
+      "this-evening": "noran",
+      "tonight": "noran", 
+      "tomorrow": "apono", 
+      "yesterday": "nehine", 
+      "verdag": "weekend", 
 
-  // nouns
-  "thing": "karol",
-  "food": "fanu",
-  "mother": "monuah",
-  "father": "fonuah", 
-  "brother": "bonu", 
-  "sister": "sonu",
-  "child": "conuah",
-  "children": "conuahlan",
-  "children's": "conuhlan",
-  "store": "nuai",
-  "water": "hona", 
-  "friend": "amun",
-  "friends": "amunlan",
-  "school": "skolu", 
-  "street": "pesta", 
-  "house": "domi",
-  "home": "domi",
-  "car": "car",
-  "money": "kala",
-  "job": "vahri",
-  "backpack": "saku",
-  "person": "figur",
-      
+      // verbs (base -o)
+      "be": "navo",
+      "was": "pa",
+      "will": "fa",
+      "would": "wa",
+      "am": "navo",
+      "are": "navo",
+      "is": "navo",
+      "have": "tavo",
+      "go": "gavo",
+      "going": "gavo",
+      "went": "pa gavo",
+      "see": "wero",
+      "eat": "kailo",
+      "ate": "pa kailo",
+      "drink": "inuo",
+      "drank": "pa inuo",
+      "love": "aluo",
+      "loved": "pa aluo",
+      "want": "wivo",
+      "wanted": "pa wivo",
+      "do": "pavo",
+      "did": "pa pavo",
+      "make": "pavo",
+      "made": "pa pavo",
+      "work": "vahro",
+      "worked": "pa vahro",
+      "study": "haluno",
+      "studied": "pa haluno",
+      "buy": "nuaio",
+      "bought": "pa nuaio",
+      "tell": "savo",
+      "told": "pa savo",
+      "say": "savo",
+      "said": "pa savo",
+      "like": "haluo",
+      "likes": "haluo",
+      "liked": "pa haluo",
+      "need": "lango",
+      "get": "maguo",
+      "can": "polno",
+      "be able to": "polno", 
+      "bring": "tanluo", 
+      "take": "tanluo", 
+      "sleep": "napao",
+      "drive": "keheo",
+      "help": "ajulo", 
+      "give": "daro",
+      "gives": "daro", 
 
-  // adjectives/adverbs
-  "good": "bilu",
-  "bad": "nelu",
-  "happy": "felin",
-  "hey": "salo", 
-  "hi": "salo", 
-  "hello": "salo",
-  "what's up": "navo bilu",
-  "beautiful": "belo",
-  "nice": "belo",
-  "big": "faru",
-  "small": "kani",
-  "cold": "geli",
-  "hot": "heni",
-  "tired": "lena",
-  "new": "ninu",
-  "old": "oina",
-  "many": "muia",
-  "a lot": "muia",
-  "few": "poa",
-  "a little": "poa",
-  "again": "galua",
-  "very": "vuia",
-  "right": "eroa",
-  "left": "leroa"
-};
-
+      // nouns
+      "thing": "karol",
+      "food": "fanu",
+      "mother": "monuah",
+      "father": "fonuah", 
+      "brother": "bonu", 
+      "sister": "sonu",
+      "child": "conuah",
+      "children": "conuahlan",
+      "children's": "conuhlan",
+      "store": "nuai",
+      "water": "hona", 
+      "friend": "amun",
+      "friends": "amunlan",
+      "school": "skolu", 
+      "street": "pesta", 
+      "house": "domi",
+      "home": "domi",
+      "car": "car",
+      "money": "kala",
+      "job": "vahri",
+      "backpack": "saku",
+      "person": "figur",
+          
+      // adjectives/adverbs
+      "good": "bilu",
+      "bad": "nelu",
+      "happy": "felin",
+      "hey": "salo", 
+      "hi": "salo", 
+      "hello": "salo",
+      "what's up": "navo bilu",
+      "beautiful": "belo",
+      "nice": "belo",
+      "big": "faru",
+      "small": "kani",
+      "cold": "geli",
+      "hot": "heni",
+      "tired": "lena",
+      "new": "ninu",
+      "old": "oina",
+      "many": "muia",
+      "a lot": "muia",
+      "few": "poa",
+      "a little": "poa",
+      "again": "galua",
+      "very": "vuia",
+      "right": "eroa",
+      "left": "leroa"
+    };
 
     // Words to ignore (articles, filler)
     const ignoreWords = new Set(["a", "an", "the"]);
 
     // Translate a single token, keeping punctuation if possible
     function translateToken(word, lower) {
-      
       if (lexicon[lower]) return lexicon[lower];
 
       // handle word + punctuation (e.g. "house," → "domi,")
@@ -341,8 +339,11 @@
       return word;
     }
 
+    // Translate a full sentence, supporting 2-word English phrases
     function translateSentence(input) {
-      const tokens = input.split(/\s+/);
+      if (!input || !input.trim()) return "";
+
+      const tokens = input.trim().split(/\s+/);
       const out = [];
 
       for (let i = 0; i < tokens.length; i++) {
@@ -350,23 +351,40 @@
         if (!original.trim()) continue;
 
         const lower = original.toLowerCase();
-        const next = (tokens[i + 1]) ? tokens[i + 1].toLowerCase() : "";
+        const nextOriginal = tokens[i + 1];
+        const nextLower = nextOriginal ? nextOriginal.toLowerCase() : "";
 
         // ignore simple filler
         if (ignoreWords.has(lower)) continue;
 
         // "would have" → "wa tavo"
-        if (lower === "would" && next === "have") {
+        if (lower === "would" && nextLower === "have") {
           out.push("wa", "tavo");
           i++; // skip "have"
           continue;
         }
 
         // "will have" → "fa tavo"
-        if (lower === "will" && next === "have") {
+        if (lower === "will" && nextLower === "have") {
           out.push("fa", "tavo");
           i++; // skip "have"
           continue;
+        }
+
+        // Try 2-word phrase like "this morning", "good morning"
+        if (nextOriginal) {
+          const base1 = lower.replace(/[.,!?]$/, "");
+          const base2 = nextLower.replace(/[.,!?]$/, "");
+          const phraseKey = base1 + " " + base2;
+
+          if (lexicon[phraseKey]) {
+            // Attach trailing punctuation if it was on the second word
+            const punctMatch = nextOriginal.match(/[.,!?]$/);
+            const punct = punctMatch ? punctMatch[0] : "";
+            out.push(lexicon[phraseKey] + punct);
+            i++; // skip the next word
+            continue;
+          }
         }
 
         // default: dictionary lookup
@@ -391,6 +409,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
