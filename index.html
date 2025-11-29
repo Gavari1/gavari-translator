@@ -306,20 +306,9 @@
     // Words to ignore (articles, filler)
     const ignoreWords = new Set(["a", "an", "the"]);
 
-    const verbKeys = new Set([
-  "go", "eat", "drink", "see", "love", "study",
-  "work", "want", "give", "get", "need", "tell",
-  "make", "buy", "like", "ask", "be", "have", "do"
-]);
-
-
     // Translate a single token, keeping punctuation if possible
     function translateToken(word, lower) {
       
-      // Ignore "to" when it comes before a verb
-      if (lower === "to") {
-        return"";
-      }
       if (lexicon[lower]) return lexicon[lower];
 
       // handle word + punctuation (e.g. "house," → "domi,")
@@ -386,6 +375,7 @@
   </script>
 </body>
 </html>
+
 
 
 
