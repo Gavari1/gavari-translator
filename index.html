@@ -393,7 +393,9 @@
       "new": "ninu",
       "old": "oina",
       "many": "muia",
-      "too much": "muia", 
+      "much": "muia", 
+      "too many": "vuia muia", 
+      "too much": "vuia muia", 
       "a lot": "muia",
       "few": "poa",
       "a little": "poa", 
@@ -403,6 +405,13 @@
       "left": "leroa",
       "sad": "sasu", 
     };
+
+      // "a lot"
+        if (lower === "a" && nextLower === "lot")
+          out.push("muia");
+          i++;
+          continue;
+        }
 
     const ignoreWords = new Set(["a", "an", "the", "is", "are"]);
 
@@ -466,7 +475,7 @@
           i += 3; // skip "will be able to"
           continue;
         }
-
+      
         // --- 3-WORD PHRASES ---
         if (nextOriginal && next2Original) {
           const base1 = lower.replace(/[.,!?]$/, "");
@@ -511,6 +520,7 @@
   </script>
 </body>
 </html>
+
 
 
 
