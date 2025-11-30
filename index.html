@@ -338,13 +338,6 @@
       "going to sleep": "fa napao",
       "going to talk": "fa fulo",
       "went": "pa gavo",
-      "would have had": "wa tavo",
-"would have had": "wa tavo",
-"would have": "wa tavo",
-"would have": "wa",
-"had had": "pa tavo",
-"should have had": "delo pa tavo",
-      "used to": "pa",
       "see": "wero",
       "to see": "wero",
       "watch": "wero",
@@ -556,7 +549,6 @@
       "student": "haluola",
 
       //Hyphenated
-
       "breakfast": "ramu-fanu",
       "lunch": "ramua-fanu",
       "dinner": "noru-fanu",
@@ -631,7 +623,6 @@
       "deep water": "hona-rimo", 
       "neighborhood": "pesta-fale",
         
-
       // nature + world
       "ocean": "moro",
       "sand": "kela",
@@ -693,7 +684,14 @@
 
     const ignoreWords = new Set(["a", "an", "the", "is", "it", "are"]);
 
+    // normalize all different apostrophes to straight '
+    function normalizeApostrophes(text) {
+      return text.replace(/[\u2019\u2018\u02BB\u02BC\u02BD\u02BE\u02BF\u0060\u00B4]/g, "'");
+    }
+
     function translateToken(word, lower) {
+      lower = normalizeApostrophes(lower);
+
       if (lexicon[lower]) return lexicon[lower];
 
       const match = lower.match(/^([a-z']+)([.,!?])$/i);
@@ -708,6 +706,9 @@
     // --- MAX 10-WORD TRANSLATION ENGINE ---
     function translateSentence(input) {
       if (!input || !input.trim()) return "";
+
+      // normalize apostrophes in the full line
+      input = normalizeApostrophes(input);
 
       const tokens = input.trim().split(/\s+/);
       const out = [];
@@ -769,7 +770,6 @@
   </script>
 </body>
 </html>
-
 
 
 
