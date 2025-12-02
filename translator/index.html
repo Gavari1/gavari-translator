@@ -882,9 +882,15 @@
       const final = out.join(" ");
       return final.charAt(0).toUpperCase() + final.slice(1);
     }
-
+// Normalize curly quotes → straight quotes
+function normalizeQuotes(text) {
+  return text
+    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"');
+}
     document.getElementById("translateBtn").addEventListener("click", () => {
-      const input = document.getElementById("inputText").value.trim();
+      let input = document.getElementById("inputText").value.trim();
+input = normalizeQuotes(input); // ← fixes iPhones auto-curly quotes
       const output = document.getElementById("outputText");
       output.textContent = input ? translateSentence(input) : "";
     });
