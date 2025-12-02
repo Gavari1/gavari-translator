@@ -46,6 +46,55 @@
       max-width: 1080px;
       padding: 1.5rem 1.1rem 3rem;
     }
+    
+    /* Random Phrase Section */
+.phrase-section {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* Match top buttons (Translator, Dictionary, Grammar) */
+.random-btn {
+  margin-bottom: 1rem;
+  background: #e8f3ff;
+  border: 2px solid #d6e9ff;
+  color: #005f9e;
+  padding: 0.65rem 1.5rem;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.random-btn:hover {
+  background: #d9ecff;
+}
+
+/* Phrase Card */
+.phrase-card {
+  background: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.phrase-gavari {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0c1e35;
+  margin: 0;
+}
+
+.phrase-english {
+  font-size: 1rem;
+  margin-top: 0.4rem;
+  color: #3b4b63;
+  opacity: 0.85;
+}
+
 
     @media (min-width: 768px) {
       .page {
@@ -436,6 +485,18 @@
           <strong>Gavári is intentionally minimal: no irregular verbs, no noun cases, and a small
           core vocabulary inspired by real island cultures.</strong>
         </p>
+          <!-- Random Phrase Generator Section -->
+<div class="phrase-section">
+    <button class="nav-btn random-btn" onclick="getRandomPhrase()">
+        🔀 Random Phrase
+    </button>
+
+    <div class="phrase-card">
+        <p id="phrase-gavari" class="phrase-gavari">Click the button ↑</p>
+        <p id="phrase-english" class="phrase-english"></p>
+    </div>
+</div>
+
       </section>
 
       <!-- RIGHT: Island card -->
@@ -490,8 +551,26 @@
       <a href="/translator/">Open the Translator</a>
     </footer>
   </div>
+        <script>
+const phrases = [
+  { gavari: "Mi gavo sap nuai.", english: "I'm going to the store." },
+  { gavari: "Mi amunlan hanu na car.", english: "My friends are in that car." },
+  { gavari: "Yona pa tanluo fanu sap yona bonu.", english: "She took food to her brother." },
+  { gavari: "Ni ka ti.", english: "This is for you." },
+  { gavari: "Mi fa wero ti apono.", english: "I will see you tomorrow." },
+  { gavari: "Io noa tavo kala.", english: "He doesn’t have money." }
+];
+
+function getRandomPhrase() {
+  const random = phrases[Math.floor(Math.random() * phrases.length)];
+  document.getElementById("phrase-gavari").textContent = random.gavari;
+  document.getElementById("phrase-english").textContent = random.english;
+}
+</script>
+
 </body>
 </html>
+
 
 
 
