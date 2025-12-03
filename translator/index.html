@@ -843,6 +843,13 @@ const phraseMap = {
       if (!input || !input.trim()) return "";
 
       const tokens = input.trim().split(/\s+/);
+      // ---- CHECK PHRASE MAP FIRST ----
+const joined = input.trim().toLowerCase();
+for (const phrase in phraseMap) {
+  if (joined === phrase) {
+    return phraseMap[phrase];
+  }
+}
       const out = [];
       const maxLen = 10; // up to 10-word phrases
 
