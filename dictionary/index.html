@@ -509,7 +509,7 @@
       if (str == null) return "";
 
       return String(str)
-         .toLowerCas()
+         .toLowerCase()
          .normalize("NFD")
          .replace(/[\u0300-\u036f]/g, "");
     }
