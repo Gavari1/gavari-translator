@@ -234,7 +234,7 @@
     function declineRex(lemma) {
       // Rex: Nom = Acc = -ōr; Oblique = -ōrī; Plural: -ōrēs / -ōrum
       const nomSg = lemma;
-      const accSg = lemma;
+      const accSg = lemma + "ōrēm";  // lupōrēm
       const oblSg = lemma + "ī";     // lupōrī
 
       const nomPl = lemma + "ēs";    // lupōrēs
