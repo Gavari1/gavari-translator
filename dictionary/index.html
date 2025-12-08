@@ -92,13 +92,15 @@
   <h1>Aurilingua Decliner</h1>
   <div class="subtitle">
     Type an English <strong>noun</strong> like <strong>wolf</strong>, <strong>child</strong>, <strong>heart</strong>, <strong>book</strong>,<br/>
-    or a <strong>pronoun</strong> like <strong>me, you, he, she, it, we, they</strong>, <br>or a <strong>demonstrative</strong> like <strong>this</strong>, <strong>that</strong><br/>
+    a <strong>pronoun</strong> like <strong>me, you, he, she, it, we, they</strong>,<br/>
+    a <strong>demonstrative</strong> like <strong>this</strong>, <strong>that</strong>, <strong>those</strong>,<br/>
+    or an <strong>adjective</strong> like <strong>beautiful</strong>.<br/>
     The tool shows the Aurilingua forms and full declension.
   </div>
 
   <div class="card">
     <label for="lookupInput">English word:</label>
-    <input id="lookupInput" type="text" placeholder="wolf, heart, book, me, you, he, she, this, those..." />
+    <input id="lookupInput" type="text" placeholder="wolf, heart, book, me, you, he, she, this, those, beautiful..." />
     <button onclick="lookupWord()">Decline</button>
 
     <div id="error" class="error"></div>
@@ -112,7 +114,7 @@
       "wolf":   { lemma: "lupōr",   cls: "rex"   },
       "child":  { lemma: "puerōr",  cls: "rex"   },
       "man":    { lemma: "sapiōr",  cls: "rex"   },
-      "woman":  { lemma: "velōra",  cls: "rex"   },
+      "woman":  { lemma: "velōr",   cls: "rex"   },
       "friend": { lemma: "amīkōr",  cls: "rex"   },
 
       "heart":  { lemma: "cordum",  cls: "murus" },
@@ -122,8 +124,8 @@
       // Add more nouns here as Aurilingua grows
     };
 
-    // --- Aurilingua pronoun dictionary ---
-    // Each English key can map to multiple pronoun entries (sg/pl, animate/inanimate)
+    // --- Aurilingua pronoun + demonstrative dictionary ---
+    // Each English key can map to multiple entries (sg/pl, animate/inanimate)
     // Forms: nominative, accusative, oblique
     const aurilinguaPronouns = {
       "i": [
@@ -159,8 +161,8 @@
         { lemma: "ilōrēs", gloss: "them (animate pl)",   nom: "ilōrēs", acc: "ilōrēs", obl: "ilōrum" },
         { lemma: "ida",    gloss: "them (inanimate pl)", nom: "ida",    acc: "ida",    obl: "idōrum" }
       ],
-      
-            "this": [
+
+      "this": [
         { 
           lemma: "istōr",
           gloss: "this (animate sg)",
@@ -226,20 +228,31 @@
           acc: "alla",
           obl: "allōrum"
         }
-      ],
+      ]
     };
 
-    // --- Noun declension engines ---
+    // --- Aurilingua adjective mini-dictionary ---
+    // For now just "beautiful" → bellōr / bellum
+    const aurilinguaAdjectives = {
+      "beautiful": {
+        english: "beautiful",
+        rexLemma: "bellōr",   // with animate (Rex) nouns
+        murusLemma: "bellum"  // with inanimate (Murus) nouns
+      }
+      // Add more adjectives here as Aurilingua grows
+    };
+
+    // --- Declension engines ---
 
     function declineRex(lemma) {
-      // Rex: Nom = Acc = -ōr; Oblique = -ōrī; Plural: -ōrēs / -ōrum
-      const nomSg = lemma;
-      const accSg = lemma + "ēm";    // lupōrēm
-      const oblSg = lemma + "ī";     // lupōrī
+      // Rex: Nom = -ōr, Acc = -ōrēm, Obl = -ōrī; Plural: -ōrēs / -ōrum
+      const nomSg = lemma;          // lupōr
+      const accSg = lemma + "ēm";   // lupōrēm
+      const oblSg = lemma + "ī";    // lupōrī
 
-      const nomPl = lemma + "ēs";    // lupōrēs
-      const accPl = lemma + "ēs";
-      const oblPl = lemma + "um";    // lupōrum
+      const nomPl = lemma + "ēs";   // lupōrēs
+      const accPl = lemma + "ēs";   // lupōrēs
+      const oblPl = lemma + "um";   // lupōrum
 
       return { nomSg, accSg, oblSg, nomPl, accPl, oblPl };
     }
@@ -258,7 +271,37 @@
       return { nomSg, accSg, oblSg, nomPl, accPl, oblPl };
     }
 
-    // --- Formatting helpers ---
+    // Use the same engines for adjectives:
+    function formatAdjective(entry) {
+      const rexForms = declineRex(entry.rexLemma);
+      const murusForms = declineMurus(entry.murusLemma);
+
+      return [
+        `Adjective: ${entry.rexLemma} / ${entry.murusLemma}  ("${entry.english}")`,
+        "",
+        "Rex (with animate nouns):",
+        "  Singular:",
+        `    Nom – ${rexForms.nomSg}`,
+        `    Acc – ${rexForms.accSg}`,
+        `    Obl – ${rexForms.oblSg}`,
+        "  Plural:",
+        `    Nom – ${rexForms.nomPl}`,
+        `    Acc – ${rexForms.accPl}`,
+        `    Obl – ${rexForms.oblPl}`,
+        "",
+        "Murus (with inanimate nouns):",
+        "  Singular:",
+        `    Nom – ${murusForms.nomSg}`,
+        `    Acc – ${murusForms.accSg}`,
+        `    Obl – ${murusForms.oblSg}`,
+        "  Plural:",
+        `    Nom – ${murusForms.nomPl}`,
+        `    Acc – ${murusForms.accPl}`,
+        `    Obl – ${murusForms.oblPl}`
+      ].join("\n");
+    }
+
+    // --- Formatting helpers for nouns & pronouns ---
 
     function formatNoun(entry, forms) {
       const { lemma, cls } = entry;
@@ -281,7 +324,7 @@
 
     function formatPronouns(entries, englishForm) {
       const lines = [];
-      lines.push(`English: “${englishForm}” (pronoun)`);
+      lines.push(`English: “${englishForm}” (pronoun/demonstrative)`);
       lines.push("");
 
       entries.forEach((p, idx) => {
@@ -308,21 +351,29 @@
       errorEl.textContent = "";
 
       if (!input) {
-        errorEl.textContent = "Type an English noun or pronoun to look up.";
+        errorEl.textContent = "Type an English noun, pronoun, demonstrative, or adjective to look up.";
         return;
       }
 
-      // 1) Check pronouns first
+      // 1) Check pronouns/demonstratives
       if (aurilinguaPronouns[input]) {
         const text = formatPronouns(aurilinguaPronouns[input], raw);
         outputEl.textContent = text;
         return;
       }
 
-      // 2) Then check nouns
+      // 2) Check adjectives
+      if (aurilinguaAdjectives[input]) {
+        const entry = aurilinguaAdjectives[input];
+        const text = formatAdjective(entry);
+        outputEl.textContent = text;
+        return;
+      }
+
+      // 3) Then check nouns
       const entry = aurilinguaNouns[input];
       if (!entry) {
-        errorEl.textContent = `No Aurilingua noun or pronoun found for “${raw}”. Add it to aurilinguaNouns or aurilinguaPronouns in the code.`;
+        errorEl.textContent = `No Aurilingua noun, pronoun, demonstrative, or adjective found for “${raw}”. Add it to the dictionaries in the code.`;
         return;
       }
 
