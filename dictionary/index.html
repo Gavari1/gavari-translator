@@ -2,393 +2,563 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Aurilingua Noun & Pronoun Decliner</title>
+  <title>Status Symbol Dictionary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #050713;
+      --bg-elevated: #0d101f;
+      --accent: #4dd4ff;
+      --accent-soft: rgba(77, 212, 255, 0.16);
+      --text: #f5f7ff;
+      --muted: #9aa0c2;
+      --border: #22263b;
+      --radius-lg: 14px;
+      --radius-sm: 8px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0b1020;
-      color: #f5f5f5;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #101633 0, #050713 52%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2.5rem 1rem 3rem;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 880px;
+      background: linear-gradient(145deg, #090c19, #050713);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(132, 152, 255, 0.15);
+      padding: 1.75rem 1.75rem 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 1.25rem 1.1rem 1.5rem;
+        border-radius: 18px;
+      }
+    }
+
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .title-group {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem 3rem;
+      gap: 0.1rem;
     }
 
     h1 {
-      margin-bottom: 0.5rem;
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 650;
     }
 
     .subtitle {
-      opacity: 0.8;
-      margin-bottom: 1.5rem;
-      text-align: center;
-      max-width: 520px;
-      font-size: 0.95rem;
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
     }
 
-    .card {
-      background: #181f35;
-      padding: 1.5rem;
-      border-radius: 0.75rem;
-      max-width: 540px;
+    .pill {
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(132, 152, 255, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--muted);
+      background: rgba(17, 24, 64, 0.6);
+      white-space: nowrap;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-input-wrap input {
       width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-
-    label {
+      padding: 0.6rem 0.75rem 0.6rem 2rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(9, 11, 28, 0.95);
+      color: var(--text);
       font-size: 0.9rem;
-      opacity: 0.9;
-    }
-
-    input {
-      width: 100%;
-      margin-top: 0.4rem;
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.5rem;
-      border: 1px solid #3a466b;
-      background: #0f1424;
-      color: #f5f5f5;
       outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease;
     }
 
-    input:focus {
-      border-color: #7bb0ff;
-      box-shadow: 0 0 0 1px #7bb0ff33;
+    .search-input-wrap input::placeholder {
+      color: #5d6484;
     }
 
-    button {
-      margin-top: 0.75rem;
-      padding: 0.4rem 0.9rem;
-      border-radius: 0.5rem;
-      border: none;
-      background: #3d7afe;
-      color: #fff;
+    .search-input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(77, 212, 255, 0.45);
+      background: #050713;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.68rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: #656c8f;
+      pointer-events: none;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.95rem;
+    }
+
+    .tag-row span {
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(78, 92, 150, 0.9);
+      background: rgba(10, 14, 38, 0.9);
+    }
+
+    .dictionary-panel {
+      margin-top: 0.35rem;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, #151b3f 0, #050713 46%);
+      border: 1px solid rgba(77, 212, 255, 0.12);
+      padding: 1rem 0.9rem 0.8rem;
+      max-height: 440px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dictionary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.35rem;
+      padding: 0 0.25rem;
+    }
+
+    .dictionary-header h2 {
+      margin: 0;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #b4bbff;
+    }
+
+    .dictionary-header span {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .dictionary-list {
+      margin: 0.25rem 0 0;
+      padding: 0.1rem 0.25rem 0.4rem;
+      list-style: none;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(113, 128, 255, 0.7) transparent;
+    }
+
+    .dictionary-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .dictionary-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .dictionary-list::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #6fe2ff, #8f8bff);
+      border-radius: 999px;
+    }
+
+    .entry {
+      padding: 0.55rem 0.6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(76, 97, 169, 0.7);
+      background: radial-gradient(circle at top left, #151a3c 0, #060817 60%);
+      margin-bottom: 0.45rem;
+      display: grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.1fr);
+      gap: 0.4rem 0.75rem;
+      align-items: center;
+    }
+
+    @media (max-width: 600px) {
+      .entry {
+        grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.1fr);
+      }
+    }
+
+    .entry-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 0;
+    }
+
+    .entry-term {
+      font-size: 0.9rem;
       font-weight: 600;
-      cursor: pointer;
     }
 
-    button:hover {
-      background: #2e61d1;
+    .entry-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
     }
 
-    pre {
-      margin-top: 1rem;
-      background: #0f1424;
-      padding: 0.75rem 0.9rem;
-      border-radius: 0.5rem;
-      font-size: 0.9rem;
-      overflow-x: auto;
-      white-space: pre-wrap;
+    .entry-chip {
+      padding: 0.05rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 139, 210, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 0.64rem;
+      color: #c4c9ff;
     }
 
-    .error {
-      margin-top: 0.75rem;
-      color: #ff9a9a;
-      font-size: 0.9rem;
+    .entry-shorthand {
+      font-size: 0.72rem;
+      color: #c1d3ff;
+      opacity: 0.95;
+    }
+
+    .entry-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .entry-symbol {
+      justify-self: flex-end;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.16rem;
+    }
+
+    .symbol-display {
+      font-size: 1.2rem;
+      letter-spacing: 0.06em;
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(126, 255, 255, 0.5);
+      background: radial-gradient(circle at top, #1d2c4b 0, #050713 60%);
+      box-shadow: 0 0 16px rgba(90, 230, 255, 0.35);
+      white-space: nowrap;
+    }
+
+    .symbol-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .empty-state {
+      padding: 0.7rem 0.4rem 0.3rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin-top: 0.85rem;
+      font-size: 0.72rem;
+      color: #7078a7;
+      text-align: right;
     }
   </style>
 </head>
 <body>
-  <h1>Aurilingua Decliner</h1>
-  <div class="subtitle">
-    Type an English <strong>noun</strong> like <strong>wolf</strong>, <strong>child</strong>, <strong>heart</strong>, <strong>book</strong>,<br/>
-    a <strong>pronoun</strong> like <strong>me, you, he, she, it, we, they</strong>,<br/>
-    a <strong>demonstrative</strong> like <strong>this</strong>, <strong>that</strong>, <strong>those</strong>,<br/>
-    or an <strong>adjective</strong> like <strong>beautiful</strong>.<br/>
-    The tool shows the Aurilingua forms and full declension.
-  </div>
+  <div class="app">
+    <div class="header-bar">
+      <div class="title-group">
+        <h1>Status Symbol Dictionary</h1>
+        <p class="subtitle">
+          A minimal reference for perspective + place + effort blocks.
+        </p>
+      </div>
+      <div class="pill">v1 · text-based</div>
+    </div>
 
-  <div class="card">
-    <label for="lookupInput">English word:</label>
-    <input id="lookupInput" type="text" placeholder="wolf, heart, book, me, you, he, she, this, those, beautiful..." />
-    <button onclick="lookupWord()">Decline</button>
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">⌕</span>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search by English term, shorthand, or description…"
+          autocomplete="off"
+        />
+      </div>
+    </div>
 
-    <div id="error" class="error"></div>
-    <pre id="output"></pre>
+    <div class="tag-row">
+      <span>Perspective: U, |U, |U|</span>
+      <span>Place: naya · nolu · woni</span>
+      <span>Effort: frahnt (ᔐ)</span>
+    </div>
+
+    <section class="dictionary-panel">
+      <div class="dictionary-header">
+        <h2>Entries</h2>
+        <span id="entryCountLabel">0 entries</span>
+      </div>
+      <ul id="dictionaryList" class="dictionary-list"></ul>
+    </section>
+
+    <div class="footer-note">
+      Symbols are recognized, not pronounced · combos are compositional.
+    </div>
   </div>
 
   <script>
-    // --- Aurilingua noun mini-dictionary ---
-    // class: "rex" (animate) or "murus" (inanimate)
-    const aurilinguaNouns = {
-      "wolf":   { lemma: "lupor",   cls: "rex"   },
-      "child":  { lemma: "pueror",  cls: "rex"   },
-      "man":    { lemma: "sapior",  cls: "rex"   },
-      "woman":  { lemma: "velor",   cls: "rex"   },
-      "friend": { lemma: "amīkor",  cls: "rex"   },
-
-      "heart":  { lemma: "cordum",  cls: "murus" },
-      "book":   { lemma: "librum",  cls: "murus" },
-      "stone":  { lemma: "lapidum", cls: "murus" },
-      "house":  { lemma: "domum",   cls: "murus" }
-      // Add more nouns here as Aurilingua grows
-    };
-
-    // --- Aurilingua pronoun + demonstrative dictionary ---
-    // Each English key can map to multiple entries (sg/pl, animate/inanimate)
-    // Forms: nominative, accusative, oblique
-    const aurilinguaPronouns = {
-      "i": [
-        { lemma: "ego", gloss: "I / me (1sg)", nom: "ego", acc: "em",  obl: "mei" }
-      ],
-      "me": [
-        { lemma: "ego", gloss: "I / me (1sg)", nom: "ego", acc: "em",  obl: "mei" }
-      ],
-      "we": [
-        { lemma: "nos", gloss: "we / us (1pl)", nom: "nos", acc: "nosem", obl: "nori" }
-      ],
-      "us": [
-        { lemma: "nos", gloss: "we / us (1pl)", nom: "nos", acc: "nosem", obl: "nori" }
-      ],
-      "you": [
-        { lemma: "tu",  gloss: "you (singular)", nom: "tu",  acc: "tem",   obl: "tei" },
-        { lemma: "vos", gloss: "you (plural)",   nom: "vos", acc: "vosem", obl: "vori" }
-      ],
-      "he": [
-        { lemma: "ilor", gloss: "he / she / they (animate sg)", nom: "ilor", acc: "ilor", obl: "ilori" }
-      ],
-      "she": [
-        { lemma: "ilor", gloss: "he / she / they (animate sg)", nom: "ilor", acc: "ilor", obl: "ilori" }
-      ],
-      "it": [
-        { lemma: "idum", gloss: "it (inanimate sg)", nom: "idum", acc: "idum", obl: "idi" }
-      ],
-      "they": [
-        { lemma: "ilores", gloss: "they (animate pl)",   nom: "ilores", acc: "ilores", obl: "ilorum" },
-        { lemma: "ida",    gloss: "they (inanimate pl)", nom: "ida",    acc: "ida",    obl: "idorum" }
-      ],
-      "them": [
-        { lemma: "ilores", gloss: "them (animate pl)",   nom: "ilores", acc: "ilores", obl: "ilorum" },
-        { lemma: "ida",    gloss: "them (inanimate pl)", nom: "ida",    acc: "ida",    obl: "idorum" }
-      ],
-
-      "this": [
-        { 
-          lemma: "istor",
-          gloss: "this (animate sg)",
-          nom: "istor",
-          acc: "istor",
-          obl: "istori"
-        },
-        {
-          lemma: "istum",
-          gloss: "this (inanimate sg)",
-          nom: "istum",
-          acc: "istum",
-          obl: "isti"
-        }
-      ],
-
-      "that": [
-        {
-          lemma: "allor",
-          gloss: "that (animate sg)",
-          nom: "allor",
-          acc: "allor",
-          obl: "allori"
-        },
-        {
-          lemma: "allum",
-          gloss: "that (inanimate sg)",
-          nom: "allum",
-          acc: "allum",
-          obl: "alli"
-        }
-      ],
-
-      "these": [
-        {
-          lemma: "istores",
-          gloss: "these (animate pl)",
-          nom: "istores",
-          acc: "istores",
-          obl: "istorum"
-        },
-        {
-          lemma: "ista",
-          gloss: "these (inanimate pl)",
-          nom: "ista",
-          acc: "ista",
-          obl: "istorum"
-        }
-      ],
-
-      "those": [
-        {
-          lemma: "allores",
-          gloss: "those (animate pl)",
-          nom: "allores",
-          acc: "allores",
-          obl: "allorum"
-        },
-        {
-          lemma: "alla",
-          gloss: "those (inanimate pl)",
-          nom: "alla",
-          acc: "alla",
-          obl: "allorum"
-        }
-      ]
-    };
-
-    // --- Aurilingua adjective mini-dictionary ---
-    // For now just "beautiful" → bellor / bellum
-    const aurilinguaAdjectives = {
-      "beautiful": {
-        english: "beautiful",
-        rexLemma: "bellor",   // with animate (Rex) nouns
-        murusLemma: "bellum"  // with inanimate (Murus) nouns
+    // Core data: add / remove / tweak entries here.
+    const ENTRIES = [
+      {
+        term: "constructed place",
+        shorthand: "naya",
+        type: "Place",
+        symbol: "ᒤᐱᒊ",
+        description:
+          "Solid, built, stationary environment: houses, offices, schools, hospitals, shops, etc."
+      },
+      {
+        term: "moving place",
+        shorthand: "nolu",
+        type: "Place",
+        symbol: "ᐯᓇᔐ",
+        description:
+          "Mobile environment: car, bus, train, plane, boat, ride — any place whose definition includes motion."
+      },
+      {
+        term: "open space",
+        shorthand: "woni",
+        type: "Place",
+        symbol: "ᓬᑫᓬ",
+        description:
+          "Open or natural environment: yard, field, park, forest, riverbank, beach, general outside."
+      },
+      {
+        term: "I (self / speaker)",
+        shorthand: "U",
+        type: "Perspective",
+        symbol: "U",
+        description:
+          "Unconstrained perspective: the one speaking. Combines with place blocks to form full state."
+      },
+      {
+        term: "you (addressee)",
+        shorthand: "|U",
+        type: "Perspective",
+        symbol: "|U",
+        description:
+          "Direct addressee: the one being spoken to. Partial constraint relative to self."
+      },
+      {
+        term: "everyone else (they)",
+        shorthand: "|U|",
+        type: "Perspective",
+        symbol: "|U|",
+        description:
+          "External group or other person: anyone who is not self or direct you."
+      },
+      {
+        term: "effort / occupied",
+        shorthand: "frahnt",
+        type: "State",
+        symbol: "ᔐ",
+        description:
+          "Engaged effort: working, studying, focused, under load. Indicates limited availability, not job type."
+      },
+      {
+        term: "I in a constructed place",
+        shorthand: "U + naya",
+        type: "Combined",
+        symbol: "Uᒤᐱᒊ",
+        description:
+          "You (self) are in a built / solid place such as home, work, or any indoor structure."
+      },
+      {
+        term: "you in a constructed place",
+        shorthand: "|U + naya",
+        type: "Combined",
+        symbol: "|Uᒤᐱᒊ",
+        description:
+          "The person you’re talking to is in a built / solid place (indoors)."
+      },
+      {
+        term: "they in a constructed place",
+        shorthand: "|U| + naya",
+        type: "Combined",
+        symbol: "|U|ᒤᐱᒊ",
+        description:
+          "Someone else / a group is located in a built, stationary environment."
+      },
+      {
+        term: "I outside",
+        shorthand: "U + woni",
+        type: "Combined",
+        symbol: "Uᓬᑫᓬ",
+        description:
+          "You (self) are outside or in an open / natural space."
+      },
+      {
+        term: "they outside working",
+        shorthand: "|U| + woni + frahnt",
+        type: "Combined",
+        symbol: "|U|ᓬᑫᓬᔐ",
+        description:
+          "Others are outside and engaged in effort: field work, construction, practice, outdoor tasks."
+      },
+      {
+        term: "I in motion",
+        shorthand: "U + nolu",
+        type: "Combined",
+        symbol: "Uᐯᓇᔐ",
+        description:
+          "You (self) are in a moving place such as a car, bus, plane, train, or similar."
       }
-      // Add more adjectives here as Aurilingua grows
-    };
+    ];
 
-    // --- Declension engines ---
+    const listEl = document.getElementById("dictionaryList");
+    const searchInput = document.getElementById("searchInput");
+    const entryCountLabel = document.getElementById("entryCountLabel");
 
-    function declineRex(lemma) {
-      // Rex: Nom = -or, Acc = -orem, Obl = -ori; Plural: -ores / -orum
-      const nomSg = lemma;          // lupor
-      const accSg = lemma + "em";   // luporem
-      const oblSg = lemma + "i";    // lupori
-
-      const nomPl = lemma + "es";   // lupores
-      const accPl = lemma + "es";   // lupores
-      const oblPl = lemma + "um";   // luporum
-
-      return { nomSg, accSg, oblSg, nomPl, accPl, oblPl };
+    function normalize(str) {
+      return (str || "").toLowerCase().trim();
     }
 
-    function declineMurus(lemma) {
-      // Murus: Nom = Acc = -um; Oblique = -i; Pl: -a / -orum
-      const nomSg = lemma;
-      const accSg = lemma;
-      const stem = lemma.endsWith("um") ? lemma.slice(0, -2) : lemma;
+    function renderEntries(filterText = "") {
+      const query = normalize(filterText);
 
-      const oblSg = stem + "i";       // cordi
-      const nomPl = stem + "a";       // corda
-      const accPl = stem + "a";
-      const oblPl = stem + "orum";    // cordorum
+      // Sort alphabetically by term
+      const sorted = [...ENTRIES].sort((a, b) =>
+        a.term.toLowerCase().localeCompare(b.term.toLowerCase())
+      );
 
-      return { nomSg, accSg, oblSg, nomPl, accPl, oblPl };
-    }
-
-    // Use the same engines for adjectives:
-    function formatAdjective(entry) {
-      const rexForms = declineRex(entry.rexLemma);
-      const murusForms = declineMurus(entry.murusLemma);
-
-      return [
-        `Adjective: ${entry.rexLemma} / ${entry.murusLemma}  ("${entry.english}")`,
-        "",
-        "Rex (with animate nouns):",
-        "  Singular:",
-        `    Nom – ${rexForms.nomSg}`,
-        `    Acc – ${rexForms.accSg}`,
-        `    Obl – ${rexForms.oblSg}`,
-        "  Plural:",
-        `    Nom – ${rexForms.nomPl}`,
-        `    Acc – ${rexForms.accPl}`,
-        `    Obl – ${rexForms.oblPl}`,
-        "",
-        "Murus (with inanimate nouns):",
-        "  Singular:",
-        `    Nom – ${murusForms.nomSg}`,
-        `    Acc – ${murusForms.accSg}`,
-        `    Obl – ${murusForms.oblSg}`,
-        "  Plural:",
-        `    Nom – ${murusForms.nomPl}`,
-        `    Acc – ${murusForms.accPl}`,
-        `    Obl – ${murusForms.oblPl}`
-      ].join("\n");
-    }
-
-    // --- Formatting helpers for nouns & pronouns ---
-
-    function formatNoun(entry, forms) {
-      const { lemma, cls } = entry;
-      const classLabel = cls === "rex" ? "Rex (animate)" : "Murus (inanimate)";
-
-      return [
-        `Lemma: ${lemma}   [${classLabel}]`,
-        "",
-        "Singular:",
-        `  Nom – ${forms.nomSg}`,
-        `  Acc – ${forms.accSg}`,
-        `  Obl – ${forms.oblSg}`,
-        "",
-        "Plural:",
-        `  Nom – ${forms.nomPl}`,
-        `  Acc – ${forms.accPl}`,
-        `  Obl – ${forms.oblPl}`
-      ].join("\n");
-    }
-
-    function formatPronouns(entries, englishForm) {
-      const lines = [];
-      lines.push(`English: “${englishForm}” (pronoun/demonstrative)`);
-      lines.push("");
-
-      entries.forEach((p, idx) => {
-        const label = entries.length > 1 ? `Form ${idx + 1}` : "Form";
-        lines.push(`${label}: ${p.lemma} — ${p.gloss}`);
-        lines.push(`  Nom – ${p.nom}`);
-        lines.push(`  Acc – ${p.acc}`);
-        lines.push(`  Obl – ${p.obl}`);
-        lines.push("");
+      const filtered = sorted.filter((entry) => {
+        if (!query) return true;
+        const haystack =
+          (entry.term + " " + (entry.shorthand || "") + " " + entry.description)
+            .toLowerCase();
+        return haystack.includes(query);
       });
 
-      return lines.join("\n").trimEnd();
-    }
+      listEl.innerHTML = "";
 
-    // --- Main lookup ---
-
-    function lookupWord() {
-      const raw = document.getElementById("lookupInput").value.trim();
-      const input = raw.toLowerCase();
-      const outputEl = document.getElementById("output");
-      const errorEl = document.getElementById("error");
-
-      outputEl.textContent = "";
-      errorEl.textContent = "";
-
-      if (!input) {
-        errorEl.textContent = "Type an English noun, pronoun, demonstrative, or adjective to look up.";
-        return;
-      }
-
-      // 1) Check pronouns/demonstratives
-      if (aurilinguaPronouns[input]) {
-        const text = formatPronouns(aurilinguaPronouns[input], raw);
-        outputEl.textContent = text;
-        return;
-      }
-
-      // 2) Check adjectives
-      if (aurilinguaAdjectives[input]) {
-        const entry = aurilinguaAdjectives[input];
-        const text = formatAdjective(entry);
-        outputEl.textContent = text;
-        return;
-      }
-
-      // 3) Then check nouns
-      const entry = aurilinguaNouns[input];
-      if (!entry) {
-        errorEl.textContent = `No Aurilingua noun, pronoun, demonstrative, or adjective found for “${raw}”. Add it to the dictionaries in the code.`;
-        return;
-      }
-
-      let forms;
-      if (entry.cls === "rex") {
-        forms = declineRex(entry.lemma);
-      } else if (entry.cls === "murus") {
-        forms = declineMurus(entry.lemma);
+      if (!filtered.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "No entries match that search yet.";
+        listEl.appendChild(empty);
       } else {
-        errorEl.textContent = `Unknown noun class for “${entry.lemma}”. Use "rex" or "murus".`;
-        return;
+        filtered.forEach((entry) => {
+          const li = document.createElement("li");
+          li.className = "entry";
+
+          const main = document.createElement("div");
+          main.className = "entry-main";
+
+          const term = document.createElement("div");
+          term.className = "entry-term";
+          term.textContent = entry.term;
+
+          const meta = document.createElement("div");
+          meta.className = "entry-meta";
+
+          const chip = document.createElement("span");
+          chip.className = "entry-chip";
+          chip.textContent = entry.type;
+
+          meta.appendChild(chip);
+
+          if (entry.shorthand) {
+            const shorthand = document.createElement("span");
+            shorthand.className = "entry-shorthand";
+            shorthand.textContent = `shorthand: ${entry.shorthand}`;
+            meta.appendChild(shorthand);
+          }
+
+          const desc = document.createElement("div");
+          desc.className = "entry-desc";
+          desc.textContent = entry.description;
+
+          main.appendChild(term);
+          main.appendChild(meta);
+          main.appendChild(desc);
+
+          const symbolBox = document.createElement("div");
+          symbolBox.className = "entry-symbol";
+
+          const symbol = document.createElement("div");
+          symbol.className = "symbol-display";
+          symbol.textContent = entry.symbol;
+
+          const label = document.createElement("div");
+          label.className = "symbol-label";
+          label.textContent = "symbol";
+
+          symbolBox.appendChild(symbol);
+          symbolBox.appendChild(label);
+
+          li.appendChild(main);
+          li.appendChild(symbolBox);
+
+          listEl.appendChild(li);
+        });
       }
 
-      outputEl.textContent = formatNoun(entry, forms);
+      entryCountLabel.textContent =
+        filtered.length === 1
+          ? "1 entry"
+          : `${filtered.length} entries`;
     }
+
+    searchInput.addEventListener("input", (e) => {
+      renderEntries(e.target.value);
+    });
+
+    // Initial render
+    renderEntries();
   </script>
 </body>
 </html>
