@@ -464,8 +464,7 @@
       const query = normalize(filterText);
 
       // Sort alphabetically by term
-      const sorted = [...ENTRIES].sort((a, b) =>
-        a.term.toLowerCase().localeCompare(b.term.toLowerCase())
+      const sorted = ENTRIES;
       );
 
       const filtered = sorted.filter((entry) => {
