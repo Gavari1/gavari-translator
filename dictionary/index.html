@@ -382,6 +382,13 @@
            "Directional relation indicating orientation, trajectory, or movement toward a state."
       },
       {
+        term: "separation/movement away",
+        type: "Relation",
+        symbol: "ᐗ",
+        description: 
+           "Directional relation indicating orientation, trajectory, or movement away from a state."
+      },
+      {
         term: "nourishment/intake",
         type: "Qualifier",
         symbol: "ᔭ",
@@ -400,7 +407,7 @@
         type: "mode",
         symbol: "ᒝ",
         description:
-             "Structured obligation; transactional mode; formal systems, duties, or responsibilities."
+             "Structured obligation; transactional mode; formal systems, duties, or responsibilities.
       },
       {
         term: "constructed place",
@@ -436,7 +443,7 @@
         type: "Combined",
         symbol: "Uᒤᐱᒊ",
         description:
-          "I (myself) am in a built / solid place such as home, work, or any indoor structure."
+          "You (self) are in a built / solid place such as home, work, or any indoor structure."
       },
       {
         term: "you in a constructed place",
@@ -444,7 +451,7 @@
         type: "Combined",
         symbol: "|Uᒤᐱᒊ",
         description:
-          "You (yourself) is in a built / solid place such as home, work, or any indoor structure."
+          "The person you’re talking to is in a built / solid place (indoors)."
       },
       {
         term: "they in a constructed place",
@@ -452,7 +459,7 @@
         type: "Combined",
         symbol: "|U|ᒤᐱᒊ",
         description:
-          "Others (they/he/she) / is in a built / solid place such as home, work, or any indoor structure."
+          "Someone else / a group is located in a built, stationary environment."
       },
       {
         term: "I outside",
@@ -460,15 +467,15 @@
         type: "Combined",
         symbol: "Uᓬᑫᓬ",
         description:
-          "I (myself) am outside or in an open / natural space."
+          "I (self) am outside or in an open / natural space."
       },
       {
-        term: "you outside",
+        term: "You outside",
         shorthand: "|U + ᓬᑫᓬ",
         type: "Combined",
         symbol: "|Uᓬᑫᓬ",
         description:
-          "You (yourself) are outside or in an open / natural space."
+          "You (self) are outside or in an open / natural space."
       },
       {
         term: "they outside",
@@ -476,7 +483,7 @@
         type: "Combined",
         symbol: "|U|ᓬᑫᓬ",
         description:
-          "Others (they/he/she) are outside or in an open / natural space."
+          "Others are outside or in an open / natural space."
       },
       {
         term: "I outside working",
@@ -484,7 +491,7 @@
         type: "Combined",
         symbol: "Uᓬᑫᓬᔐ",
         description:
-          "I (myself) am outside and engaged in effort: field work, construction, practice, outdoor tasks."
+          "I (self) am outside and engaged in effort: field work, construction, practice, outdoor tasks."
       },
       {
         term: "you outside working",
@@ -492,7 +499,7 @@
         type: "Combined",
         symbol: "|Uᓬᑫᓬᔐ",
         description:
-          "You (yourself) are outside and engaged in effort: field work, construction, practice, outdoor tasks."
+          "You are outside and engaged in effort: field work, construction, practice, outdoor tasks."
       },
       {
         term: "they outside working",
@@ -500,7 +507,7 @@
         type: "Combined",
         symbol: "|U|ᓬᑫᓬᔐ",
         description:
-          "Others (they/he/she) are outside and engaged in effort: field work, construction, practice, outdoor tasks."
+          "Others are outside and engaged in effort: field work, construction, practice, outdoor tasks."
       },
       {
         term: "I in motion",
@@ -508,32 +515,8 @@
         type: "Combined",
         symbol: "Uᐯᓇᔐ",
         description:
-          "I (myself) am in a moving place such as a car, bus, plane, train, or similar."
-      },
-      {
-        term: "you in motion",
-        shorthand: "|U + ᐯᓇᔐ",
-        type: "Combined",
-        symbol: "|Uᐯᓇᔐ",
-        description:
-          "You (yourself) are in a moving place such as a car, bus, plane, train, or similar."
-      },
-      {
-        term: "they in motion",
-        shorthand: "|U| + ᐯᓇᔐ",
-        type: "Combined",
-        symbol: "|U|ᐯᓇᔐ",
-        description:
-          "They (others) are in a moving place such as a car, bus, plane, train, or similar."
-      },
-      {
-        term: "I am in motion towards a constructed place of nourishment",
-        shorthand: "U + ᐯᓇᔐ + ᐅ + ᒤᐱᒊ + ᔭ",
-        type: "Combined",
-        symbol: "Uᐯᓇᔐᐅᒤᐱᒊᔭ",
-        description:
-          "I am going to a restaurant"
-      },
+          "You (self) are in a moving place such as a car, bus, plane, train, or similar."
+      }
     ];
 
     const listEl = document.getElementById("dictionaryList");
