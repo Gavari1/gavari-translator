@@ -377,7 +377,7 @@
       {
         term: "vector/toward",
         type: "Relation",
-        symbol: "ᐅ",
+        symbol: "",
         description: 
            "Directional relation indicating orientation, trajectory, or movement toward a state."
       },
@@ -463,7 +463,7 @@
           "I (myself) am outside or in an open / natural space."
       },
       {
-        term: "You outside",
+        term: "you outside",
         shorthand: "|U + ᓬᑫᓬ",
         type: "Combined",
         symbol: "|Uᓬᑫᓬ",
@@ -511,7 +511,7 @@
           "I (myself) am in a moving place such as a car, bus, plane, train, or similar."
       },
       {
-        term: "You in motion",
+        term: "you in motion",
         shorthand: "|U + ᐯᓇᔐ",
         type: "Combined",
         symbol: "|Uᐯᓇᔐ",
@@ -519,13 +519,21 @@
           "You (yourself) are in a moving place such as a car, bus, plane, train, or similar."
       },
       {
-        term: "They in motion",
+        term: "they in motion",
         shorthand: "|U| + ᐯᓇᔐ",
         type: "Combined",
         symbol: "|U|ᐯᓇᔐ",
         description:
           "They (others) are in a moving place such as a car, bus, plane, train, or similar."
-      }
+      },
+      {
+        term: "I am in motion towards a constructed place of nourishment",
+        shorthand: "U + ᐯᓇᔐ + ᐅ + ᒤᐱᒊ + ᔭ",
+        type: "Combined",
+        symbol: "Uᐯᓇᔐᐅᒤᐱᒊᔭ",
+        description:
+          "I am going to a restaurant"
+      },
     ];
 
     const listEl = document.getElementById("dictionaryList");
