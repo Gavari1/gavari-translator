@@ -263,7 +263,7 @@
 
   <script>
     // ------------------------------
-    // 1. Data: edit this section for actual QUIKRETE products
+    // 1. Data
     // ------------------------------
     const recommendations = {
       // Mortar joint repair up to 1/4"
@@ -287,7 +287,7 @@
           notes: "Caulk-style repair for small mortar joint cracks and minor tuckpointing."
         }
       },
-      
+
       // Mortar joint repair up to 3/8"
       "mortar-joint|0.375": {
         good: {
@@ -309,7 +309,7 @@
           notes: "Caulk-style repair for small mortar joint cracks and minor tuckpointing."
         }
       },
-      
+
       // Mortar joint repair up to 1/2"
       "mortar-joint|0.5": {
         good: {
@@ -332,12 +332,12 @@
         }
       },
 
-      // Mortar joint repair up to 1"
-"mortar-joint|1": {
-          label: "<strong>For further assistance please call 1-800-282-5828</strong>"
-},
-      
-       // Concrete crack repair up to 1/4"
+      // Mortar joint repair up to 1"  -> special: show message instead of cards
+      "mortar-joint|1": {
+        message: "<strong>Mortar joint repair • Up to 1\"</strong><br/>For further assistance please call 1-800-282-5828."
+      },
+
+      // Concrete crack repair up to 1/4"
       "crack|0.25": {
         good: {
           label: "Good",
@@ -358,7 +358,7 @@
           notes: "Two-component epoxy for maximum bond and chemical resistance in narrow cracks."
         }
       },
-      
+
       // Concrete crack repair up to 1/2"
       "crack|0.5": {
         good: {
@@ -393,13 +393,13 @@
           label: "Better",
           name: "QUIKRETE® Quick Setting Cement",
           code: "#1240",
-          notes:'Quick setting patch for spalls and shallow repairs from feather edge to 2"\ deep.'
+          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
         },
         best: {
           label: "Best",
           name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes:'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep.'
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
         }
       },
 
@@ -415,13 +415,13 @@
           label: "Better",
           name: "QUIKRETE® Quick Setting Cement",
           code: "#1240",
-          notes:'Quick setting patch for spalls and shallow repairs from feather edge to 2"\ deep.'
+          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
         },
         best: {
           label: "Best",
           name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes:'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep.'
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
         }
       },
 
@@ -437,15 +437,15 @@
           label: "Better",
           name: "QUIKRETE® Quick Setting Cement",
           code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2"\ deep.'
-          },
+          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
+        },
         best: {
           label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair", 
+          name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep.'
-          }
-        },
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
+        }
+      },
 
       // Concrete repair up to 1/2"
       "surface|0.5": {
@@ -459,17 +459,17 @@
           label: "Better",
           name: "QUIKRETE® Quick Setting Cement",
           code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2"\ deep.'
-          },
+          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
+        },
         best: {
           label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair", 
+          name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep.'
-          }
-        },
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
+        }
+      },
 
-       // Concrete repair up to 1"
+      // Concrete repair up to 1"
       "surface|1": {
         good: {
           label: "Good",
@@ -481,17 +481,17 @@
           label: "Better",
           name: "QUIKRETE® Quick Setting Cement",
           code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2"\ deep.'
-          },
+          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
+        },
         best: {
           label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair", 
+          name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep.'
-          }
-        },
-      
-            // Concrete repair up to 2"
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
+        }
+      },
+
+      // Concrete repair up to 2"
       "surface|2": {
         good: {
           label: "Good",
@@ -499,17 +499,17 @@
           code: "#1103",
           notes: "Use for concrete repair of steps, slabs and any concrete horizontal surface between 3/8\" to 2\" thick."
         },
-          better: {
+        better: {
           label: "Better",
           name: "QUIKRETE® Quick Setting Cement",
           code: "#1240",
-          notes:'Quick setting patch for spalls and shallow repairs from feather edge to 2"\ deep.'
+          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
         },
         best: {
           label: "Best",
           name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes:'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep.'
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
         }
       },
 
@@ -519,7 +519,7 @@
           label: "Good",
           name: "QUIKRETE® Polymer Modified Structural Repair",
           code: "#1241",
-          notes:'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2"\ deep. Repairs can be done over 2"\ deep in lifts of 2" at a time with 4 hours in between lifts.'
+          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep. Repairs can be done over 2" deep in lifts of 2" at a time with 4 hours in between lifts.'
         },
         better: {
           label: "Better",
@@ -570,7 +570,7 @@
       const key = `${projectSelect.value}|${sizeSelect.value}`;
       const combo = recommendations[key];
 
-      // Nothing selected or no match
+      // Nothing selected
       if (!projectSelect.value || !sizeSelect.value) {
         cardsContainer.innerHTML = "";
         emptyState.style.display = "block";
@@ -580,6 +580,7 @@
         return;
       }
 
+      // No data at all
       if (!combo) {
         cardsContainer.innerHTML = "";
         emptyState.style.display = "block";
@@ -589,7 +590,16 @@
         return;
       }
 
-      // We have recommendations for this combo
+      // Special case: message-only (no good/better/best)
+      if (!combo.good && !combo.better && !combo.best && combo.message) {
+        cardsContainer.innerHTML = "";
+        emptyState.style.display = "block";
+        emptyState.innerHTML = combo.message;
+        updateSelectionLabel();
+        return;
+      }
+
+      // Normal case: Good / Better / Best cards
       emptyState.style.display = "none";
       cardsContainer.innerHTML = "";
 
