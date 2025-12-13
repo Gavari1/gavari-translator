@@ -1,821 +1,586 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>QUIKRETE Project Selector</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Russenorsk Core Dictionary (Historical Core v1)</title>
   <style>
-    :root {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      background: #e5e7eb; /* light neutral gray */
-      color: #111827;
+    :root{
+      --bg: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --blue: #1d4ed8;
+      --red: #dc2626;
+      --card: #f9fafb;
     }
 
-    body {
-      margin: 0;
-      padding: 2rem 1rem 3rem;
-      display: flex;
-      justify-content: center;
-      background: #e5e7eb;
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      color: var(--ink);
     }
 
-    .app {
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+      gap: 12px;
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      line-height:1.1;
+    }
+
+    .brand .title{
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing:.2px;
+    }
+
+    .brand .subtitle{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .flagbar{
+      height: 4px;
       width: 100%;
-      max-width: 960px;
-      background: #ffffff;
-      border-radius: 0.75rem;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
-      padding: 2.25rem 2rem 2.75rem;
+      background: linear-gradient(90deg, var(--red) 0 33%, var(--bg) 33% 66%, var(--blue) 66% 100%);
     }
 
-    @media (min-width: 768px) {
-      .app {
-        padding: 2.5rem 2.75rem 3rem;
-      }
-    }
-
-    h1 {
-      margin: 0 0 0.35rem;
-      font-size: 1.55rem;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      color: #0f172a;
-    }
-
-    .subtitle {
-      margin: 0 0 1.9rem;
-      font-size: 0.95rem;
-      color: #4b5563;
-      max-width: 40rem;
-    }
-
-    .form-row {
-      display: grid;
+    main{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+      display:grid;
       grid-template-columns: 1fr;
-      gap: 1.25rem;
-      margin-bottom: 2rem;
+      gap: 16px;
     }
 
-    @media (min-width: 640px) {
-      .form-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .panel{
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 22px rgba(17,24,39,.06);
     }
 
-    label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #374151;
-      margin-bottom: 0.4rem;
+    .panelhead{
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
     }
 
-    select {
-      width: 100%;
-      padding: 0.6rem 0.7rem;
-      border-radius: 0.5rem;
-      border: 1px solid #cbd5e1;
-      background: #f9fafb;
-      font-size: 0.95rem;
-      color: #0f172a;
-      transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease,
-        background 0.15s ease;
+    .panelhead h2{
+      margin:0;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing:.2px;
     }
 
-    select:focus {
-      outline: none;
-      border-color: #eab308; /* QUIKRETE-ish yellow accent */
-      box-shadow: 0 0 0 1px #eab30833;
-      background: #ffffff;
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .hint {
-      font-size: 0.78rem;
-      color: #9ca3af;
-      margin-top: 0.25rem;
-    }
-
-    .results-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.9rem;
-      gap: 0.75rem;
+    .controls{
+      display:flex;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
       flex-wrap: wrap;
-    }
-
-    .results-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #0f172a;
-    }
-
-    .results-selection {
-      font-size: 0.85rem;
-      color: #6b7280;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-top: 0.6rem;
-    }
-
-    @media (min-width: 768px) {
-      .cards {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    .card {
-      border-radius: 0.7rem;
-      padding: 1rem;
-      border: 1px solid #e5e7eb;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      position: relative;
-    }
-
-    /* Professional, subtle tier accents */
-    .card--good {
-      border-top: 3px solid #16a34a; /* green */
-    }
-
-    .card--better {
-      border-top: 3px solid #2563eb; /* blue */
-    }
-
-    .card--best {
-      border-top: 3px solid #ea580c; /* orange */
-    }
-
-    .card-pill {
-      display: inline-flex;
       align-items: center;
-      padding: 0.18rem 0.6rem;
+    }
+
+    input[type="search"]{
+      flex: 1 1 280px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+    }
+    input[type="search"]:focus{
+      border-color: rgba(29,78,216,.45);
+      box-shadow: 0 0 0 4px rgba(29,78,216,.12);
+    }
+
+    .btn{
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 650;
+      font-size: 13px;
+    }
+    .btn:hover{ border-color: #cbd5e1; }
+    .btn.primary{
+      background: rgba(29,78,216,.08);
+      border-color: rgba(29,78,216,.25);
+      color: var(--blue);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    @media (max-width: 920px){
+      .layout{ grid-template-columns: 1fr; }
+    }
+
+    .jump{
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .jump .label{
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .letters{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .letters a{
+      text-decoration:none;
+      display:inline-flex;
+      width: 30px;
+      height: 30px;
+      align-items:center;
+      justify-content:center;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      font-weight: 750;
+      font-size: 12px;
+    }
+    .letters a:hover{
+      border-color: rgba(220,38,38,.35);
+      box-shadow: 0 0 0 4px rgba(220,38,38,.10);
+    }
+    .letters a.disabled{
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    .results{
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .list{
+      max-height: 62vh;
+      overflow:auto;
+    }
+
+    .row{
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .row:last-child{ border-bottom:none; }
+
+    .russ{
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+
+    .meta{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .eng{
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-left: 8px;
+      padding: 2px 8px;
       border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      background: #111827;
-      color: #f9fafb;
-      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 750;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #fff;
+    }
+    .badge.b{ border-color: rgba(29,78,216,.22); color: var(--blue); background: rgba(29,78,216,.06); }
+    .badge.r{ border-color: rgba(220,38,38,.22); color: var(--red); background: rgba(220,38,38,.06); }
+    .badge.m{ border-color: rgba(17,24,39,.18); color: #111827; background: rgba(17,24,39,.03); }
+
+    .grouphead{
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      font-weight: 850;
+      color: var(--blue);
+      letter-spacing:.35px;
     }
 
-    .card-title {
-      font-size: 0.98rem;
-      font-weight: 600;
-      color: #111827;
+    footer{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 16px 28px;
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    .card-code {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #6b7280;
-    }
-
-    .card-notes {
-      font-size: 0.8rem;
-      color: #4b5563;
-      margin-top: 0.25rem;
-      line-height: 1.4;
-    }
-
-    .empty-state {
-      border-radius: 0.7rem;
-      padding: 1rem;
-      border: 1px dashed #d1d5db;
-      background: #f9fafb;
-      font-size: 0.86rem;
-      color: #6b7280;
-      margin-top: 0.9rem;
-      line-height: 1.45;
-    }
-
-    .empty-state strong {
-      color: #111827;
-      font-weight: 600;
-    }
+    .smallcaps{ font-variant: all-small-caps; letter-spacing:.35px; }
   </style>
 </head>
+
 <body>
-  <main class="app">
-    <h1>QUIKRETE Project Selector</h1>
-    <p class="subtitle">
-      Choose a project type and repair size to see a simple
-      <strong>Good / Better / Best</strong> recommendation.
-    </p>
-
-    <section aria-label="Project selection">
-      <div class="form-row">
-        <div>
-          <label for="projectType">Project type</label>
-          <select id="projectType">
-            <option value="">— Select project type —</option>
-            <option value="concrete">Concrete Installation</option>
-            <option value="brick">Brick Installation</option>
-            <option value="CMU">Concrete Block Installation</option>
-            <option value="mortar-joint">Mortar Joint Repair</option>
-            <option value="crack">Concrete Crack Repair</option>
-            <option value="surface">Concrete Repair (spalls / surface)</option>
-            <option value="leveler">Floor Leveling</option>
-          </select>
-          <p class="hint">Example: tuckpointing, hairline cracks, shallow spalls, etc.</p>
-        </div>
-
-        <div>
-          <label for="repairSize">Repair size / depth</label>
-          <select id="repairSize">
-            <option value="">— Select size / depth —</option>
-            <option value="0.25">Up to 1/4"</option>
-            <option value="0.375">Up to 3/8"</option>
-            <option value="0.5">Up to 1/2"</option>
-            <option value="1">Up to 1"</option>
-            <option value="2">Up to 2"</option>
-            <option value="over2">Over 2"</option>
-          </select>
-          <p class="hint">Match the deepest part of the repair.</p>
-        </div>
+  <div class="flagbar"></div>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="title">Russenorsk Core Dictionary <span class="smallcaps">v1</span></div>
+        <div class="subtitle">English → Russenorsk search + A→Z scroll list (historical core snapshot)</div>
       </div>
-    </section>
+    </div>
+  </header>
 
-    <section aria-label="Recommendations">
-      <div class="results-header">
-        <div class="results-title">Recommended materials</div>
-        <div class="results-selection" id="currentSelection">
-          Select a project and size to see options.
-        </div>
+  <main>
+    <section class="panel">
+      <div class="panelhead">
+        <h2>Search</h2>
+        <div class="hint">Type English (e.g., “fish”, “harbor”, “cheap”).</div>
+      </div>
+      <div class="controls">
+        <input id="q" type="search" placeholder="Search English…" autocomplete="off" />
+        <button class="btn primary" id="clearBtn">Clear</button>
       </div>
 
-      <div id="cardsContainer" class="cards" aria-live="polite"></div>
-      <div id="emptyState" class="empty-state">
-        <strong>No selection yet.</strong> Pick a project type and repair size to see
-        the Good / Better / Best materials.
+      <div class="layout">
+        <aside class="jump">
+          <div class="label">Jump to letter</div>
+          <div class="letters" id="letters"></div>
+          <div class="label" style="margin-top:12px;">Quick tips</div>
+          <div class="hint">
+            • Scroll list is alphabetical by Russenorsk form.<br>
+            • Search matches English meanings (substring).<br>
+            • Origin badges: <span class="badge r">R</span> Russian, <span class="badge b">N</span> Norwegian, <span class="badge m">Mix</span>.
+          </div>
+        </aside>
+
+        <section class="results">
+          <div class="panelhead">
+            <h2>Results / Full List</h2>
+            <div class="hint" id="count"></div>
+          </div>
+          <div class="list" id="list"></div>
+        </section>
       </div>
     </section>
   </main>
 
-  <script>
-    // ------------------------------
-    // 1. Data
-    // ------------------------------
-    const recommendations = {
-      // Mortar joint repair up to 1/4"
-      "mortar-joint|0.25": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Mortar Mix",
-          code: "1102",
-          notes: "Cement and sand mix for joints for more durable repairs; shape and tool to match existing joints."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Advanced Polyer Mortar Joing Sealant",
-          code: "#8620-18",
-          notes: "High performance caulk-style material that seals and waterproofs joints."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Mortar Repair",
-          code: "#8620-09",
-          notes: "Caulk-style repair for small mortar joint cracks and minor tuckpointing."
-        }
-      },
+  <footer>
+    This is a lightweight reference UI for the <b>Russenorsk Historical Core v1</b>. Spellings are normalized for usability; historical sources vary.
+    Theme colors are red/white/blue as a nod to both Norway and Russia.
+  </footer>
 
-      // Mortar joint repair up to 3/8"
-      "mortar-joint|0.375": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Mortar Mix",
-          code: "1102",
-          notes: "Cement and sand mix for joints for more durable repairs; shape and tool to match existing joints."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Advanced Polymer Mortar Joint Sealant",
-          code: "#8620-18",
-          notes: "High performance caulk-style material that seals and waterproofs joints."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Mortar Repair",
-          code: "#8620-09",
-          notes: "Caulk-style repair for small mortar joint cracks and minor tuckpointing."
-        }
-      },
+<script>
+  // --- DICTIONARY DATA ---
+  // Fields:
+  // rs = Russenorsk form
+  // pr = pronunciation (plain phonetics)
+  // st = stressed syllable cue
+  // en = English gloss
+  // org = "N" (Norwegian), "R" (Russian), "M" (mixed/unclear)
+  const DICT = [
+    // Pronouns & possession
+    { rs:"ja", pr:"YAH", st:"YAH", en:"I / me; yes (context)", org:"M" },
+    { rs:"du", pr:"DOO", st:"DOO", en:"you", org:"N" },
+    { rs:"han", pr:"HAHN", st:"—", en:"he", org:"N" },
+    { rs:"moja", pr:"MOH-yah", st:"MOH", en:"my / mine", org:"R" },
+    { rs:"tvoja", pr:"TVOH-yah", st:"TVOH", en:"your / yours", org:"R" },
+    { rs:"sin", pr:"SEEN", st:"SEEN", en:"his", org:"N" },
+    { rs:"sam", pr:"SAHM", st:"—", en:"same", org:"N" },
+    { rs:"alle", pr:"AHL-leh", st:"AHL", en:"all", org:"N" },
 
-      // Mortar joint repair up to 1/2"
-      "mortar-joint|0.5": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Mortar Repair",
-          code: "#8620",
-          notes: "Caulk-style repair for small mortar joint cracks and minor tuckpointing. Maximum 3/8\" application at a time. Another layer can be applied after 4 hours."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Mortar Mix",
-          code: "#1102",
-          notes: "Cement and sand mix for joints for more durable repairs; shape and tool to match existing joints."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Mason Mix Type S",
-          code: "#1136",
-          notes: "Higher strength mix for structural or load-bearing masonry joints."
-        }
-      },
+    // Core verbs (uninflected)
+    { rs:"kom", pr:"KOM", st:"—", en:"come", org:"N" },
+    { rs:"gå", pr:"GAW", st:"—", en:"go", org:"N" },
+    { rs:"dra", pr:"DRAH", st:"—", en:"go away; pull", org:"N" },
+    { rs:"reise", pr:"RYE-seh", st:"RYE", en:"travel", org:"N" },
+    { rs:"ha", pr:"HAH", st:"HAH", en:"have", org:"N" },
+    { rs:"gi", pr:"GEE", st:"GEE", en:"give", org:"N" },
+    { rs:"ta", pr:"TAH", st:"TAH", en:"take", org:"N" },
+    { rs:"kjøp", pr:"KYERP", st:"—", en:"buy (variant)", org:"N" },
+    { rs:"kup", pr:"KOOP", st:"—", en:"buy (variant)", org:"M" },
+    { rs:"salg", pr:"SAHLG", st:"—", en:"sell", org:"N" },
+    { rs:"arbeid", pr:"AR-bide", st:"AR", en:"work", org:"N" },
+    { rs:"snakk", pr:"SNAHK", st:"—", en:"speak (variant)", org:"N" },
+    { rs:"sprek", pr:"SPREK", st:"—", en:"speak (variant)", org:"N" },
+    { rs:"forsto", pr:"for-STOH", st:"STOH", en:"understand", org:"N" },
+    { rs:"forstå", pr:"for-STOH", st:"STOH", en:"understand (variant)", org:"N" },
+    { rs:"vite", pr:"VEE-teh", st:"VEE", en:"know", org:"N" },
+    { rs:"se", pr:"SEH", st:"SEH", en:"see", org:"N" },
+    { rs:"ligge", pr:"LIG-geh", st:"LIG", en:"lie; be located", org:"N" },
+    { rs:"stå", pr:"STOH", st:"STOH", en:"stand", org:"N" },
+    { rs:"bringe", pr:"BRING-eh", st:"BRING", en:"bring", org:"N" },
+    { rs:"bli", pr:"BLEE", st:"BLEE", en:"become; stay", org:"N" },
+    { rs:"leve", pr:"LEE-veh", st:"LEE", en:"live", org:"N" },
+    { rs:"dø", pr:"DER", st:"—", en:"die", org:"N" },
+    { rs:"spise", pr:"SPEE-seh", st:"SPEE", en:"eat", org:"N" },
+    { rs:"drikke", pr:"DRIK-keh", st:"DRIK", en:"drink", org:"N" },
+    { rs:"vente", pr:"VEN-teh", st:"VEN", en:"wait", org:"N" },
+    { rs:"slip", pr:"SLEEP", st:"—", en:"sleep (root)", org:"M" },
+    { rs:"slipom", pr:"SLEE-pom", st:"SLEE", en:"sleep; want to sleep (-om form)", org:"M" },
+    { rs:"kopom", pr:"KOH-pom", st:"KOH", en:"buy (-om form)", org:"M" },
+    { rs:"kupom", pr:"KOO-pom", st:"KOO", en:"buy (-om form)", org:"M" },
+    { rs:"sprækom", pr:"SPRAY-kom", st:"SPRAY", en:"speak (-om form)", org:"M" },
 
-      // Mortar joint repair up to 1"  -> message only
-      "mortar-joint|1": {
-        message: "<strong>Mortar joint repair • Up to 1\"</strong><br/>For further assistance please call 1-800-282-5828."
-      },
+    // Trade & economy
+    { rs:"handel", pr:"HAN-del", st:"HAN", en:"trade", org:"N" },
+    { rs:"pris", pr:"PREES", st:"—", en:"price", org:"M" },
+    { rs:"penger", pr:"PENG-er", st:"PENG", en:"money", org:"N" },
+    { rs:"dyr", pr:"DEER", st:"—", en:"expensive", org:"N" },
+    { rs:"billig", pr:"BIL-lig", st:"BIL", en:"cheap", org:"N" },
+    { rs:"kosta", pr:"KOS-tah", st:"KOS", en:"cost", org:"M" },
+    { rs:"våg", pr:"VOHG", st:"—", en:"unit of weight", org:"N" },
+    { rs:"mangeli", pr:"MAN-geh-lee", st:"MAN", en:"many; much", org:"M" },
+    { rs:"lite", pr:"LEE-teh", st:"LEE", en:"little; small amount", org:"N" },
+    { rs:"nok", pr:"NOK", st:"—", en:"enough", org:"N" },
+    { rs:"alt", pr:"AHLT", st:"—", en:"everything", org:"N" },
+    { rs:"ingenting", pr:"IN-gen-ting", st:"IN", en:"nothing", org:"N" },
+    { rs:"klar", pr:"KLAHR", st:"—", en:"ready", org:"N" },
+    { rs:"ferdig", pr:"FER-dig", st:"FER", en:"finished", org:"N" },
+    { rs:"bytte", pr:"BIT-teh", st:"BIT", en:"exchange", org:"N" },
 
-      // Mortar joint repair up to 2"  -> message only
-      "mortar-joint|2": {
-        message: "<strong>Mortar joint repair • Up to 2\"</strong><br/>For further assistance please call 1-800-282-5828."
-      },
+    // Fishing & food
+    { rs:"fisk", pr:"FISK", st:"—", en:"fish (Norwegian form)", org:"N" },
+    { rs:"ryba", pr:"REE-bah", st:"REE", en:"fish (Russian form)", org:"R" },
+    { rs:"torsk", pr:"TORSK", st:"—", en:"cod", org:"N" },
+    { rs:"sild", pr:"SEELD", st:"—", en:"herring", org:"N" },
+    { rs:"kjøtt", pr:"KYUT", st:"—", en:"meat", org:"N" },
+    { rs:"brød", pr:"BROHD", st:"—", en:"bread (Norwegian form)", org:"N" },
+    { rs:"kleba", pr:"KLEH-bah", st:"KLEH", en:"bread (Russian-influenced form)", org:"R" },
+    { rs:"mel", pr:"MEL", st:"—", en:"flour (Norwegian form)", org:"N" },
+    { rs:"mokka", pr:"MOK-kah", st:"MOK", en:"flour (variant)", org:"M" },
+    { rs:"salt", pr:"SAHLT", st:"—", en:"salt", org:"N" },
+    { rs:"øl", pr:"UHL", st:"—", en:"beer", org:"N" },
+    { rs:"vodka", pr:"VOD-kah", st:"VOD", en:"vodka", org:"R" },
+    { rs:"mat", pr:"MAHT", st:"—", en:"food", org:"N" },
+    { rs:"vann", pr:"VAHN", st:"—", en:"water", org:"N" },
+    { rs:"suppe", pr:"SOOP-peh", st:"SOOP", en:"soup", org:"N" },
+    { rs:"smør", pr:"SMUR", st:"—", en:"butter", org:"N" },
+    { rs:"ost", pr:"OHST", st:"—", en:"cheese", org:"N" },
+    { rs:"korn", pr:"KORN", st:"—", en:"grain", org:"N" },
+    { rs:"frokost", pr:"FROH-kost", st:"FROH", en:"breakfast", org:"N" },
+    { rs:"middag", pr:"MID-dahg", st:"MID", en:"meal", org:"N" },
 
-      // Mortar joint repair over 2"  -> message only
-      "mortar-joint|Over 2": {
-        message: "<strong>Mortar joint repair • Over 2\"</strong><br/>For further assistance please call 1-800-282-5828."
-      },
+    // Objects & tools
+    { rs:"båt", pr:"BOHT", st:"—", en:"boat", org:"N" },
+    { rs:"skip", pr:"SKEEP", st:"—", en:"ship", org:"N" },
+    { rs:"havn", pr:"HAHVN", st:"—", en:"harbor", org:"N" },
+    { rs:"tau", pr:"TAU", st:"—", en:"rope", org:"N" },
+    { rs:"nett", pr:"NET", st:"—", en:"net", org:"N" },
+    { rs:"kasse", pr:"KAS-seh", st:"KAS", en:"box", org:"N" },
+    { rs:"sekk", pr:"SEK", st:"—", en:"sack", org:"N" },
+    { rs:"kniv", pr:"KNEEV", st:"—", en:"knife", org:"N" },
+    { rs:"jern", pr:"YERN", st:"—", en:"iron", org:"N" },
+    { rs:"tre", pr:"TREH", st:"TREH", en:"wood", org:"N" },
+    { rs:"hus", pr:"HOOS", st:"—", en:"house", org:"N" },
+    { rs:"stova", pr:"STOH-vah", st:"STOH", en:"room; place", org:"N" },
+    { rs:"kirka", pr:"KEER-kah", st:"KEER", en:"church (variant)", org:"N" },
+    { rs:"kjerka", pr:"YER-kah", st:"YER", en:"church (variant)", org:"N" },
+    { rs:"vei", pr:"VAY", st:"VAY", en:"road", org:"N" },
 
-      // Concrete crack repair up to 1/4"
-      "crack|0.25": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Concrete Crack Seal",
-          code: "#8640",
-          notes: "Flowable crack sealer for hairline to small cracks in concrete slabs."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Advanced Polymer Concrete Crack Sealant",
-          code: "#8660",
-          notes: "Flexible, long-lasting sealant for active or moving cracks up to 1/2\"."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Epoxy Concrete Repair",
-          code: "Epoxy",
-          notes: "Two-component epoxy for maximum bond and chemical resistance in narrow cracks."
-        }
-      },
+    // Place & direction
+    { rs:"her", pr:"HEHR", st:"—", en:"here", org:"N" },
+    { rs:"der", pr:"DEHR", st:"—", en:"there", org:"N" },
+    { rs:"hjem", pr:"YEM", st:"—", en:"home", org:"N" },
+    { rs:"land", pr:"LAHND", st:"—", en:"land", org:"N" },
+    { rs:"hav", pr:"HAHV", st:"—", en:"sea", org:"N" },
+    { rs:"fjell", pr:"FYEL", st:"—", en:"mountain", org:"N" },
+    { rs:"på", pr:"POH", st:"—", en:"on; at; to (universal preposition)", org:"N" },
+    { rs:"pa", pr:"PAH", st:"—", en:"on; at; to (variant)", org:"M" },
+    { rs:"po", pr:"POH", st:"—", en:"on; at; to (variant)", org:"M" },
+    { rs:"inni", pr:"IN-nee", st:"IN", en:"inside", org:"N" },
+    { rs:"ute", pr:"OO-teh", st:"OO", en:"outside", org:"N" },
+    { rs:"borte", pr:"BOR-teh", st:"BOR", en:"away", org:"N" },
 
-      // Concrete crack repair up to 3/8"
-      "crack|0.375": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Concrete Crack Seal",
-          code: "#8640",
-          notes: "Flowable crack sealer for hairline to small cracks in concrete slabs."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Advanced Polymer Concrete Crack Sealant",
-          code: "#8660",
-          notes: "Flexible, long-lasting sealant for active or moving cracks up to 1/2\"."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Epoxy Concrete Repair",
-          code: "Epoxy",
-          notes: "Two-component epoxy for maximum bond and chemical resistance in narrow cracks."
-        }
-      },
+    // Time
+    { rs:"nu", pr:"NOO", st:"NOO", en:"now", org:"M" },
+    { rs:"idag", pr:"ee-DAHG", st:"DAHG", en:"today", org:"N" },
+    { rs:"morra", pr:"MOR-rah", st:"MOR", en:"tomorrow", org:"N" },
+    { rs:"snart", pr:"SNAHRT", st:"—", en:"soon", org:"N" },
+    { rs:"lenge", pr:"LENG-eh", st:"LENG", en:"long time", org:"N" },
+    { rs:"dag", pr:"DAHG", st:"—", en:"day", org:"N" },
+    { rs:"natt", pr:"NAHT", st:"—", en:"night", org:"N" },
 
-      // Concrete crack repair up to 1/2"
-      "crack|0.5": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Concrete Crack Seal",
-          code: "#8640",
-          notes: "Flowable crack sealer for hairline to small cracks in concrete slabs."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Advanced Polymer Concrete Crack Sealant",
-          code: "#8660",
-          notes: "Flexible, long-lasting sealant for active or moving cracks up to 1/2\"."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Epoxy Concrete Repair",
-          code: "Epoxy",
-          notes: "Two-component epoxy for maximum bond and chemical resistance in narrow cracks."
-        }
-      },
+    // Weather & environment
+    { rs:"vind", pr:"VIND", st:"—", en:"wind", org:"N" },
+    { rs:"storm", pr:"STORM", st:"—", en:"storm", org:"N" },
+    { rs:"snø", pr:"SNYUR", st:"—", en:"snow", org:"N" },
+    { rs:"is", pr:"EES", st:"—", en:"ice", org:"N" },
+    { rs:"kald", pr:"KAHLD", st:"—", en:"cold", org:"N" },
+    { rs:"varm", pr:"VAHRM", st:"—", en:"warm", org:"N" },
+    { rs:"regn", pr:"RAIN", st:"—", en:"rain", org:"N" },
+    { rs:"vær", pr:"VAIR", st:"—", en:"weather", org:"N" },
 
-      // Concrete crack repair up to 1"
-      "crack|1": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Sand Topping Mix",
-          code: "#1103",
-          notes: "Use for concrete repair of steps, slabs and any concrete horizontal surface between 3/8\" to 2\" thick."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+    // States & descriptors
+    { rs:"god", pr:"GOOD", st:"—", en:"good", org:"N" },
+    { rs:"bra", pr:"BRAH", st:"—", en:"fine; okay", org:"N" },
+    { rs:"dårlig", pr:"DOH-lig", st:"DOH", en:"bad", org:"N" },
+    { rs:"stor", pr:"STOHR", st:"—", en:"big", org:"N" },
+    { rs:"liten", pr:"LEE-ten", st:"LEE", en:"small", org:"N" },
+    { rs:"tung", pr:"TOONG", st:"—", en:"heavy", org:"N" },
+    { rs:"lett", pr:"LET", st:"—", en:"light", org:"N" },
+    { rs:"rask", pr:"RAHSK", st:"—", en:"fast", org:"N" },
+    { rs:"langsom", pr:"LANG-som", st:"LANG", en:"slow", org:"N" },
+    { rs:"sulten", pr:"SOOL-ten", st:"SOOL", en:"hungry", org:"N" },
+    { rs:"trøtt", pr:"TRURT", st:"—", en:"tired", org:"N" },
+    { rs:"full", pr:"FOOL", st:"—", en:"drunk", org:"N" },
+    { rs:"vred", pr:"VREHD", st:"—", en:"angry", org:"M" },
+    { rs:"rik", pr:"REEK", st:"—", en:"rich", org:"N" },
 
-      // Concrete crack repair up to 2"
-      "crack|2": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Sand Topping Mix",
-          code: "#1103",
-          notes: "Use for concrete repair of steps, slabs and any concrete horizontal surface between 3/8\" to 2\" thick."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+    // Questions & function words
+    { rs:"kak", pr:"KAHK", st:"—", en:"what; how", org:"R" },
+    { rs:"hvor", pr:"VOR", st:"—", en:"where", org:"N" },
+    { rs:"hvem", pr:"VEM", st:"—", en:"who", org:"N" },
+    { rs:"njet", pr:"NYET", st:"NYET", en:"no; not", org:"R" },
+    { rs:"ikke", pr:"IK-keh", st:"IK", en:"not", org:"N" },
+    { rs:"og", pr:"OHG", st:"—", en:"and", org:"N" },
+    { rs:"men", pr:"MEN", st:"—", en:"but", org:"N" },
+    { rs:"for", pr:"FOR", st:"—", en:"for; because", org:"N" },
+    { rs:"litt", pr:"LIT", st:"—", en:"a little", org:"N" },
 
-      // Concrete repair up to 1/4"
-      "surface|0.25": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Vinyl Concrete Patcher",
-          code: "#1133",
-          notes: "General-purpose patch for spalls and shallow repairs up to 1/4\" deep."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+    // Courtesy / meta
+    { rs:"basiba", pr:"bah-SEE-bah", st:"SEE", en:"thanks (variant spelling)", org:"R" }
+  ];
 
-      // Concrete repair up to 3/8"
-      "surface|0.375": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Fast Set Repair Mortar",
-          code: "#1241",
-          notes: "General-purpose fast setting patch for spalls and shallow repairs up to 2\" deep."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+  // --- RENDERING ---
+  const $q = document.getElementById("q");
+  const $list = document.getElementById("list");
+  const $letters = document.getElementById("letters");
+  const $count = document.getElementById("count");
+  const $clear = document.getElementById("clearBtn");
 
-      // Concrete repair up to 1/2"
-      "surface|0.5": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Sand Topping Mix",
-          code: "#1103",
-          notes: "Use for concrete repair of steps, slabs and any concrete horizontal surface between 3/8\" to 2\" thick."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+  function badge(org){
+    if(org === "R") return `<span class="badge r">R</span>`;
+    if(org === "N") return `<span class="badge b">N</span>`;
+    return `<span class="badge m">Mix</span>`;
+  }
 
-      // Concrete repair up to 1"
-      "surface|1": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Sand Topping Mix",
-          code: "#1103",
-          notes: "Use for concrete repair of steps, slabs and any concrete horizontal surface between 3/8\" to 2\" thick."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+  function norm(s){ return (s || "").toLowerCase().trim(); }
 
-      // Concrete repair up to 2"
-      "surface|2": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Sand/Topping Mix",
-          code: "#1103",
-          notes: "Use for concrete repair of steps, slabs and any concrete horizontal surface between 3/8\" to 2\" thick."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Quick Setting Cement",
-          code: "#1240",
-          notes: 'Quick setting patch for spalls and shallow repairs from feather edge to 2" deep.'
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep.'
-        }
-      },
+  function buildIndex(dictSorted){
+    const present = new Set(dictSorted.map(x => norm(x.rs)[0]).filter(Boolean));
+    const A = "abcdefghijklmnopqrstuvwxyz".split("");
+    $letters.innerHTML = A.map(ch => {
+      const ok = present.has(ch);
+      const cls = ok ? "" : "disabled";
+      const href = ok ? `#L_${ch.toUpperCase()}` : "#";
+      return `<a class="${cls}" href="${href}">${ch.toUpperCase()}</a>`;
+    }).join("");
+  }
 
-      // Concrete repair over 2"
-      "surface|over2": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Polymer Modified Structural Repair",
-          code: "#1241",
-          notes: 'Quick setting polymer modified patch for spalls and shallow repairs from feather edge to 2" deep. Repairs can be done over 2" deep in lifts of 2" at a time with 4 hours in between lifts.'
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® FastSet™ Concrete Mix",
-          code: "#1004",
-          notes: "Fast-setting, high-strength concrete where downtime must be minimized."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® High Strength™ Concrete Mix",
-          code: "#1101",
-          notes: "Standard 4,000 psi mix for full-depth slab and structural repairs."
-        }
-      },
-
-      // Floor Leveling up to 1/4"
-      "leveler|0.25": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Self Leveling Floor Resurfacer",
-          code: "#1249-50",
-          notes: "Self Leveling Floor Resurfacer that can go between feather edge and 5/8\" thick. Cannot be used as a finished flooring surface."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Fast Setting Self Leveling Floor Resurfacer",
-          code: "#1249-51",
-          notes: "Fast Setting Self Leveling Floor Resurfacer that can go between feather edge and 1.5\" thick. Can be used as a finished flooring surface."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Re-Cap",
-          code: "#1131",
-          notes: "Re-Cap Concrete Resurfacer is designed to provide a new, durable, and wear-resistant surface over worn or scaled concrete."
-        }
-      },
-
-      // Floor Leveling up to 3/8"
-      "leveler|0.375": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Self Leveling Floor Resurfacer",
-          code: "#1249-50",
-          notes: "Self Leveling Floor Resurfacer that can go between feather edge and 5/8\" thick. Cannot be used as a finished flooring surface."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Fast Setting Self Leveling Floor Resurfacer",
-          code: "#1249-51",
-          notes: "Fast Setting Self Leveling Floor Resurfacer that can go between feather edge and 1.5\" thick. Can be used as a finished flooring surface."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Re-Cap",
-          code: "#1131",
-          notes: "Re-Cap Concrete Resurfacer is designed to provide a new, durable, and wear-resistant surface over worn or scaled concrete."
-        }
-      },
-
-      // Floor Leveling up to 1/2"
-      "leveler|0.5": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® Self Leveling Floor Resurfacer",
-          code: "#1249-50",
-          notes: "Self Leveling Floor Resurfacer that can go between feather edge and 5/8\" thick. Cannot be used as a finished flooring surface."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Fast Setting Self Leveling Floor Resurfacer",
-          code: "#1249-51",
-          notes: "Fast Setting Self Leveling Floor Resurfacer that can go between feather edge and 1.5\" thick. Can be used as a finished flooring surface."
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Re-Cap",
-          code: "#1131",
-          notes: "Re-Cap Concrete Resurfacer is designed to provide a new, durable, and wear-resistant surface over worn or scaled concrete."
-        }
-      },
-
-      // Floor Leveling up to 1"
-      "leveler|1": {
-        good: {
-          label: "Good",
-          name: "N/A"
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® Re-Cap",
-          code: "#1131-47",
-          notes: "Re-Cap Concrete Resurfacer is designed to provide a new, durable, and wear-resistant surface over worn or scaled concrete. When applying at 1 inch thick you must do two half inch applications"
-        },
-        best: {
-          label: "Best",
-          name: "QUIKRETE® Fast Setting Self Leveling Floor Resurfacer",
-          code: "#1249-51",
-          notes: 'Fast Setting Self Leveling Floor Resurfacer that can go between feather edge and 1.5" thick. Can be used as a finished flooring surface.'
-        }
-      },
-
-          // Concrete Installation up to 2"
-      "concrete|2": {
-        good: {
-          label: "Good",
-          name: "QUIKRETE® High Strength Concrete Mix",
-          code: "1101",
-          notes: "4000 PSI concrete mix that is a pre-blended mixture of sand, cement and gravel."
-        },
-        better: {
-          label: "Better",
-          name: "QUIKRETE® 5000",
-          code: "#1007",
-          notes: "5000 PSI high early strength gain concrete mix that is a pre-blended mixture of sand, cement and gravel."
-        },
-        best: {
-          label: "Best",
-          name: "Q Max Pro",
-          code: "#1004",
-          notes: '6500 PSI concrete that is air entrained and also contains a corrosion inhibitor and is a pre-blended mixture of sand, cement and gravel.'
-        }
-      },
-    };
-
-    // ------------------------------
-    // 2. DOM references
-    // ------------------------------
-    const projectSelect = document.getElementById("projectType");
-    const sizeSelect = document.getElementById("repairSize");
-    const cardsContainer = document.getElementById("cardsContainer");
-    const emptyState = document.getElementById("emptyState");
-    const currentSelection = document.getElementById("currentSelection");
-
-    // ------------------------------
-    // 3. Helpers
-    // ------------------------------
-    function updateSelectionLabel() {
-      const projectText =
-        projectSelect.options[projectSelect.selectedIndex]?.text || "";
-      const sizeText =
-        sizeSelect.options[sizeSelect.selectedIndex]?.text || "";
-
-      if (!projectSelect.value && !sizeSelect.value) {
-        currentSelection.textContent = "Select a project and size to see options.";
-        return;
+  function render(dictView){
+    // group headers by first letter of rs
+    let html = "";
+    let lastLetter = "";
+    dictView.forEach(entry => {
+      const letter = (entry.rs || "?").trim().charAt(0).toUpperCase();
+      if(letter !== lastLetter){
+        lastLetter = letter;
+        html += `<div class="grouphead" id="L_${letter}">${letter}</div>`;
       }
+      html += `
+        <div class="row">
+          <div>
+            <div class="russ">${entry.rs} ${badge(entry.org)}</div>
+            <div class="meta">${entry.pr} (stress: ${entry.st})</div>
+          </div>
+          <div>
+            <div class="eng">${entry.en}</div>
+          </div>
+        </div>
+      `;
+    });
 
-      const parts = [];
-      if (projectSelect.value) parts.push(projectText);
-      if (sizeSelect.value) parts.push(sizeText);
+    $list.innerHTML = html || `<div class="row"><div><b>No matches.</b></div><div class="meta">Try a different English word.</div></div>`;
+    $count.textContent = `${dictView.length} entries`;
+  }
 
-      currentSelection.textContent = parts.join(" • ");
+  // Prepare canonical sorted list by Russenorsk form
+  const SORTED = [...DICT]
+    .sort((a,b) => norm(a.rs).localeCompare(norm(b.rs)));
+
+  buildIndex(SORTED);
+  render(SORTED);
+
+  function applySearch(){
+    const q = norm($q.value);
+    if(!q){
+      render(SORTED);
+      return;
     }
+    const filtered = SORTED.filter(e =>
+      norm(e.en).includes(q)
+      || norm(e.rs).includes(q)
+    );
+    render(filtered);
+  }
 
-    function renderRecommendations() {
-      const key = `${projectSelect.value}|${sizeSelect.value}`;
-      const combo = recommendations[key];
+  $q.addEventListener("input", applySearch);
+  $clear.addEventListener("click", () => { $q.value = ""; $q.focus(); applySearch(); });
 
-      // Nothing selected
-      if (!projectSelect.value || !sizeSelect.value) {
-        cardsContainer.innerHTML = "";
-        emptyState.style.display = "block";
-        emptyState.innerHTML =
-          "<strong>No selection yet.</strong> Pick a project type and repair size to see the Good / Better / Best materials.";
-        updateSelectionLabel();
-        return;
-      }
-
-      // No data at all
-      if (!combo) {
-        cardsContainer.innerHTML = "";
-        emptyState.style.display = "block";
-        emptyState.innerHTML =
-          "<strong>No recommendations configured yet for this combo.</strong><br />You can add it to the <code>recommendations</code> object in the script.";
-        updateSelectionLabel();
-        return;
-      }
-
-      // Special case: message-only (no good/better/best)
-      if (!combo.good && !combo.better && !combo.best && combo.message) {
-        cardsContainer.innerHTML = "";
-        emptyState.style.display = "block";
-        emptyState.innerHTML = combo.message;
-        updateSelectionLabel();
-        return;
-      }
-
-      // Normal case: Good / Better / Best cards
-      emptyState.style.display = "none";
-      cardsContainer.innerHTML = "";
-
-      const tiers = [
-        { key: "good", css: "card--good" },
-        { key: "better", css: "card--better" },
-        { key: "best", css: "card--best" }
-      ];
-
-      tiers.forEach(tier => {
-        const data = combo[tier.key];
-        if (!data) return;
-
-        const card = document.createElement("article");
-        card.className = `card ${tier.css}`;
-
-        const pill = document.createElement("div");
-        pill.className = "card-pill";
-        pill.textContent = data.label;
-
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = data.name;
-
-        const code = document.createElement("div");
-        code.className = "card-code";
-        code.textContent = data.code ? `Product code: ${data.code}` : "Product code: —";
-
-        const notes = document.createElement("div");
-        notes.className = "card-notes";
-        notes.textContent = data.notes || "";
-
-        card.appendChild(pill);
-        card.appendChild(title);
-        card.appendChild(code);
-        card.appendChild(notes);
-
-        cardsContainer.appendChild(card);
-      });
-
-      updateSelectionLabel();
+  // Nice touch: if user clicks a jump letter while filtered, clear filter so list exists
+  $letters.addEventListener("click", (ev) => {
+    const a = ev.target.closest("a");
+    if(!a || a.classList.contains("disabled")) return;
+    if(norm($q.value)){
+      $q.value = "";
+      applySearch();
+      // let browser jump after render
+      setTimeout(() => location.hash = a.getAttribute("href"), 0);
+      ev.preventDefault();
     }
-
-    // ------------------------------
-    // 4. Event listeners
-    // ------------------------------
-    projectSelect.addEventListener("change", renderRecommendations);
-    sizeSelect.addEventListener("change", renderRecommendations);
-
-    // Initial state
-    renderRecommendations();
-  </script>
+  });
+</script>
 </body>
 </html>
