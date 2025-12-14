@@ -41,12 +41,16 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
-      align-items: center;
+      align-items: flex-end;
       margin-bottom: 1rem;
     }
 
     .search-box {
       flex: 1 1 220px;
+    }
+
+    .mode-box {
+      flex: 0 0 220px;
     }
 
     label {
@@ -56,7 +60,7 @@
       margin-bottom: 0.2rem;
     }
 
-    input[type="text"] {
+    input[type="text"], select {
       width: 100%;
       box-sizing: border-box;
       padding: 0.5rem 0.75rem;
@@ -67,7 +71,7 @@
       font-size: 0.95rem;
     }
 
-    input[type="text"]:focus {
+    input[type="text"]:focus, select:focus {
       outline: none;
       border-color: #3f82ff;
       box-shadow: 0 0 0 1px #3f82ff44;
@@ -79,6 +83,7 @@
       gap: 0.25rem;
       justify-content: flex-end;
       font-size: 0.8rem;
+      width: 100%;
     }
 
     .alpha-btn {
@@ -182,12 +187,16 @@
       td.col-notes {
         display: none;
       }
+
+      .mode-box {
+        flex: 1 1 auto;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Micro Dictionary</h1>
-  <div class="subtitle">English ➜ Micro · Official Canon Lexicon</div>
+  <div class="subtitle" id="subtitle">English ➜ Micro · Official Canon Lexicon</div>
 
   <div class="card">
     <div class="controls">
@@ -199,6 +208,15 @@
           placeholder="Type to filter… e.g. 'coffee', 'cof', 'work', 'wor'"
         />
       </div>
+
+      <div class="mode-box">
+        <label for="modeSelect">View</label>
+        <select id="modeSelect">
+          <option value="en">English → Micro</option>
+          <option value="mc">Micro → English</option>
+        </select>
+      </div>
+
       <div class="alpha-bar" id="alphaBar"></div>
     </div>
 
@@ -208,13 +226,13 @@
       <strong>How to update this page:</strong><br />
       Scroll to <code>dictionaryEntries</code> and add objects like:
       <code>{ english: "water", micro: "wat", notes: "Noun" }</code>.<br />
-      The page auto-sorts A–Z by English and groups by first letter.
+      The page auto-sorts A–Z by the selected view and groups by first letter.
     </div>
   </div>
 
   <script>
     // ---------------------------------------------
-    // 1) OFFICIAL CANON WORD LIST (ENGLISH -> MICRO)
+    // 1) OFFICIAL CANON WORD LIST (ENGLISH <-> MICRO)
     // ---------------------------------------------
     // Fields:
     //  - english (required)
@@ -317,8 +335,8 @@
       { english: "time", micro: "tim", notes: "Time" },
       { english: "night", micro: "nit", notes: "Time" },
 
-      // Connectors
-      { english: "and", micro: "and", notes: "Connector" },
+      // Connectors / prepositions
+      { english: "and", micro: "og", notes: "Connector" },
       { english: "but", micro: "but", notes: "Connector" },
       { english: "because", micro: "cau", notes: "Connector" },
       { english: "also", micro: "aso", notes: "Connector" },
@@ -331,11 +349,13 @@
     ];
 
     // ---------------------------------------------
-    // 2) RENDERING LOGIC (same layout)
+    // 2) RENDERING LOGIC (toggle English/Micro view)
     // ---------------------------------------------
     const dictionaryContainer = document.getElementById("dictionary");
     const searchInput = document.getElementById("searchInput");
     const alphaBar = document.getElementById("alphaBar");
+    const modeSelect = document.getElementById("modeSelect");
+    const subtitle = document.getElementById("subtitle");
 
     function normalize(str) {
       return (str || "")
@@ -344,10 +364,12 @@
         .replace(/[\u0300-\u036f]/g, "");
     }
 
-    function buildGroupedDictionary(entries) {
+    function buildGroupedDictionary(entries, mode) {
+      const key = mode === "mc" ? "micro" : "english";
       const groups = {};
+
       for (const entry of entries) {
-        const firstChar = (entry.english || "").trim().charAt(0).toUpperCase();
+        const firstChar = (entry[key] || "").trim().charAt(0).toUpperCase();
         const letter = /[A-Z]/.test(firstChar) ? firstChar : "#";
         if (!groups[letter]) groups[letter] = [];
         groups[letter].push(entry);
@@ -355,7 +377,7 @@
 
       for (const letter in groups) {
         groups[letter].sort((a, b) =>
-          (a.english || "").toLowerCase().localeCompare((b.english || "").toLowerCase())
+          (a[key] || "").toLowerCase().localeCompare((b[key] || "").toLowerCase())
         );
       }
 
@@ -363,6 +385,11 @@
     }
 
     function renderDictionary(filter = "", jumpToLetter = null) {
+      const mode = modeSelect.value; // "en" or "mc"
+      subtitle.textContent = mode === "mc"
+        ? "Micro ➜ English · Official Canon Lexicon"
+        : "English ➜ Micro · Official Canon Lexicon";
+
       const normFilter = normalize(filter);
 
       const filtered = dictionaryEntries.filter((entry) => {
@@ -373,7 +400,7 @@
         return en.includes(normFilter) || mc.includes(normFilter) || notes.includes(normFilter);
       });
 
-      const groups = buildGroupedDictionary(filtered);
+      const groups = buildGroupedDictionary(filtered, mode);
       const letters = Object.keys(groups).sort();
 
       dictionaryContainer.innerHTML = "";
@@ -401,8 +428,8 @@
         const thead = document.createElement("thead");
         thead.innerHTML = `
           <tr>
-            <th class="col-en">English</th>
-            <th class="col-gv">Micro</th>
+            <th class="col-en">${mode === "mc" ? "Micro" : "English"}</th>
+            <th class="col-gv">${mode === "mc" ? "English" : "Micro"}</th>
             <th class="col-notes">Notes</th>
           </tr>
         `;
@@ -411,20 +438,21 @@
         const tbody = document.createElement("tbody");
         groups[letter].forEach((entry) => {
           const tr = document.createElement("tr");
-          const enTd = document.createElement("td");
-          const mcTd = document.createElement("td");
+          const leftTd = document.createElement("td");
+          const rightTd = document.createElement("td");
           const notesTd = document.createElement("td");
 
-          enTd.className = "col-en";
-          mcTd.className = "col-gv";
+          leftTd.className = "col-en";
+          rightTd.className = "col-gv";
           notesTd.className = "col-notes";
 
-          enTd.textContent = entry.english;
-          mcTd.textContent = entry.micro;
+          // Swap columns depending on mode
+          leftTd.textContent = mode === "mc" ? entry.micro : entry.english;
+          rightTd.textContent = mode === "mc" ? entry.english : entry.micro;
           notesTd.textContent = entry.notes || "";
 
-          tr.appendChild(enTd);
-          tr.appendChild(mcTd);
+          tr.appendChild(leftTd);
+          tr.appendChild(rightTd);
           tr.appendChild(notesTd);
           tbody.appendChild(tr);
         });
@@ -443,8 +471,15 @@
     }
 
     function renderAlphaBar() {
+      // Alpha bar should follow the current view key (English or Micro)
+      const mode = modeSelect.value;
+      const key = mode === "mc" ? "micro" : "english";
+
       const lettersInUse = new Set(
-        dictionaryEntries.map((e) => ((e.english || "").trim().charAt(0).toUpperCase() || "#"))
+        dictionaryEntries.map((e) => {
+          const c = ((e[key] || "").trim().charAt(0).toUpperCase() || "#");
+          return /[A-Z]/.test(c) ? c : "#";
+        })
       );
 
       const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -468,6 +503,11 @@
     }
 
     searchInput.addEventListener("input", () => {
+      renderDictionary(searchInput.value);
+    });
+
+    modeSelect.addEventListener("change", () => {
+      renderAlphaBar();
       renderDictionary(searchInput.value);
     });
 
