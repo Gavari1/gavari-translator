@@ -1,601 +1,612 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Russenorsk Core Dictionary (Historical Core v1)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gavári Dictionary</title>
   <style>
-    :root{
-      --bg: #ffffff;
-      --ink: #111827;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --blue: #1d4ed8;
-      --red: #dc2626;
-      --card: #f9fafb;
-    }
-
-    *{ box-sizing: border-box; }
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      color: var(--ink);
-    }
-
-    header{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 14px 16px;
-      max-width: 1100px;
-      margin: 0 auto;
-      gap: 12px;
-    }
-
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      line-height:1.1;
-    }
-
-    .brand .title{
-      font-size: 16px;
-      font-weight: 750;
-      letter-spacing:.2px;
-    }
-
-    .brand .subtitle{
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .flagbar{
-      height: 4px;
-      width: 100%;
-      background: linear-gradient(90deg, var(--red) 0 33%, var(--bg) 33% 66%, var(--blue) 66% 100%);
-    }
-
-    main{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 16px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    .panel{
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 6px 22px rgba(17,24,39,.06);
-    }
-
-    .panelhead{
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-    }
-
-    .panelhead h2{
-      margin:0;
-      font-size: 14px;
-      font-weight: 750;
-      letter-spacing:.2px;
-    }
-
-    .hint{
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .controls{
-      display:flex;
-      gap: 10px;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      flex-wrap: wrap;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1020;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      padding: 2rem 1rem 3rem;
     }
 
-    input[type="search"]{
-      flex: 1 1 280px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
+    h1 {
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .card {
+      background: #151a2b;
       border-radius: 12px;
-      font-size: 14px;
-      outline: none;
-    }
-    input[type="search"]:focus{
-      border-color: rgba(29,78,216,.45);
-      box-shadow: 0 0 0 4px rgba(29,78,216,.12);
-    }
-
-    .btn{
-      border: 1px solid var(--line);
-      background: var(--card);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor:pointer;
-      font-weight: 650;
-      font-size: 13px;
-    }
-    .btn:hover{ border-color: #cbd5e1; }
-    .btn.primary{
-      background: rgba(29,78,216,.08);
-      border-color: rgba(29,78,216,.25);
-      color: var(--blue);
+      padding: 1.5rem;
+      max-width: 920px;
+      width: 100%;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      border: 1px solid #272f47;
     }
 
-    .layout{
-      display:grid;
-      grid-template-columns: 280px 1fr;
-      gap: 14px;
-      padding: 14px;
-    }
-
-    @media (max-width: 920px){
-      .layout{ grid-template-columns: 1fr; }
-    }
-
-    .jump{
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 12px;
-      padding: 10px;
-    }
-    .jump .label{
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .letters{
-      display:flex;
+    .controls {
+      display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-    }
-    .letters a{
-      text-decoration:none;
-      display:inline-flex;
-      width: 30px;
-      height: 30px;
-      align-items:center;
-      justify-content:center;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: var(--card);
-      color: var(--ink);
-      font-weight: 750;
-      font-size: 12px;
-    }
-    .letters a:hover{
-      border-color: rgba(220,38,38,.35);
-      box-shadow: 0 0 0 4px rgba(220,38,38,.10);
-    }
-    .letters a.disabled{
-      opacity: .35;
-      pointer-events: none;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
     }
 
-    .results{
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
+    .search-box {
+      flex: 1 1 220px;
     }
 
-    .list{
-      max-height: 62vh;
-      overflow:auto;
-    }
-.search-accent {
-  background: rgba(220,38,38,.06);
-  border-bottom: 1px solid rgba(220,38,38,.22);
-}
-
-.search-accent h2 {
-  color: var(--red);
-  font-weight: 800;
-}
-
-.search-accent .hint {
-  color: var(--red);
-  font-weight: 700;
-}
-
-    .row{
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      display:grid;
-      grid-template-columns: 140px 1fr;
-      gap: 10px;
-      align-items: baseline;
-    }
-    .row:last-child{ border-bottom:none; }
-
-    .russ{
-      font-weight: 800;
-      letter-spacing:.2px;
+    label {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      display: block;
+      margin-bottom: 0.2rem;
     }
 
-    .meta{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #272f47;
+      background: #0f1423;
+      color: #f5f5f5;
+      font-size: 0.95rem;
     }
 
-    .eng{
-      font-size: 14px;
-      font-weight: 650;
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #3f82ff;
+      box-shadow: 0 0 0 1px #3f82ff44;
     }
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      margin-left: 8px;
-      padding: 2px 8px;
+    .alpha-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      justify-content: flex-end;
+      font-size: 0.8rem;
+    }
+
+    .alpha-btn {
       border-radius: 999px;
-      font-size: 11px;
-      font-weight: 750;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      background: #fff;
-    }
-    .badge.b{ border-color: rgba(29,78,216,.22); color: var(--blue); background: rgba(29,78,216,.06); }
-    .badge.r{ border-color: rgba(220,38,38,.22); color: var(--red); background: rgba(220,38,38,.06); }
-    .badge.m{ border-color: rgba(17,24,39,.18); color: #111827; background: rgba(17,24,39,.03); }
-
-    .grouphead{
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: #fff;
-      border-bottom: 1px solid var(--line);
-      padding: 10px 12px;
-      font-weight: 850;
-      color: var(--blue);
-      letter-spacing:.35px;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid #272f47;
+      background: #0f1423;
+      color: #f5f5f5;
+      cursor: pointer;
     }
 
-    footer{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 18px 16px 28px;
-      color: var(--muted);
-      font-size: 12px;
+    .alpha-btn:hover {
+      background: #222842;
     }
 
-    .smallcaps{ font-variant: all-small-caps; letter-spacing:.35px; }
+    .alpha-btn.disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .dictionary {
+      margin-top: 0.75rem;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .letter-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .letter-heading {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      border-bottom: 1px solid #272f47;
+      padding-bottom: 0.2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.35rem 0.35rem;
+      vertical-align: top;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      opacity: 0.7;
+      border-bottom: 1px solid #272f47;
+    }
+
+    tr:nth-child(even) td {
+      background: #111727;
+    }
+
+    .col-en {
+      width: 40%;
+      font-weight: 500;
+    }
+
+    .col-gv {
+      width: 30%;
+      color: #b8d1ff;
+    }
+
+    .col-notes {
+      width: 30%;
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .hint {
+      margin-top: 0.9rem;
+      font-size: 0.8rem;
+      opacity: 0.75;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 700px) {
+      .card {
+        padding: 1.1rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .alpha-bar {
+        justify-content: center;
+      }
+
+      th.col-notes,
+      td.col-notes {
+        display: none; /* hide notes column on narrow screens to keep it clean */
+      }
+    }
   </style>
 </head>
-
 <body>
-  <div class="flagbar"></div>
-  <header>
-    <div class="topbar">
-      <div class="brand">
-        <div class="title">Russenorsk Core Dictionary <span class="smallcaps">v1</span></div>
-        <div class="subtitle">English → Russenorsk search + A→Z scroll list (historical core snapshot)</div>
+  <h1>Gavári Dictionary</h1>
+  <div class="subtitle">English ➜ Gavári · Official Lexicon</div>
+
+  <div class="card">
+    <div class="controls">
+      <div class="search-box">
+        <label for="searchInput">Search (English or Gavári)</label>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Type to filter… e.g. 'water', 'veru', 'house'"
+        />
+      </div>
+      <div class="alpha-bar" id="alphaBar">
+        <!-- Letter buttons generated by JS -->
       </div>
     </div>
-  </header>
 
-  <main>
-    <section class="panel">
-      <div class="panelhead search-accent">
-  <h2>Search</h2>
-  <div class="hint">Type English (e.g., “fish”, “harbor”, “cheap”).</div>
-</div>
+    <div id="dictionary" class="dictionary"></div>
 
-      <div class="controls">
-        <input id="q" type="search" placeholder="Search English…" autocomplete="off" />
-        <button class="btn primary" id="clearBtn">Clear</button>
-      </div>
+    <div class="hint">
+      <strong>How to update this page:</strong><br />
+      Scroll down in the code to the <code>dictionaryEntries</code> array and just
+      keep adding objects like:
+      <code>{ english: "house", gavari: "fale", notes: "also ‘home’" }</code>.<br />
+      The page will automatically sort them A–Z and group them by first letter.
+    </div>
+  </div>
 
-      <div class="layout">
-        <aside class="jump">
-          <div class="label">Jump to letter</div>
-          <div class="letters" id="letters"></div>
-          <div class="label" style="margin-top:12px;">Quick tips</div>
-          <div class="hint">
-            • Scroll list is alphabetical by Russenorsk form.<br>
-            • Search matches English meanings (substring).<br>
-            • Origin badges: <span class="badge r">R</span> Russian, <span class="badge b">N</span> Norwegian, <span class="badge m">Mix</span>.
-          </div>
-        </aside>
+  <script>
+    // ---------------------------------------------
+    // 1) PUT YOUR OFFICIAL WORD LIST HERE
+    // ---------------------------------------------
+    // You can paste your full list and keep extending it.
+    // Only three fields matter:
+    //  - english (string, required)
+    //  - gavari (string, required)
+    //  - notes  (string, optional)
+    //
+    // *** Example entries below – replace/extend with your full list ***
+    const dictionaryEntries = [
+      // --- CORE EXAMPLES (replace these with your real full set) ---
+      { english: "above", gavari: "alun" },
+      { english: "after", gavari: "yalu" },
+      { english: "afternoon", gavari: "daru" },
+      { english: "again", gavari: "galua" },
+      { english: "a little", gavari: "poa" },
+      { english: "a lot", gavari: "muia" },
+      { english: "air (warm night air)", gavari: "torai" },
+      { english: "always", gavari: "saru" },
+      { english: "also", gavari: "tambu" },
+      { english: "anxious", gavari: "wonu-noku" },
+      { english: "angry", gavari: "henira" },
+      { english: "angry person", gavari: "heni-tana" },
+      { english: "ash", gavari: "duku" },
+      { english: "at", gavari: "ke" },
+      { english: "baby fruit", gavari: "sali", notes: "same root as ‘fruit’" },
+      { english: "bad", gavari: "nelu" },
+      { english: "be able to", gavari: "polno" },
+      { english: "beautiful", gavari: "belo" },
+      { english: "beer", gavari: "cewua" },
+      { english: "below", gavari: "belun" },
+      { english: "big", gavari: "faru" },
+      { english: "big house", gavari: "fale-faru" },
+      { english: "bored", gavari: "ma'la" },
+      { english: "boss", gavari: "manu" },
+      { english: "bowl", gavari: "kiso" },
+      { english: "break (on break)", gavari: "ra'no" },
+      { english: "breakfast", gavari: "ramu-fanu" },
+      { english: "bring", gavari: "tanluo" },
+      { english: "brother", gavari: "bonu" },
+      { english: "but", gavari: "beli" },
+      { english: "buy", gavari: "nuaio" },
+      { english: "calm", gavari: "hona-noku" },
+      { english: "can", gavari: "polno" },
+      { english: "car", gavari: "car" },
+      { english: "chair", gavari: "se'lo" },
+      { english: "child", gavari: "conuah" },
+      { english: "children", gavari: "conuahlan" },
+      { english: "chill", gavari: "hona-noku" },
+      { english: "cloud", gavari: "oal" },
+      { english: "cloudy", gavari: "oalwa" },
+      { english: "cold", gavari: "geli" },
+      { english: "cold night", gavari: "noru-geli" },
+      { english: "cold wind", gavari: "kisan" },
+      { english: "culture", gavari: "gavári-pesta" },
+      { english: "cup", gavari: "hona-poa" },
+      { english: "cubicle", gavari: "fa'lo-hanu" },
+      { english: "day", gavari: "ramua" },
+      { english: "deep water", gavari: "rimo" },
+      { english: "dessert", gavari: "gavoa" },
+      { english: "desk", gavari: "la'po" },
+      { english: "destroy", gavari: "paluo" },
+      { english: "dinner", gavari: "noru-fanu" },
+      { english: "do", gavari: "pavo" },
+      { english: "door", gavari: "kisun" },
+      { english: "drizzle", gavari: "rual-poa" },
+      { english: "drink", gavari: "inuo" },
+      { english: "drive", gavari: "keheo" },
+      { english: "dusk", gavari: "noru-poa" },
+      { english: "eat", gavari: "meao" },
+      { english: "evening", gavari: "noru" },
+      { english: "family", gavari: "famua" },
+      { english: "family unit", gavari: "fale-tana" },
+      { english: "few", gavari: "poa" },
+      { english: "fisherman", gavari: "hona-tana" },
+      { english: "fog", gavari: "mura" },
+      { english: "foggy", gavari: "murawa" },
+      { english: "forest", gavari: "nara" },
+      { english: "friend", gavari: "amun" },
+      { english: "friends", gavari: "amunlan" },
+      { english: "fruit", gavari: "sali" },
+      { english: "get", gavari: "maguo" },
+      { english: "give", gavari: "daro" },
+      { english: "glass of water", gavari: "hona-poa" },
+      { english: "go", gavari: "gavo" },
+      { english: "good", gavari: "bilu" },
+      { english: "grandchild", gavari: "conuahyalu" },
+      { english: "grandfather", gavari: "fonuahbaru" },
+      { english: "grandmother", gavari: "monuahbaru" },
+      { english: "happy", gavari: "felin" },
+      { english: "happy person", gavari: "veru-tana" },
+      { english: "has", gavari: "tavo" },
+      { english: "he", gavari: "io" },
+      { english: "hello", gavari: "salo" },
+      { english: "help", gavari: "ajulo" },
+      { english: "here", gavari: "nia" },
+      { english: "hill", gavari: "panu" },
+      { english: "home", gavari: "fale" },
+      { english: "homeland", gavari: "gavári-veru" },
+      { english: "hot", gavari: "heni" },
+      { english: "hot sun", gavari: "veru-muia" },
+      { english: "house", gavari: "fale" },
+      { english: "houses", gavari: "falelan" },
+      { english: "hazy", gavari: "veru-poa" },
+      { english: "hurt", gavari: "paluo", notes: "verb: ruin/hurt/destroy" },
+      { english: "i", gavari: "mi" },
+      { english: "in", gavari: "ke" },
+      { english: "inside", gavari: "hanu" },
+      { english: "job", gavari: "vahri" },
+      { english: "journey", gavari: "gava-muia" },
+      { english: "lake", gavari: "hona-muia" },
+      { english: "later", gavari: "larug" },
+      { english: "left", gavari: "leroa" },
+      { english: "light rain", gavari: "rual-poa" },
+      { english: "like", gavari: "haluo" },
+      { english: "living room", gavari: "famua-fale" },
+      { english: "long day", gavari: "ramua-muia" },
+      { english: "love", gavari: "aluo" },
+      { english: "lunch", gavari: "ramua-fanu" },
+      { english: "lunchbox", gavari: "tavin" },
+      { english: "make", gavari: "pavo" },
+      { english: "many", gavari: "muia" },
+      { english: "market", gavari: "pesta-fanu" },
+      { english: "me", gavari: "mi" },
+      { english: "meeting", gavari: "sa'no" },
+      { english: "mist", gavari: "velu" },
+      { english: "money", gavari: "kala" },
+      { english: "morning", gavari: "veru" },
+      { english: "mother", gavari: "monuah" },
+      { english: "much", gavari: "muia" },
+      { english: "my", gavari: "mi" },
+      { english: "need", gavari: "lango" },
+      { english: "neighborhood", gavari: "pesta-fale" },
+      { english: "neighbor", gavari: "nayboa" },
+      { english: "night", gavari: "noru" },
+      { english: "nice", gavari: "belo" },
+      { english: "new", gavari: "ninu" },
+      { english: "no", gavari: "noa" },
+      { english: "not", gavari: "noa" },
+      { english: "now", gavari: "keia" },
+      { english: "ocean", gavari: "moro" },
+      { english: "of", gavari: "mo" },
+      { english: "on", gavari: "ke" },
+      { english: "on break", gavari: "ra'no" },
+      { english: "outside", gavari: "lanu" },
+      { english: "pantry", gavari: "fale-fanu" },
+      { english: "parking lot", gavari: "ka'no-pesta" },
+      { english: "people", gavari: "tanalan" },
+      { english: "person", gavari: "tana" },
+      { english: "pot", gavari: "maron" },
+      { english: "rain", gavari: "rual" },
+      { english: "rainclouds", gavari: "oal-hona" },
+      { english: "rainstorm", gavari: "stara-poa" },
+      { english: "rainy", gavari: "rualwa" },
+      { english: "right", gavari: "eroa" },
+      { english: "roof", gavari: "fenai" },
+      { english: "ruin", gavari: "paluo" },
+      { english: "sad", gavari: "sasu" },
+      { english: "sand", gavari: "kela" },
+      { english: "say", gavari: "savo" },
+      { english: "scatterbrained", gavari: "wonu-noku" },
+      { english: "school", gavari: "skolu" },
+      { english: "schools", gavari: "skolulan" },
+      { english: "see", gavari: "wero" },
+      { english: "should", gavari: "delo" },
+      { english: "shy", gavari: "noru-tana" },
+      { english: "sister", gavari: "sonu" },
+      { english: "sleep", gavari: "napao" },
+      { english: "slow moving", gavari: "gavo-poa" },
+      { english: "small", gavari: "kani" },
+      { english: "small house", gavari: "fale-kani" },
+      { english: "snow", gavari: "sneul" },
+      { english: "snowy", gavari: "sneulwa" },
+      { english: "son", gavari: "sunua" },
+      { english: "sons", gavari: "sunualan" },
+      { english: "storm", gavari: "stara" },
+      { english: "storm surge", gavari: "moroha" },
+      { english: "stormy", gavari: "starawa" },
+      { english: "store", gavari: "nuai" },
+      { english: "stores", gavari: "nuailan" },
+      { english: "street", gavari: "pesta" },
+      { english: "streets", gavari: "pestalan" },
+      { english: "street food", gavari: "pesta-fanu" },
+      { english: "strong sun", gavari: "veru-muia" },
+      { english: "strong wind", gavari: "wonu-muia" },
+      { english: "student", gavari: "haluola" },
+      { english: "study", gavari: "haluno" },
+      { english: "sun", gavari: "veru" },
+      { english: "sunny", gavari: "veruwa" },
+      { english: "table", gavari: "velan" },
+      { english: "talk", gavari: "fulo" },
+      { english: "talk to", gavari: "fulo sap" },
+      { english: "take", gavari: "tanluo" },
+      { english: "taking a break", gavari: "ra'no" },
+      { english: "task", gavari: "ka'nu" },
+      { english: "teacher", gavari: "halu" },
+      { english: "there", gavari: "nua" },
+      { english: "these", gavari: "niis" },
+      { english: "thing", gavari: "karol" },
+      { english: "those", gavari: "naas" },
+      { english: "this", gavari: "ni" },
+      { english: "this afternoon", gavari: "daran" },
+      { english: "this evening", gavari: "noran" },
+      { english: "this morning", gavari: "veran" },
+      { english: "timid", gavari: "kani-famua" },
+      { english: "tired", gavari: "lena" },
+      { english: "today", gavari: "ramu" },
+      { english: "tonight", gavari: "noran" },
+      { english: "tomorrow", gavari: "apono" },
+      { english: "too", gavari: "tambu" },
+      { english: "too many", gavari: "vuia muia" },
+      { english: "too much", gavari: "vuia muia" },
+      { english: "tourists", gavari: "veru-tana" },
+      { english: "village road", gavari: "fale-pesta" },
+      { english: "volcano", gavari: "verdag-hona" },
+      { english: "want", gavari: "wivo" },
+      { english: "warm night", gavari: "noru-heni" },
+      { english: "watch", gavari: "wero" },
+      { english: "water", gavari: "hona" },
+      { english: "waters", gavari: "honalan" },
+      { english: "week", gavari: "ramu-muia" },
+      { english: "weekend", gavari: "verdag" },
+      { english: "what", gavari: "wohanu" },
+      { english: "when", gavari: "nagu" },
+      { english: "where", gavari: "lam" },
+      { english: "which", gavari: "wohu" },
+      { english: "why", gavari: "kap" },
+      { english: "window", gavari: "torun" },
+      { english: "wind", gavari: "wonu" },
+      { english: "windy", gavari: "wonuwa" },
+      { english: "with", gavari: "talu" },
+      { english: "work", gavari: "vahro" },
+      { english: "work area", gavari: "fa'lo-hanu" },
+      { english: "work meeting", gavari: "sa'no" },
+      { english: "you", gavari: "ti" },
+      { english: "your", gavari: "ti" }
+    ];
 
-        <section class="results">
-          <div class="panelhead">
-            <h2>Results / Full List</h2>
-            <div class="hint" id="count"></div>
-          </div>
-          <div class="list" id="list"></div>
-        </section>
-      </div>
-    </section>
-  </main>
+    // ---------------------------------------------
+    // 2) RENDERING LOGIC
+    // ---------------------------------------------
 
-  <footer>
-    This is a lightweight reference UI for the <b>Russenorsk Historical Core v1</b>. Spellings are normalized for usability; historical sources vary.
-    Theme colors are red/white/blue as a nod to both Norway and Russia.
-  </footer>
+    const dictionaryContainer = document.getElementById("dictionary");
+    const searchInput = document.getElementById("searchInput");
+    const alphaBar = document.getElementById("alphaBar");
 
-<script>
-  // --- DICTIONARY DATA ---
-  // Fields:
-  // rs = Russenorsk form
-  // pr = pronunciation (plain phonetics)
-  // st = stressed syllable cue
-  // en = English gloss
-  // org = "N" (Norwegian), "R" (Russian), "M" (mixed/unclear)
-  const DICT = [
-    // Pronouns & possession
-    { rs:"ja", pr:"YAH", en:"I / me; yes (context)", org:"M" },
-    { rs:"du", pr:"DOO", st:"DOO", en:"you", org:"N" },
-    { rs:"han", pr:"HAHN", st:"—", en:"he", org:"N" },
-    { rs:"moja", pr:"MOH-yah", st:"MOH", en:"my / mine", org:"R" },
-    { rs:"tvoja", pr:"TVOH-yah", st:"TVOH", en:"your / yours", org:"R" },
-    { rs:"sin", pr:"SEEN", st:"SEEN", en:"his", org:"N" },
-    { rs:"sam", pr:"SAHM", st:"—", en:"same", org:"N" },
-    { rs:"alle", pr:"AHL-leh", st:"AHL", en:"all", org:"N" },
+    function normalize(str) {
+      return str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
 
-    // Core verbs (uninflected)
-    { rs:"kom", pr:"KOM", st:"—", en:"come", org:"N" },
-    { rs:"gå", pr:"GAW", st:"—", en:"go", org:"N" },
-    { rs:"dra", pr:"DRAH", st:"—", en:"go away; pull", org:"N" },
-    { rs:"reise", pr:"RYE-seh", st:"RYE", en:"travel", org:"N" },
-    { rs:"ha", pr:"HAH", st:"HAH", en:"have", org:"N" },
-    { rs:"gi", pr:"GEE", st:"GEE", en:"give", org:"N" },
-    { rs:"ta", pr:"TAH", st:"TAH", en:"take", org:"N" },
-    { rs:"kjøp", pr:"KYERP", st:"—", en:"buy (variant)", org:"N" },
-    { rs:"kup", pr:"KOOP", st:"—", en:"buy (variant)", org:"M" },
-    { rs:"salg", pr:"SAHLG", st:"—", en:"sell", org:"N" },
-    { rs:"arbeid", pr:"AR-bide", st:"AR", en:"work", org:"N" },
-    { rs:"snakk", pr:"SNAHK", st:"—", en:"speak (variant)", org:"N" },
-    { rs:"sprek", pr:"SPREK", st:"—", en:"speak (variant)", org:"N" },
-    { rs:"forsto", pr:"for-STOH", st:"STOH", en:"understand", org:"N" },
-    { rs:"forstå", pr:"for-STOH", st:"STOH", en:"understand (variant)", org:"N" },
-    { rs:"vite", pr:"VEE-teh", st:"VEE", en:"know", org:"N" },
-    { rs:"se", pr:"SEH", st:"SEH", en:"see", org:"N" },
-    { rs:"ligge", pr:"LIG-geh", st:"LIG", en:"lie; be located", org:"N" },
-    { rs:"stå", pr:"STOH", st:"STOH", en:"stand", org:"N" },
-    { rs:"bringe", pr:"BRING-eh", st:"BRING", en:"bring", org:"N" },
-    { rs:"bli", pr:"BLEE", st:"BLEE", en:"become; stay", org:"N" },
-    { rs:"leve", pr:"LEE-veh", st:"LEE", en:"live", org:"N" },
-    { rs:"dø", pr:"DER", st:"—", en:"die", org:"N" },
-    { rs:"spise", pr:"SPEE-seh", st:"SPEE", en:"eat", org:"N" },
-    { rs:"drikke", pr:"DRIK-keh", st:"DRIK", en:"drink", org:"N" },
-    { rs:"vente", pr:"VEN-teh", st:"VEN", en:"wait", org:"N" },
-    { rs:"slip", pr:"SLEEP", st:"—", en:"sleep (root)", org:"M" },
-    { rs:"slipom", pr:"SLEE-pom", st:"SLEE", en:"sleep; want to sleep (-om form)", org:"M" },
-    { rs:"kopom", pr:"KOH-pom", st:"KOH", en:"buy (-om form)", org:"M" },
-    { rs:"kupom", pr:"KOO-pom", st:"KOO", en:"buy (-om form)", org:"M" },
-    { rs:"sprækom", pr:"SPRAY-kom", st:"SPRAY", en:"speak (-om form)", org:"M" },
-
-    // Trade & economy
-    { rs:"handel", pr:"HAN-del", st:"HAN", en:"trade", org:"N" },
-    { rs:"pris", pr:"PREES", st:"—", en:"price", org:"M" },
-    { rs:"penger", pr:"PENG-er", st:"PENG", en:"money", org:"N" },
-    { rs:"dyr", pr:"DEER", st:"—", en:"expensive", org:"N" },
-    { rs:"billig", pr:"BIL-lig", st:"BIL", en:"cheap", org:"N" },
-    { rs:"kosta", pr:"KOS-tah", st:"KOS", en:"cost", org:"M" },
-    { rs:"våg", pr:"VOHG", st:"—", en:"unit of weight", org:"N" },
-    { rs:"mangeli", pr:"MAN-geh-lee", st:"MAN", en:"many; much", org:"M" },
-    { rs:"lite", pr:"LEE-teh", st:"LEE", en:"little; small amount", org:"N" },
-    { rs:"nok", pr:"NOK", st:"—", en:"enough", org:"N" },
-    { rs:"alt", pr:"AHLT", st:"—", en:"everything", org:"N" },
-    { rs:"ingenting", pr:"IN-gen-ting", st:"IN", en:"nothing", org:"N" },
-    { rs:"klar", pr:"KLAHR", st:"—", en:"ready", org:"N" },
-    { rs:"ferdig", pr:"FER-dig", st:"FER", en:"finished", org:"N" },
-    { rs:"bytte", pr:"BIT-teh", st:"BIT", en:"exchange", org:"N" },
-
-    // Fishing & food
-    { rs:"fisk", pr:"FISK", st:"—", en:"fish (Norwegian form)", org:"N" },
-    { rs:"ryba", pr:"REE-bah", st:"REE", en:"fish (Russian form)", org:"R" },
-    { rs:"torsk", pr:"TORSK", st:"—", en:"cod", org:"N" },
-    { rs:"sild", pr:"SEELD", st:"—", en:"herring", org:"N" },
-    { rs:"kjøtt", pr:"KYUT", st:"—", en:"meat", org:"N" },
-    { rs:"brød", pr:"BROHD", st:"—", en:"bread (Norwegian form)", org:"N" },
-    { rs:"kleba", pr:"KLEH-bah", st:"KLEH", en:"bread (Russian-influenced form)", org:"R" },
-    { rs:"mel", pr:"MEL", st:"—", en:"flour (Norwegian form)", org:"N" },
-    { rs:"mokka", pr:"MOK-kah", st:"MOK", en:"flour (variant)", org:"M" },
-    { rs:"salt", pr:"SAHLT", st:"—", en:"salt", org:"N" },
-    { rs:"øl", pr:"UHL", st:"—", en:"beer", org:"N" },
-    { rs:"vodka", pr:"VOD-kah", st:"VOD", en:"vodka", org:"R" },
-    { rs:"mat", pr:"MAHT", st:"—", en:"food", org:"N" },
-    { rs:"vann", pr:"VAHN", st:"—", en:"water", org:"N" },
-    { rs:"suppe", pr:"SOOP-peh", st:"SOOP", en:"soup", org:"N" },
-    { rs:"smør", pr:"SMUR", st:"—", en:"butter", org:"N" },
-    { rs:"ost", pr:"OHST", st:"—", en:"cheese", org:"N" },
-    { rs:"korn", pr:"KORN", st:"—", en:"grain", org:"N" },
-    { rs:"frokost", pr:"FROH-kost", st:"FROH", en:"breakfast", org:"N" },
-    { rs:"middag", pr:"MID-dahg", st:"MID", en:"meal", org:"N" },
-
-    // Objects & tools
-    { rs:"båt", pr:"BOHT", st:"—", en:"boat", org:"N" },
-    { rs:"skip", pr:"SKEEP", st:"—", en:"ship", org:"N" },
-    { rs:"havn", pr:"HAHVN", st:"—", en:"harbor", org:"N" },
-    { rs:"tau", pr:"TAU", st:"—", en:"rope", org:"N" },
-    { rs:"nett", pr:"NET", st:"—", en:"net", org:"N" },
-    { rs:"kasse", pr:"KAS-seh", st:"KAS", en:"box", org:"N" },
-    { rs:"sekk", pr:"SEK", st:"—", en:"sack", org:"N" },
-    { rs:"kniv", pr:"KNEEV", st:"—", en:"knife", org:"N" },
-    { rs:"jern", pr:"YERN", st:"—", en:"iron", org:"N" },
-    { rs:"tre", pr:"TREH", st:"TREH", en:"wood", org:"N" },
-    { rs:"hus", pr:"HOOS", st:"—", en:"house", org:"N" },
-    { rs:"stova", pr:"STOH-vah", st:"STOH", en:"room; place", org:"N" },
-    { rs:"kirka", pr:"KEER-kah", st:"KEER", en:"church (variant)", org:"N" },
-    { rs:"kjerka", pr:"YER-kah", st:"YER", en:"church (variant)", org:"N" },
-    { rs:"vei", pr:"VAY", st:"VAY", en:"road", org:"N" },
-
-    // Place & direction
-    { rs:"her", pr:"HEHR", st:"—", en:"here", org:"N" },
-    { rs:"der", pr:"DEHR", st:"—", en:"there", org:"N" },
-    { rs:"hjem", pr:"YEM", st:"—", en:"home", org:"N" },
-    { rs:"land", pr:"LAHND", st:"—", en:"land", org:"N" },
-    { rs:"hav", pr:"HAHV", st:"—", en:"sea", org:"N" },
-    { rs:"fjell", pr:"FYEL", st:"—", en:"mountain", org:"N" },
-    { rs:"på", pr:"POH", st:"—", en:"on; at; to (universal preposition)", org:"N" },
-    { rs:"pa", pr:"PAH", st:"—", en:"on; at; to (variant)", org:"M" },
-    { rs:"po", pr:"POH", st:"—", en:"on; at; to (variant)", org:"M" },
-    { rs:"inni", pr:"IN-nee", st:"IN", en:"inside", org:"N" },
-    { rs:"ute", pr:"OO-teh", st:"OO", en:"outside", org:"N" },
-    { rs:"borte", pr:"BOR-teh", st:"BOR", en:"away", org:"N" },
-
-    // Time
-    { rs:"nu", pr:"NOO", st:"NOO", en:"now", org:"M" },
-    { rs:"idag", pr:"ee-DAHG", st:"DAHG", en:"today", org:"N" },
-    { rs:"morra", pr:"MOR-rah", st:"MOR", en:"tomorrow", org:"N" },
-    { rs:"snart", pr:"SNAHRT", st:"—", en:"soon", org:"N" },
-    { rs:"lenge", pr:"LENG-eh", st:"LENG", en:"long time", org:"N" },
-    { rs:"dag", pr:"DAHG", st:"—", en:"day", org:"N" },
-    { rs:"natt", pr:"NAHT", st:"—", en:"night", org:"N" },
-
-    // Weather & environment
-    { rs:"vind", pr:"VIND", st:"—", en:"wind", org:"N" },
-    { rs:"storm", pr:"STORM", st:"—", en:"storm", org:"N" },
-    { rs:"snø", pr:"SNYUR", st:"—", en:"snow", org:"N" },
-    { rs:"is", pr:"EES", st:"—", en:"ice", org:"N" },
-    { rs:"kald", pr:"KAHLD", st:"—", en:"cold", org:"N" },
-    { rs:"varm", pr:"VAHRM", st:"—", en:"warm", org:"N" },
-    { rs:"regn", pr:"RAIN", st:"—", en:"rain", org:"N" },
-    { rs:"vær", pr:"VAIR", st:"—", en:"weather", org:"N" },
-
-    // States & descriptors
-    { rs:"god", pr:"GOOD", st:"—", en:"good", org:"N" },
-    { rs:"bra", pr:"BRAH", st:"—", en:"fine; okay", org:"N" },
-    { rs:"dårlig", pr:"DOH-lig", st:"DOH", en:"bad", org:"N" },
-    { rs:"stor", pr:"STOHR", st:"—", en:"big", org:"N" },
-    { rs:"liten", pr:"LEE-ten", st:"LEE", en:"small", org:"N" },
-    { rs:"tung", pr:"TOONG", st:"—", en:"heavy", org:"N" },
-    { rs:"lett", pr:"LET", st:"—", en:"light", org:"N" },
-    { rs:"rask", pr:"RAHSK", st:"—", en:"fast", org:"N" },
-    { rs:"langsom", pr:"LANG-som", st:"LANG", en:"slow", org:"N" },
-    { rs:"sulten", pr:"SOOL-ten", st:"SOOL", en:"hungry", org:"N" },
-    { rs:"trøtt", pr:"TRURT", st:"—", en:"tired", org:"N" },
-    { rs:"full", pr:"FOOL", st:"—", en:"drunk", org:"N" },
-    { rs:"vred", pr:"VREHD", st:"—", en:"angry", org:"M" },
-    { rs:"rik", pr:"REEK", st:"—", en:"rich", org:"N" },
-
-    // Questions & function words
-    { rs:"kak", pr:"KAHK", st:"—", en:"what; how", org:"R" },
-    { rs:"hvor", pr:"VOR", st:"—", en:"where", org:"N" },
-    { rs:"hvem", pr:"VEM", st:"—", en:"who", org:"N" },
-    { rs:"njet", pr:"NYET", st:"NYET", en:"no; not", org:"R" },
-    { rs:"ikke", pr:"IK-keh", st:"IK", en:"not", org:"N" },
-    { rs:"og", pr:"OHG", st:"—", en:"and", org:"N" },
-    { rs:"men", pr:"MEN", st:"—", en:"but", org:"N" },
-    { rs:"for", pr:"FOR", st:"—", en:"for; because", org:"N" },
-    { rs:"litt", pr:"LIT", st:"—", en:"a little", org:"N" },
-
-    // Courtesy / meta
-    { rs:"basiba", pr:"bah-SEE-bah", st:"SEE", en:"thanks (variant spelling)", org:"R" }
-  ];
-
-  // --- RENDERING ---
-  const $q = document.getElementById("q");
-  const $list = document.getElementById("list");
-  const $letters = document.getElementById("letters");
-  const $count = document.getElementById("count");
-  const $clear = document.getElementById("clearBtn");
-
-  function badge(org){
-    if(org === "R") return `<span class="badge r">R</span>`;
-    if(org === "N") return `<span class="badge b">N</span>`;
-    return `<span class="badge m">Mix</span>`;
-  }
-
-  function norm(s){ return (s || "").toLowerCase().trim(); }
-
-  function buildIndex(dictSorted){
-    const present = new Set(dictSorted.map(x => norm(x.rs)[0]).filter(Boolean));
-    const A = "abcdefghijklmnopqrstuvwxyz".split("");
-    $letters.innerHTML = A.map(ch => {
-      const ok = present.has(ch);
-      const cls = ok ? "" : "disabled";
-      const href = ok ? `#L_${ch.toUpperCase()}` : "#";
-      return `<a class="${cls}" href="${href}">${ch.toUpperCase()}</a>`;
-    }).join("");
-  }
-
-  function render(dictView){
-    // group headers by first letter of rs
-    let html = "";
-    let lastLetter = "";
-    dictView.forEach(entry => {
-      const letter = (entry.rs || "?").trim().charAt(0).toUpperCase();
-      if(letter !== lastLetter){
-        lastLetter = letter;
-        html += `<div class="grouphead" id="L_${letter}">${letter}</div>`;
+    function buildGroupedDictionary(entries) {
+      const groups = {};
+      for (const entry of entries) {
+        const firstChar = entry.english.trim().charAt(0).toUpperCase();
+        const letter = /[A-Z]/.test(firstChar) ? firstChar : "#";
+        if (!groups[letter]) groups[letter] = [];
+        groups[letter].push(entry);
       }
-      html += `
-        <div class="row">
-          <div>
-            <div class="russ">${entry.rs} ${badge(entry.org)}</div>
-            <div class="meta">${entry.pr}</div>
-          </div>
-          <div>
-            <div class="eng">${entry.en}</div>
-          </div>
-        </div>
-      `;
+
+      for (const letter in groups) {
+        groups[letter].sort((a, b) =>
+          a.english.toLowerCase().localeCompare(b.english.toLowerCase())
+        );
+      }
+
+      return groups;
+    }
+
+    function renderDictionary(filter = "", jumpToLetter = null) {
+      const normFilter = normalize(filter);
+
+      const filtered = dictionaryEntries.filter((entry) => {
+        if (!normFilter) return true;
+        const en = normalize(entry.english);
+        const gv = normalize(entry.gavari);
+        const notes = normalize(entry.notes || "");
+        return (
+          en.includes(normFilter) ||
+          gv.includes(normFilter) ||
+          notes.includes(normFilter)
+        );
+      });
+
+      const groups = buildGroupedDictionary(filtered);
+      const letters = Object.keys(groups).sort();
+
+      dictionaryContainer.innerHTML = "";
+
+      if (filtered.length === 0) {
+        dictionaryContainer.innerHTML =
+          "<p style='opacity:0.7;font-size:0.9rem;'>No entries found for that search.</p>";
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      letters.forEach((letter) => {
+        const section = document.createElement("section");
+        section.className = "letter-section";
+        section.id = `letter-${letter}`;
+
+        const heading = document.createElement("div");
+        heading.className = "letter-heading";
+        heading.textContent = letter === "#" ? "#" : letter;
+        section.appendChild(heading);
+
+        const table = document.createElement("table");
+
+        const thead = document.createElement("thead");
+        thead.innerHTML = `
+          <tr>
+            <th class="col-en">English</th>
+            <th class="col-gv">Gavári</th>
+            <th class="col-notes">Notes</th>
+          </tr>
+        `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        groups[letter].forEach((entry) => {
+          const tr = document.createElement("tr");
+          const enTd = document.createElement("td");
+          const gvTd = document.createElement("td");
+          const notesTd = document.createElement("td");
+
+          enTd.className = "col-en";
+          gvTd.className = "col-gv";
+          notesTd.className = "col-notes";
+
+          enTd.textContent = entry.english;
+          gvTd.textContent = entry.gavari;
+          notesTd.textContent = entry.notes || "";
+
+          tr.appendChild(enTd);
+          tr.appendChild(gvTd);
+          tr.appendChild(notesTd);
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        section.appendChild(table);
+        fragment.appendChild(section);
+      });
+
+      dictionaryContainer.appendChild(fragment);
+
+      if (jumpToLetter && document.getElementById(`letter-${jumpToLetter}`)) {
+        document
+          .getElementById(`letter-${jumpToLetter}`)
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function renderAlphaBar() {
+      const lettersInUse = new Set(
+        dictionaryEntries.map((e) =>
+          (e.english.trim().charAt(0).toUpperCase() || "#")
+        )
+      );
+
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      alphaBar.innerHTML = "";
+
+      letters.forEach((letter) => {
+        const btn = document.createElement("button");
+        btn.textContent = letter;
+        btn.className = "alpha-btn";
+
+        if (!lettersInUse.has(letter)) {
+          btn.classList.add("disabled");
+        } else {
+          btn.addEventListener("click", () => {
+            renderDictionary(searchInput.value, letter);
+          });
+        }
+
+        alphaBar.appendChild(btn);
+      });
+    }
+
+    searchInput.addEventListener("input", () => {
+      renderDictionary(searchInput.value);
     });
 
-    $list.innerHTML = html || `<div class="row"><div><b>No matches.</b></div><div class="meta">Try a different English word.</div></div>`;
-    $count.textContent = `${dictView.length} entries`;
-  }
-
-  // Prepare canonical sorted list by Russenorsk form
-  const SORTED = [...DICT]
-    .sort((a,b) => norm(a.rs).localeCompare(norm(b.rs)));
-
-  buildIndex(SORTED);
-  render(SORTED);
-
-  function applySearch(){
-    const q = norm($q.value);
-    if(!q){
-      render(SORTED);
-      return;
-    }
-    const filtered = SORTED.filter(e =>
-      norm(e.en).includes(q)
-      || norm(e.rs).includes(q)
-    );
-    render(filtered);
-  }
-
-  $q.addEventListener("input", applySearch);
-  $clear.addEventListener("click", () => { $q.value = ""; $q.focus(); applySearch(); });
-
-  // Nice touch: if user clicks a jump letter while filtered, clear filter so list exists
-  $letters.addEventListener("click", (ev) => {
-    const a = ev.target.closest("a");
-    if(!a || a.classList.contains("disabled")) return;
-    if(norm($q.value)){
-      $q.value = "";
-      applySearch();
-      // let browser jump after render
-      setTimeout(() => location.hash = a.getAttribute("href"), 0);
-      ev.preventDefault();
-    }
-  });
-</script>
+    // Initial render
+    renderAlphaBar();
+    renderDictionary("");
+  </script>
 </body>
 </html>
