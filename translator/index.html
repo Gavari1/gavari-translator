@@ -195,31 +195,7 @@
       line-height: 1.4;
     }
 
-    /* ---------- PHRASEBOOK ---------- */
-    .phrase-actions {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      align-items: end;
-      margin-top: 0.5rem;
-    }
-
-    .btn {
-      border-radius: 10px;
-      padding: 0.55rem 0.85rem;
-      border: 1px solid #272f47;
-      background: #0f1423;
-      color: #f5f5f5;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    .btn:hover { background: #222842; }
-
-    .btn.primary {
-      border-color: #3f82ff;
-      box-shadow: 0 0 0 1px #3f82ff22;
-    }
-
+    /* ---------- PHRASEBOOK (simple scroll list) ---------- */
     .phrase-list {
       margin-top: 0.75rem;
       max-height: 70vh;
@@ -231,49 +207,30 @@
       border: 1px solid #272f47;
       background: #0f1423;
       border-radius: 12px;
-      padding: 0.9rem;
+      padding: 0.95rem;
       margin-bottom: 0.65rem;
     }
 
-    .phrase-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
+    .phrase-en {
+      opacity: 0.85;
+      font-size: 0.92rem;
       margin-bottom: 0.35rem;
     }
 
-    .phrase-en {
-      font-weight: 600;
-    }
     .phrase-gv {
       color: #b8d1ff;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 1.05rem;
       white-space: pre-wrap;
     }
+
     .phrase-notes {
-      opacity: 0.8;
+      opacity: 0.75;
       font-size: 0.85rem;
-      margin-top: 0.35rem;
+      margin-top: 0.45rem;
       white-space: pre-wrap;
+      line-height: 1.35;
     }
-
-    .phrase-tools {
-      display: flex;
-      gap: 0.4rem;
-    }
-
-    .icon-btn {
-      border-radius: 10px;
-      padding: 0.35rem 0.6rem;
-      border: 1px solid #272f47;
-      background: #151a2b;
-      color: #f5f5f5;
-      cursor: pointer;
-      font-size: 0.85rem;
-      opacity: 0.9;
-    }
-    .icon-btn:hover { background: #222842; }
 
     @media (max-width: 700px) {
       .card { padding: 1.1rem; }
@@ -320,39 +277,11 @@
       </div>
     </div>
 
-    <!-- PHRASES TAB -->
+    <!-- PHRASES TAB (simple scroll list) -->
     <div id="tab-phrases" class="tab-panel">
-      <div class="controls">
-        <div class="search-box">
-          <label for="phraseSearch">Search (English or Gavári)</label>
-          <input id="phraseSearch" type="text" placeholder="Type to filter… e.g. 'wait', 'pa', 'gavo-mōro'" />
-        </div>
-      </div>
-
-      <div style="margin-top:0.5rem;">
-        <label for="phraseEn">English</label>
-        <input id="phraseEn" type="text" placeholder="e.g. I would run to my house" />
-
-        <div style="height:0.6rem;"></div>
-
-        <label for="phraseGv">Gavári</label>
-        <input id="phraseGv" type="text" placeholder="e.g. Wa la’lelo olu sap fale-na olu" />
-
-        <div style="height:0.6rem;"></div>
-
-        <label for="phraseNotes">Notes (optional)</label>
-        <textarea id="phraseNotes" placeholder="Any grammar notes, alternate gloss, vibe notes, etc."></textarea>
-
-        <div class="phrase-actions">
-          <button class="btn primary" id="addPhraseBtn">Add</button>
-          <button class="btn" id="clearPhraseFormBtn">Clear</button>
-          <button class="btn" id="resetPhrasesBtn" title="Clears saved phrases from this browser">Reset saved phrases</button>
-        </div>
-
-        <div class="hint" style="margin-top:0.8rem;">
-          This tab saves phrases <strong>in your browser</strong> (localStorage). If you open the site on another device,
-          you won’t see them unless you paste them into the <code>defaultPhrasebook</code> array below or export/import later.
-        </div>
+      <div class="hint" style="margin-top:0;">
+        <strong>Phrases & Sentences:</strong><br />
+        Just scroll. To add more, edit the <code>phrasebookEntries</code> array in the code.
       </div>
 
       <div id="phraseList" class="phrase-list"></div>
@@ -378,16 +307,23 @@
     ];
 
     // ---------------------------------------------
-    // 2) PHRASEBOOK DEFAULTS (optional)
-    //    - These ship with the page.
-    //    - Your added phrases save in the browser.
+    // 2) PHRASEBOOK LIST (simple scroll)
+    //    Add stuff here. No saving, no search.
     // ---------------------------------------------
-    const defaultPhrasebook = [
-      // Example:
-      // { english: "I would run to my house", gavari: "Wa la’lelo olu sap fale-na olu", notes: "conditional + motion-to sap + possessive -na" },
+    const phrasebookEntries = [
+      {
+        english: "I would run to my house.",
+        gavari: "Wa la’lelo olu sap fale-na olu.",
+        notes: "wa = would · sap = motion toward · fale-na olu = my house"
+      },
+      {
+        english: "I would run to my house, but I felt light rain when I went seaward.",
+        gavari: "Wa la’lelo olu sap fale-na olu, beli pa lāumo olu rual-poa nagu pa gavo-mōro.",
+        notes: "beli = but · pa = past · rual-poa = light rain · -mōro = seaward"
+      }
+      // Add more entries anytime:
+      // { english: "...", gavari: "...", notes: "..." },
     ];
-
-    const PHRASE_STORAGE_KEY = "gavari_phrasebook_v1";
 
     // ---------------------------------------------
     // SHARED HELPERS
@@ -543,144 +479,37 @@
     searchInput.addEventListener("input", () => renderDictionary(searchInput.value));
 
     // ---------------------------------------------
-    // PHRASEBOOK LOGIC (localStorage-backed)
+    // PHRASEBOOK RENDER (simple)
     // ---------------------------------------------
-    const phraseSearch = document.getElementById("phraseSearch");
-    const phraseEn = document.getElementById("phraseEn");
-    const phraseGv = document.getElementById("phraseGv");
-    const phraseNotes = document.getElementById("phraseNotes");
-    const addPhraseBtn = document.getElementById("addPhraseBtn");
-    const clearPhraseFormBtn = document.getElementById("clearPhraseFormBtn");
-    const resetPhrasesBtn = document.getElementById("resetPhrasesBtn");
     const phraseList = document.getElementById("phraseList");
 
-    function loadPhrasebook() {
-      try {
-        const raw = localStorage.getItem(PHRASE_STORAGE_KEY);
-        if (!raw) return [...defaultPhrasebook];
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [...defaultPhrasebook];
-        return parsed;
-      } catch {
-        return [...defaultPhrasebook];
-      }
-    }
-
-    function savePhrasebook(items) {
-      localStorage.setItem(PHRASE_STORAGE_KEY, JSON.stringify(items));
-    }
-
-    let phrasebook = loadPhrasebook();
-
-    function renderPhrasebook(filter = "") {
-      const norm = normalize(filter);
-      const filtered = phrasebook.filter(p => {
-        if (!norm) return true;
-        return (
-          normalize(p.english).includes(norm) ||
-          normalize(p.gavari).includes(norm) ||
-          normalize(p.notes || "").includes(norm)
-        );
-      });
-
+    function renderPhrasebook() {
       phraseList.innerHTML = "";
 
-      if (filtered.length === 0) {
+      if (!phrasebookEntries.length) {
         phraseList.innerHTML =
-          "<p style='opacity:0.7;font-size:0.9rem;'>No phrases found for that search.</p>";
+          "<p style='opacity:0.7;font-size:0.9rem;'>No phrases added yet.</p>";
         return;
       }
 
-      filtered.forEach((p, idx) => {
+      phrasebookEntries.forEach((p) => {
         const card = document.createElement("div");
         card.className = "phrase-card";
 
-        const top = document.createElement("div");
-        top.className = "phrase-top";
-
-        const left = document.createElement("div");
-        left.innerHTML = `
-          <div class="phrase-en">${p.english}</div>
-          <div class="phrase-gv">${p.gavari}</div>
+        card.innerHTML = `
+          <div class="phrase-en">${p.english || ""}</div>
+          <div class="phrase-gv">${p.gavari || ""}</div>
           ${p.notes ? `<div class="phrase-notes">${p.notes}</div>` : ""}
         `;
 
-        const tools = document.createElement("div");
-        tools.className = "phrase-tools";
-
-        const del = document.createElement("button");
-        del.className = "icon-btn";
-        del.textContent = "Delete";
-        del.addEventListener("click", () => {
-          // delete by identity (not just filtered index)
-          const realIndex = phrasebook.findIndex(x =>
-            x.english === p.english && x.gavari === p.gavari && (x.notes || "") === (p.notes || "")
-          );
-          if (realIndex >= 0) {
-            phrasebook.splice(realIndex, 1);
-            savePhrasebook(phrasebook);
-            renderPhrasebook(phraseSearch.value);
-          }
-        });
-
-        const copy = document.createElement("button");
-        copy.className = "icon-btn";
-        copy.textContent = "Copy";
-        copy.addEventListener("click", async () => {
-          const text = `${p.english}\n${p.gavari}${p.notes ? `\nNotes: ${p.notes}` : ""}`;
-          try { await navigator.clipboard.writeText(text); } catch {}
-        });
-
-        tools.appendChild(copy);
-        tools.appendChild(del);
-
-        top.appendChild(left);
-        top.appendChild(tools);
-
-        card.appendChild(top);
         phraseList.appendChild(card);
       });
     }
 
-    function clearPhraseForm() {
-      phraseEn.value = "";
-      phraseGv.value = "";
-      phraseNotes.value = "";
-      phraseEn.focus();
-    }
-
-    addPhraseBtn.addEventListener("click", () => {
-      const en = phraseEn.value.trim();
-      const gv = phraseGv.value.trim();
-      const notes = phraseNotes.value.trim();
-
-      if (!en || !gv) {
-        alert("Please fill in both English and Gavári.");
-        return;
-      }
-
-      phrasebook.unshift({ english: en, gavari: gv, notes: notes || "" });
-      savePhrasebook(phrasebook);
-      clearPhraseForm();
-      renderPhrasebook(phraseSearch.value);
-    });
-
-    clearPhraseFormBtn.addEventListener("click", clearPhraseForm);
-
-    resetPhrasesBtn.addEventListener("click", () => {
-      const ok = confirm("Reset saved phrasebook on this browser? This cannot be undone.");
-      if (!ok) return;
-      localStorage.removeItem(PHRASE_STORAGE_KEY);
-      phrasebook = loadPhrasebook();
-      renderPhrasebook("");
-    });
-
-    phraseSearch.addEventListener("input", () => renderPhrasebook(phraseSearch.value));
-
     // Initial render
     renderAlphaBar();
     renderDictionary("");
-    renderPhrasebook("");
+    renderPhrasebook();
   </script>
 </body>
 </html>
