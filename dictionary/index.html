@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gavári Dictionary</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1020;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 3rem;
+    }
+
+    h1 {
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .card {
+      background: #151a2b;
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 920px;
+      width: 100%;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      border: 1px solid #272f47;
+    }
+
+    /* ---------- TABS ---------- */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      border: 1px solid #272f47;
+      background: #0f1423;
+      color: #f5f5f5;
+      cursor: pointer;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .tab-btn:hover {
+      background: #222842;
+    }
+
+    .tab-btn.active {
+      border-color: #3f82ff;
+      box-shadow: 0 0 0 1px #3f82ff44;
+      opacity: 1;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ---------- CONTROLS ---------- */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .search-box {
+      flex: 1 1 220px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #272f47;
+      background: #0f1423;
+      color: #f5f5f5;
+      font-size: 0.95rem;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #3f82ff;
+      box-shadow: 0 0 0 1px #3f82ff44;
+    }
+
+    .alpha-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      justify-content: flex-end;
+      font-size: 0.8rem;
+      margin-top: -2.8rem;
+    }
+
+    .alpha-btn {
+      border-radius: 999px;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid #272f47;
+      background: #0f1423;
+      color: #f5f5f5;
+      cursor: pointer;
+    }
+
+    .alpha-btn:hover {
+      background: #222842;
+    }
+
+    .alpha-btn.disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .dictionary {
+      margin-top: 0.75rem;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .letter-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .letter-heading {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      border-bottom: 1px solid #272f47;
+      padding-bottom: 0.2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.35rem 0.35rem;
+      vertical-align: top;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      opacity: 0.7;
+      border-bottom: 1px solid #272f47;
+    }
+
+    tr:nth-child(even) td {
+      background: #111727;
+    }
+
+    .col-en { width: 40%; font-weight: 500; }
+    .col-gv { width: 30%; color: #b8d1ff; }
+    .col-notes { width: 30%; font-size: 0.8rem; opacity: 0.8; }
+
+    .hint {
+      margin-top: 0.9rem;
+      font-size: 0.8rem;
+      opacity: 0.75;
+      line-height: 1.4;
+    }
+
+    /* ---------- PHRASEBOOK (simple scroll list) ---------- */
+    .phrase-list {
+      margin-top: 0.75rem;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .phrase-card {
+      border: 1px solid #272f47;
+      background: #0f1423;
+      border-radius: 12px;
+      padding: 0.95rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .phrase-en {
+      opacity: 0.85;
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .phrase-gv {
+      color: #b8d1ff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      white-space: pre-wrap;
+    }
+
+    .phrase-notes {
+      opacity: 0.75;
+      font-size: 0.85rem;
+      margin-top: 0.45rem;
+      white-space: pre-wrap;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 700px) {
+      .card { padding: 1.1rem; }
+      .controls { flex-direction: column; align-items: stretch; }
+      .alpha-bar { justify-content: center; }
+      th.col-notes, td.col-notes { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Gavári Dictionary</h1>
+  <div class="subtitle">English ➜ Gavári · Official Lexicon</div>
+
+  <div class="card">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-dict">Dictionary</button>
+      <button class="tab-btn" data-tab="tab-phrases">Phrases & Sentences</button>
+    </div>
+
+    <!-- DICTIONARY TAB -->
+    <div id="tab-dict" class="tab-panel active">
+      <div class="controls">
+        <div class="search-box">
+          <label for="searchInput">Search (English or Gavári)</label>
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Type to filter… e.g. 'water', 'veru', 'house'"
+          />
+        </div>
+        <div class="alpha-bar" id="alphaBar"></div>
+      </div>
+
+      <div id="dictionary" class="dictionary"></div>
+
+      <div class="hint">
+        <strong>How to update this page:</strong><br />
+        Scroll down in the code to the <code>dictionaryEntries</code> array and just
+        keep adding objects like:
+        <code>{ english: "house", gavari: "fale", notes: "also ‘home’" }</code>.<br />
+        The page will automatically sort them A–Z and group them by first letter.
+      </div>
+    </div>
+
+    <!-- PHRASES TAB (simple scroll list) -->
+    <div id="tab-phrases" class="tab-panel">
+      <div class="hint" style="margin-top:0;">
+        <strong>Phrases & Sentences:</strong><br />
+        Just scroll. To add more, edit the <code>phrasebookEntries</code> array in the code.
+      </div>
+
+      <div id="phraseList" class="phrase-list"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ---------------------------------------------
+    // 1) DICTIONARY WORD LIST
+    // ---------------------------------------------
+    const dictionaryEntries = [
+      { english: "above", gavari: "alun" },
+      { english: "after", gavari: "yalu" },
+      { english: "afternoon", gavari: "daru" },
+      { english: "again", gavari: "galua" },
+      { english: "a little", gavari: "poa" },
+      { english: "a lot", gavari: "muia" },
+      { english: "air (warm night air)", gavari: "torai" },
+      { english: "always", gavari: "saru" },
+      { english: "also", gavari: "tambu" },
+      { english: "anxious", gavari: "wonu-noku" },
+      { english: "angry", gavari: "henira" },
+      { english: "angry person", gavari: "heni-tana" },
+      { english: "ash", gavari: "duku" },
+      { english: "at", gavari: "ke" },
+      { english: "baby fruit", gavari: "sali", notes: "same root as ‘fruit’" },
+      { english: "bad", gavari: "nelu" },
+      { english: "be able to", gavari: "polno" },
+      { english: "beautiful", gavari: "belo" },
+      { english: "beer", gavari: "cewua" },
+      { english: "below", gavari: "belun" },
+      { english: "big", gavari: "faru" },
+      { english: "big house", gavari: "fale-faru" },
+      { english: "boat", gavari: "wa'a" },
+      { english: "bored", gavari: "ma'la" },
+      { english: "boss", gavari: "manu" },
+      { english: "bowl", gavari: "kiso" },
+      { english: "break (on break)", gavari: "ra'no" },
+      { english: "breathe", gavari: "ho'no" },
+      { english: "breakfast", gavari: "ramu-fanu" },
+      { english: "breezy", gavari: "wonu-wonu" },
+      { english: "bring", gavari: "tanluo" },
+      { english: "brother", gavari: "bonu" },
+      { english: "but", gavari: "beli" },
+      { english: "buy", gavari: "nuaio" },
+      { english: "calm", gavari: "hona-noku" },
+      { english: "can", gavari: "polno" },
+      { english: "car", gavari: "car" },
+      { english: "chair", gavari: "se'lo" },
+      { english: "child", gavari: "conuah" },
+      { english: "children", gavari: "conuahlan" },
+      { english: "chill", gavari: "hona-noku" },
+      { english: "cloud", gavari: "oal" },
+      { english: "cloudy", gavari: "oalwa" },
+      { english: "cold", gavari: "geli" },
+      { english: "cold night", gavari: "noru-geli" },
+      { english: "cold wind", gavari: "kisan" },
+      { english: "culture", gavari: "gavári-pesta" },
+      { english: "cup", gavari: "hona-poa" },
+      { english: "current", gavari: "wāru", notes: "water or time" }, 
+      { english: "cubicle", gavari: "fa'lo-hanu" },
+      { english: "day", gavari: "ramua" },
+      { english: "deep water", gavari: "rimo" },
+      { english: "dessert", gavari: "gavoa" },
+      { english: "desk", gavari: "la'po" },
+      { english: "destroy", gavari: "paluo" },
+      { english: "dinner", gavari: "noru-fanu" },
+      { english: "do", gavari: "pavo" },
+      { english: "door", gavari: "kisun" },
+      { english: "drizzle", gavari: "rual-poa" },
+      { english: "drink", gavari: "inuo" },
+      { english: "drive", gavari: "keheo" },
+      { english: "dusk", gavari: "noru-poa" },
+      { english: "eat", gavari: "meao" },
+      { english: "evening", gavari: "noru" },
+      { english: "family", gavari: "famua" },
+      { english: "family unit", gavari: "fale-tana" },
+      { english: "feel", gavari: "lāumo" },
+      { english: "few", gavari: "poa" },
+      { english: "fisherman", gavari: "hona-tana" },
+      { english: "fog", gavari: "mura" },
+      { english: "foggy", gavari: "murawa" },
+      { english: "forest", gavari: "nara" },
+      { english: "friend", gavari: "amun" },
+      { english: "friends", gavari: "amunlan" },
+      { english: "fruit", gavari: "sali" },
+      { english: "get", gavari: "maguo" },
+      { english: "give", gavari: "daro" },
+      { english: "glass of water", gavari: "hona-poa" },
+      { english: "go", gavari: "gavo" },
+      { english: "good", gavari: "bilu" },
+      { english: "grandchild", gavari: "conuahyalu" },
+      { english: "grandfather", gavari: "fonuahbaru" },
+      { english: "grandmother", gavari: "monuahbaru" },
+      { english: "happy", gavari: "felin" },
+      { english: "happy person", gavari: "veru-tana" },
+      { english: "has", gavari: "tavo" },
+      { english: "he", gavari: "io" },
+      { english: "hello", gavari: "salo" },
+      { english: "help", gavari: "ajulo" },
+      { english: "here", gavari: "nia" },
+      { english: "hers", gavari: "yona" },
+      { english: "hill", gavari: "panu" },
+      { english: "his", gavari: "io" },
+      { english: "home", gavari: "fale" },
+      { english: "homeland", gavari: "gavári-veru" },
+      { english: "hot", gavari: "heni" },
+      { english: "hot sun", gavari: "veru-muia" },
+      { english: "house", gavari: "fale" },
+      { english: "houses", gavari: "falelan" },
+      { english: "hazy", gavari: "veru-poa" },
+      { english: "hurt", gavari: "paluo", notes: "verb: ruin/hurt/destroy" },
+      { english: "i", gavari: "olu" },
+      { english: "in", gavari: "ke" },
+      { english: "inside", gavari: "hanu" },
+      { english: "job", gavari: "vahri" },
+      { english: "journey", gavari: "gava-muia" },
+      { english: "lake", gavari: "hona-muia" },
+      { english: "later", gavari: "larug" },
+      { english: "left", gavari: "leroa" },
+      { english: "light", gavari: "welo" },
+      { english: "light rain", gavari: "rual-poa" },
+      { english: "like", gavari: "haluo" },
+      { english: "living room", gavari: "famua-fale" },
+      { english: "long day", gavari: "ramua-muia" },
+      { english: "love", gavari: "aluo" },
+      { english: "lunch", gavari: "ramua-fanu" },
+      { english: "lunchbox", gavari: "tavin" },
+      { english: "make", gavari: "pavo" },
+      { english: "many", gavari: "muia" },
+      { english: "market", gavari: "pesta-fanu" },
+      { english: "me", gavari: "olu" },
+      { english: "meeting", gavari: "sa'no" },
+      { english: "mist", gavari: "velu" },
+      { english: "money", gavari: "kala" },
+      { english: "morning", gavari: "veru" },
+      { english: "mother", gavari: "monuah" },
+      { english: "much", gavari: "muia" },
+      { english: "my", gavari: "olu" },
+      { english: "need", gavari: "lango" },
+      { english: "neighborhood", gavari: "pesta-fale" },
+      { english: "neighbor", gavari: "nayboa" },
+      { english: "night", gavari: "noru" },
+      { english: "nice", gavari: "belo" },
+      { english: "new", gavari: "ninu" },
+      { english: "no", gavari: "noa" },
+      { english: "not", gavari: "noa" },
+      { english: "now", gavari: "keia" },
+      { english: "ocean", gavari: "moro" },
+      { english: "of", gavari: "mo" },
+      { english: "on", gavari: "ke" },
+      { english: "on break", gavari: "ra'no" },
+      { english: "open space", gavari: "wāna" },
+      { english: "ours", gavari: "maua" },
+      { english: "outside", gavari: "lanu" },
+      { english: "pantry", gavari: "fale-fanu" },
+      { english: "parking lot", gavari: "ka'no-pesta" },
+      { english: "people", gavari: "tanalan" },
+      { english: "person", gavari: "tana" },
+      { english: "pot", gavari: "maron" },
+      { english: "rain", gavari: "rual" },
+      { english: "rainclouds", gavari: "oal-hona" },
+      { english: "rainstorm", gavari: "stara-poa" },
+      { english: "rainy", gavari: "rualwa" },
+      { english: "right", gavari: "eroa" },
+      { english: "roof", gavari: "fenai" },
+      { english: "ruin", gavari: "paluo" },
+      { english: "sad", gavari: "sasu" },
+      { english: "sand", gavari: "kela" },
+      { english: "say", gavari: "savo" },
+      { english: "scatterbrained", gavari: "wonu-noku" },
+      { english: "school", gavari: "skolu" },
+      { english: "schools", gavari: "skolulan" },
+      { english: "see", gavari: "wero" },
+      { english: "she", gavari: "yona" },
+      { english: "shore", gavari: "wina" },
+      { english: "should", gavari: "delo" },
+      { english: "shy", gavari: "noru-tana" },
+      { english: "sister", gavari: "sonu" },
+      { english: "sleep", gavari: "napao" },
+      { english: "slow moving", gavari: "gavo-poa" },
+      { english: "small", gavari: "kani" },
+      { english: "small house", gavari: "fale-kani" },
+      { english: "snow", gavari: "sneul" },
+      { english: "snowy", gavari: "sneulwa" },
+      { english: "son", gavari: "sunua" },
+      { english: "sons", gavari: "sunualan" },
+      { english: "storm", gavari: "stara" },
+      { english: "storm surge", gavari: "moroha" },
+      { english: "stormy", gavari: "starawa" },
+      { english: "store", gavari: "nuai" },
+      { english: "stores", gavari: "nuailan" },
+      { english: "street", gavari: "pesta" },
+      { english: "streets", gavari: "pestalan" },
+      { english: "street food", gavari: "pesta-fanu" },
+      { english: "strong sun", gavari: "veru-muia" },
+      { english: "strong wind", gavari: "wonu-muia" },
+      { english: "student", gavari: "haluola" },
+      { english: "study", gavari: "haluno" },
+      { english: "sun", gavari: "veru" },
+      { english: "sunny", gavari: "veruwa" },
+      { english: "table", gavari: "velan" },
+      { english: "talk", gavari: "fulo" },
+      { english: "talk to", gavari: "fulo sap" },
+      { english: "take", gavari: "tanluo" },
+      { english: "taking a break", gavari: "ra'no" },
+      { english: "task", gavari: "ka'nu" },
+      { english: "teacher", gavari: "halu" },
+      { english: "they", gavari: "kita" },
+      { english: "them", gavari: "kita" },
+      { english: "their", gavari: "kita" },
+      { english: "there", gavari: "nua" },
+      { english: "these", gavari: "niis" },
+      { english: "thing", gavari: "tālo" },
+      { english: "those", gavari: "naas" },
+      { english: "this", gavari: "ni" },
+      { english: "this afternoon", gavari: "daran" },
+      { english: "this evening", gavari: "noran" },
+      { english: "this morning", gavari: "veran" },
+      { english: "timid", gavari: "kani-famua" },
+      { english: "tired", gavari: "lena" },
+      { english: "today", gavari: "ramu" },
+      { english: "tonight", gavari: "noran" },
+      { english: "tomorrow", gavari: "apono" },
+      { english: "too", gavari: "tambu" },
+      { english: "too many", gavari: "vuia muia" },
+      { english: "too much", gavari: "vuia muia" },
+      { english: "tourists", gavari: "veru-tana" },
+      { english: "village road", gavari: "fale-pesta" },
+      { english: "volcano", gavari: "verdag-hona" },
+      { english: "want", gavari: "wivo" },
+      { english: "warm night", gavari: "noru-heni" },
+      { english: "watch", gavari: "wero" },
+      { english: "water", gavari: "hona" },
+      { english: "waters", gavari: "honalan" },
+      { english: "week", gavari: "ramu-muia" },
+      { english: "weekend", gavari: "verdag" },
+      { english: "what", gavari: "wohanu" },
+      { english: "we", gavari: "maua" },
+      { english: "when", gavari: "nagu" },
+      { english: "where", gavari: "lam" },
+      { english: "which", gavari: "wohu" },
+      { english: "why", gavari: "kap" },
+      { english: "window", gavari: "torun" },
+      { english: "wind", gavari: "wonu" },
+      { english: "windy", gavari: "wonuwa" },
+      { english: "with", gavari: "talu" },
+      { english: "work", gavari: "vahro" },
+      { english: "work area", gavari: "fa'lo-hanu" },
+      { english: "work meeting", gavari: "sa'no" },
+      { english: "you", gavari: "vaha" },
+      { english: "your", gavari: "vaha" },
+      { english: "those things", gavari: "naas tālo" },
+{ english: "these things", gavari: "niis tālo" },
+{ english: "that thing", gavari: "na tālo" },
+{ english: "this thing", gavari: "ni tālo" },
+{ english: "everything", gavari: "tālo-saru" },
+{ english: "flood", gavari: "rual-muia" },
+{ english: "come", gavari: "kalo" },
+{ english: "wait", gavari: "sāno" },
+{ english: "ready", gavari: "mālu" }
+    ];
+
+    // ---------------------------------------------
+    // 2) PHRASEBOOK LIST (simple scroll)
+    //    Add stuff here. No saving, no search.
+    // ---------------------------------------------
+    const phrasebookEntries = [
+      {
+        english: "I would run to my house.",
+        gavari: "Wa la’lelo olu sap fale-na olu.",
+        notes: "wa = would · sap = motion toward · fale-na olu = my house"
+      },
+      {
+        english: "I would run to my house, but I felt light rain when I went seaward.",
+        gavari: "Wa la’lelo olu sap fale-na olu, beli pa lāumo olu rual-poa nagu pa gavo-mōro.",
+        notes: "beli = but · pa = past · rual-poa = light rain · -mōro = seaward"
+      }
+      // Add more entries anytime:
+      // { english: "...", gavari: "...", notes: "..." },
+    ];
+
+    // ---------------------------------------------
+    // SHARED HELPERS
+    // ---------------------------------------------
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // ---------------------------------------------
+    // TABS
+    // ---------------------------------------------
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        tabPanels.forEach(p => p.classList.remove("active"));
+
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    // ---------------------------------------------
+    // DICTIONARY RENDERING
+    // ---------------------------------------------
+    const dictionaryContainer = document.getElementById("dictionary");
+    const searchInput = document.getElementById("searchInput");
+    const alphaBar = document.getElementById("alphaBar");
+
+    function buildGroupedDictionary(entries) {
+      const groups = {};
+      for (const entry of entries) {
+        const firstChar = entry.english.trim().charAt(0).toUpperCase();
+        const letter = /[A-Z]/.test(firstChar) ? firstChar : "#";
+        if (!groups[letter]) groups[letter] = [];
+        groups[letter].push(entry);
+      }
+      for (const letter in groups) {
+        groups[letter].sort((a, b) =>
+          a.english.toLowerCase().localeCompare(b.english.toLowerCase())
+        );
+      }
+      return groups;
+    }
+
+    function renderDictionary(filter = "", jumpToLetter = null) {
+      const normFilter = normalize(filter);
+
+      const filtered = dictionaryEntries.filter((entry) => {
+        if (!normFilter) return true;
+        const en = normalize(entry.english);
+        const gv = normalize(entry.gavari);
+        const notes = normalize(entry.notes || "");
+        return en.includes(normFilter) || gv.includes(normFilter) || notes.includes(normFilter);
+      });
+
+      const groups = buildGroupedDictionary(filtered);
+      const letters = Object.keys(groups).sort();
+
+      dictionaryContainer.innerHTML = "";
+
+      if (filtered.length === 0) {
+        dictionaryContainer.innerHTML =
+          "<p style='opacity:0.7;font-size:0.9rem;'>No entries found for that search.</p>";
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      letters.forEach((letter) => {
+        const section = document.createElement("section");
+        section.className = "letter-section";
+        section.id = `letter-${letter}`;
+
+        const heading = document.createElement("div");
+        heading.className = "letter-heading";
+        heading.textContent = letter === "#" ? "#" : letter;
+        section.appendChild(heading);
+
+        const table = document.createElement("table");
+
+        const thead = document.createElement("thead");
+        thead.innerHTML = `
+          <tr>
+            <th class="col-en">English</th>
+            <th class="col-gv">Gavári</th>
+            <th class="col-notes">Notes</th>
+          </tr>
+        `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        groups[letter].forEach((entry) => {
+          const tr = document.createElement("tr");
+          const enTd = document.createElement("td");
+          const gvTd = document.createElement("td");
+          const notesTd = document.createElement("td");
+
+          enTd.className = "col-en";
+          gvTd.className = "col-gv";
+          notesTd.className = "col-notes";
+
+          enTd.textContent = entry.english;
+          gvTd.textContent = entry.gavari;
+          notesTd.textContent = entry.notes || "";
+
+          tr.appendChild(enTd);
+          tr.appendChild(gvTd);
+          tr.appendChild(notesTd);
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        section.appendChild(table);
+        fragment.appendChild(section);
+      });
+
+      dictionaryContainer.appendChild(fragment);
+
+      if (jumpToLetter && document.getElementById(`letter-${jumpToLetter}`)) {
+        document.getElementById(`letter-${jumpToLetter}`)
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function renderAlphaBar() {
+      const lettersInUse = new Set(
+        dictionaryEntries.map((e) => (e.english.trim().charAt(0).toUpperCase() || "#"))
+      );
+
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      alphaBar.innerHTML = "";
+
+      letters.forEach((letter) => {
+        const btn = document.createElement("button");
+        btn.textContent = letter;
+        btn.className = "alpha-btn";
+
+        if (!lettersInUse.has(letter)) {
+          btn.classList.add("disabled");
+        } else {
+          btn.addEventListener("click", () => renderDictionary(searchInput.value, letter));
+        }
+        alphaBar.appendChild(btn);
+      });
+    }
+
+    searchInput.addEventListener("input", () => renderDictionary(searchInput.value));
+
+    // ---------------------------------------------
+    // PHRASEBOOK RENDER (simple)
+    // ---------------------------------------------
+    const phraseList = document.getElementById("phraseList");
+
+    function renderPhrasebook() {
+      phraseList.innerHTML = "";
+
+      if (!phrasebookEntries.length) {
+        phraseList.innerHTML =
+          "<p style='opacity:0.7;font-size:0.9rem;'>No phrases added yet.</p>";
+        return;
+      }
+
+      phrasebookEntries.forEach((p) => {
+        const card = document.createElement("div");
+        card.className = "phrase-card";
+
+        card.innerHTML = `
+          <div class="phrase-en">${p.english || ""}</div>
+          <div class="phrase-gv">${p.gavari || ""}</div>
+          ${p.notes ? `<div class="phrase-notes">${p.notes}</div>` : ""}
+        `;
+
+        phraseList.appendChild(card);
+      });
+    }
+
+    // Initial render
+    renderAlphaBar();
+    renderDictionary("");
+    renderPhrasebook();
+  </script>
+</body>
+</html>
