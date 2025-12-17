@@ -22,17 +22,14 @@
       --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.38);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-.chip, .chip * {
-    list-style: none !important;
-}
+    * { box-sizing: border-box; }
+
+    .chip, .chip * { list-style: none !important; }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #071437 0, #020819 50%, #000 100%);
       color: #f7f7ff;
       display: flex;
@@ -46,65 +43,59 @@
       max-width: 1080px;
       padding: 1.5rem 1.1rem 3rem;
     }
-    
-    /* Random Phrase Section */
-.phrase-section {
-  margin-top: 1.5rem;
-  text-align: center;
-}
 
-/* Match top buttons (Translator, Dictionary, Grammar) */
-.random-btn {
-  margin-bottom: 1rem;
-  background: #e8f3ff;
-  border: 2px solid #d6e9ff;
-  color: #005f9e;
-  padding: 0.65rem 1.5rem;
-  border-radius: 14px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.random-btn:hover {
-  background: #d9ecff;
-}
-
-/* Phrase Card */
-.phrase-card {
-  background: #ffffff;
-  padding: 1rem 1.5rem;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.phrase-gavari {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #0c1e35;
-  margin: 0;
-}
-
-.phrase-english {
-  font-size: 1rem;
-  margin-top: 0.4rem;
-  color: #3b4b63;
-  opacity: 0.85;
-}
-
-.primary {
-  background: #d1d1d1 !important;   /* gray */
-  color: #000 !important;           /* black text */
-  border: 2px solid #cccccc !important;  /* optional but looks nice */
-}
-    
     @media (min-width: 768px) {
-      .page {
-        padding: 2.5rem 1.5rem 4rem;
-      }
+      .page { padding: 2.5rem 1.5rem 4rem; }
+    }
+
+    /* Random Phrase Section */
+    .phrase-section {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .random-btn {
+      margin-bottom: 1rem;
+      background: #e8f3ff;
+      border: 2px solid #d6e9ff;
+      color: #005f9e;
+      padding: 0.65rem 1.5rem;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .random-btn:hover { background: #d9ecff; }
+
+    .phrase-card {
+      background: #ffffff;
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .phrase-gavari {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0c1e35;
+      margin: 0;
+    }
+
+    .phrase-english {
+      font-size: 1rem;
+      margin-top: 0.4rem;
+      color: #3b4b63;
+      opacity: 0.85;
+    }
+
+    .primary {
+      background: #d1d1d1 !important;
+      color: #000 !important;
+      border: 2px solid #cccccc !important;
     }
 
     header {
@@ -113,13 +104,12 @@
       gap: 1rem;
       margin-bottom: 1.8rem;
     }
-     a:link,
-     a:visited,
-     a:hover,
-     a:active {
-     color: #d1d1d1;   /* or whatever gray you want */
-     text-decoration: none; 
+
+    a:link, a:visited, a:hover, a:active {
+      color: #d1d1d1;
+      text-decoration: none;
     }
+
     .seal-wrap {
       width: 72px;
       height: 72px;
@@ -185,9 +175,7 @@
     }
 
     @media (max-width: 880px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      main { grid-template-columns: minmax(0, 1fr); }
     }
 
     .card {
@@ -204,14 +192,35 @@
       overflow: hidden;
     }
 
+    /* === HERO TOP ROW (FIXED) === */
     .hero-badge-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.75rem;
-      margin-bottom: 1rem;
-      font-size: 0.8rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
+    }
+
+    .welcome-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 0;
+    }
+
+    .welcome-line {
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .construction-note {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      color: var(--text-muted);
+      opacity: 0.95;
     }
 
     .flag-pill {
@@ -225,6 +234,8 @@
       font-size: 0.78rem;
       color: var(--accent-blue);
       font-weight: 600;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
 
     .flag-pill-dot {
@@ -234,15 +245,26 @@
       background: var(--accent-red);
     }
 
+    /* tighten headline spacing */
     .hero-title {
       font-size: 1.35rem;
-      margin: 0 0 0.35rem;
+      margin: 0;              /* <-- this was key */
+      line-height: 1.15;      /* <-- makes it look “designed” */
     }
 
     .hero-subtitle {
-      margin: 0 0 1.1rem;
+      margin: 0.55rem 0 1.1rem;
       font-size: 0.94rem;
       color: var(--text-muted);
+    }
+
+    /* mobile: stack welcome + pill cleanly */
+    @media (max-width: 600px) {
+      .hero-badge-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .flag-pill { margin-top: 0.25rem; }
     }
 
     .nav-buttons {
@@ -265,8 +287,7 @@
       letter-spacing: 0.01em;
       background: #f5f8ff;
       color: var(--accent-blue);
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
-        background 0.08s ease-out;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.08s ease-out;
     }
 
     .nav-buttons a.primary {
@@ -287,9 +308,7 @@
       color: var(--text-muted);
     }
 
-    .hero-footer b {
-      color: var(--accent-green);
-    }
+    .hero-footer b { color: var(--accent-green); }
 
     .tagline {
       font-size: 0.78rem;
@@ -297,9 +316,7 @@
       margin-top: 0.4rem;
     }
 
-    .island-card {
-      padding: 1.2rem 1.2rem 1.6rem;
-    }
+    .island-card { padding: 1.2rem 1.2rem 1.6rem; }
 
     .island-img-wrap {
       border-radius: var(--radius-md);
@@ -314,10 +331,7 @@
       display: block;
     }
 
-    .island-title {
-      margin: 0 0 0.4rem;
-      font-size: 1rem;
-    }
+    .island-title { margin: 0 0 0.4rem; font-size: 1rem; }
 
     .island-text {
       margin: 0;
@@ -364,22 +378,20 @@
       margin-bottom: 0.2rem;
     }
 
-    .about-title {
-      margin: 0 0 0.4rem;
-      font-size: 1rem;
-    }
-.chip-columns {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-    margin-top: 0.75rem;
-}
+    .about-title { margin: 0 0 0.4rem; font-size: 1rem; }
 
-.chip-col {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
+    .chip-columns {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-top: 0.75rem;
+    }
+
+    .chip-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
 
     .about-text {
       margin: 0.25rem 0 0.7rem;
@@ -388,10 +400,7 @@
       line-height: 1.55;
     }
 
-    .about-note {
-      font-size: 0.76rem;
-      opacity: 0.7;
-    }
+    .about-note { font-size: 0.76rem; opacity: 0.7; }
 
     footer {
       margin-top: 1.4rem;
@@ -400,77 +409,48 @@
       text-align: center;
     }
 
-    footer a {
-      color: #b7c7ff;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
+    footer a { color: #b7c7ff; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="page">
     <header>
       <div class="seal-wrap">
-        <!-- Change src if your seal file has a different name or path -->
         <img src="images/seal.png" alt="Seal of the Country of Gavári" />
       </div>
+
       <div class="title-block">
         <h1>Republic of Gavári</h1>
         <p>Official portal for the island nation and its language.</p>
+
         <div class="chip-row">
           <div class="chip-columns">
+            <div class="chip-col">
+              <span class="chip"><span class="chip-dot"></span>Pacific island · volcanic homeland</span>
+              <span class="chip"><span class="chip-dot"></span>Population · 26,819</span>
+              <span class="chip"><span class="chip-dot"></span>Currency · Gavári Kala</span>
+            </div>
 
-    <!-- LEFT COLUMN -->
-    <div class="chip-col">
-        <span class="chip">
-            <span class="chip-dot"></span>
-            Pacific island · volcanic homeland
-        </span>
-
-        <span class="chip">
-            <span class="chip-dot"></span>
-            Population · 26,819
-        </span>
-
-        <span class="chip">
-            <span class="chip-dot"></span>
-            Currency · Gavári Kala
-        </span>
-    </div>
-
-    <!-- RIGHT COLUMN -->
-    <div class="chip-col">
-        <span class="chip">
-            <span class="chip-dot"></span>
-            National language · Gavári
-        </span>
-
-        <span class="chip">
-            <span class="chip-dot"></span>
-            Total area · 160 square miles
-        </span>
-
-        <span class="chip">
-            <span class="chip-dot"></span>
-            Capital · Gavári City
-        </span>
-    </div>
-
-</div>
-
+            <div class="chip-col">
+              <span class="chip"><span class="chip-dot"></span>National language · Gavári</span>
+              <span class="chip"><span class="chip-dot"></span>Total area · 160 square miles</span>
+              <span class="chip"><span class="chip-dot"></span>Capital · Gavári City</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
 
     <main>
       <!-- LEFT: Hero / Navigation -->
       <section class="card hero-card">
         <div class="hero-badge-row">
-          <span><strong>Welcome to the Gavári project.</strong></span>
-          <p class="construction-note">
-  🚧 Continually under constant construction. Continue to check back for updates.
-</p>
+          <div class="welcome-block">
+            <p class="welcome-line"><strong>Welcome to the Gavári project.</strong></p>
+            <p class="construction-note">🚧 Continually under constant construction. Continue to check back for updates.</p>
+          </div>
+
           <span class="flag-pill">
             <span class="flag-pill-dot"></span>
             Gavári.org
@@ -495,39 +475,41 @@
           <strong>Start with the <b>Translator</b> for quick phrases, then use the
           <b>Dictionary</b> and <b>Grammar</b> pages to go deeper.</strong>
         </p>
+
         <p class="tagline">
           <strong>Gavári is intentionally minimal: no irregular verbs, no noun cases, and a small
           core vocabulary inspired by real island cultures.</strong>
         </p>
-          <!-- Random Phrase Generator Section -->
-<div class="phrase-section">
-    <button class="nav-btn random-btn" onclick="getRandomPhrase()">
-        🔀 Random Phrase
-    </button>
 
-    <div class="phrase-card">
-        <p id="phrase-gavari" class="phrase-gavari">↑ Click for a Gavári phrase ↑</p>
-        <p id="phrase-english" class="phrase-english"></p>
-    </div>
-</div>
+        <!-- Random Phrase Generator Section -->
+        <div class="phrase-section">
+          <button class="nav-btn random-btn" onclick="getRandomPhrase()">
+            🔀 Random Phrase
+          </button>
 
+          <div class="phrase-card">
+            <p id="phrase-gavari" class="phrase-gavari">↑ Click for a Gavári phrase ↑</p>
+            <p id="phrase-english" class="phrase-english"></p>
+          </div>
+        </div>
       </section>
 
       <!-- RIGHT: Island card -->
       <section class="card island-card">
         <div class="island-img-wrap">
-          <!-- Change src if your island image has a different name or path -->
           <img src="images/island.jpeg" alt="Map of the island of Gavári" />
         </div>
         <h2 class="island-title">The Island of Gavári</h2>
         <p class="island-text">
           Gavári is imagined as a small volcanic island in the Pacific about 370 miles
-          southwest of Hawaiʻi. It is comprised of one main island with coastal villages, 
-          an active central volcano, and a strong sense of community.</p> <p class="island-text">In 1836 an Italian brigantine was
-          shipwrecked off the coast of Gavári with 19 sailors on board. The Gavári natives took them in and the
-          rest is history. While the Austronesian side of Gavári is most prevelant, the influence of Italian can be 
-          seen in many of their words. The language reflects that: warm, straightforward, and easy
-          to speak. 
+          southwest of Hawaiʻi. It is comprised of one main island with coastal villages,
+          an active central volcano, and a strong sense of community.
+        </p>
+        <p class="island-text">
+          In 1836 an Italian brigantine was shipwrecked off the coast of Gavári with 19 sailors on board.
+          The Gavári natives took them in and the rest is history. While the Austronesian side of Gavári is most prevalent,
+          the influence of Italian can be seen in many of their words. The language reflects that: warm, straightforward, and easy
+          to speak.
         </p>
 
         <div class="mini-grid">
@@ -539,12 +521,11 @@
       </section>
     </main>
 
-    <!-- ABOUT SECTION (you can edit the text freely) -->
+    <!-- ABOUT SECTION -->
     <section id="about" class="about-card">
       <div class="section-label">About Gavári</div>
       <h2 class="about-title">What is Gavári?</h2>
       <p class="about-text">
-        <!-- 👇 Edit this text in GitHub however you like. This is just a placeholder. -->
         Gavári is a constructed language created in November 2025. It is inspired by real Pacific islands, small coastal
         towns, and simple everyday conversations. The goal is not to be complicated or
         “fantasy-epic”, but to feel like a real community language: friendly, regular,
@@ -555,9 +536,7 @@
         grammar guide. Over time, more vocabulary, phrases, and stories from the island
         will be added here.
       </p>
-      <p class="about-note">
-        
-      </p>
+      <p class="about-note"></p>
     </section>
 
     <footer>
@@ -565,227 +544,41 @@
       <a href="/translator/">Open the Translator</a>
     </footer>
   </div>
-<script>
-const phrases = [
-  { gavari: "Mi gavo sap nuai.", english: "I'm going to the store." },
-  { gavari: "Mi amunlan hanu na car.", english: "My friends are in that car." },
-  { gavari: "Yona pa tanluo fanu sap yona bonu.", english: "She took food to her brother." },
-  { gavari: "Ni ka ti.", english: "This is for you." },
-  { gavari: "Mi fa wero ti apono.", english: "I will see you tomorrow." },
-  { gavari: "Io noa tavo kala.", english: "He doesn’t have money." },
-  { gavari: "Mi car oina, beli mi haluo.", english: "My car is old, but I like it." },
-  { gavari: "Kalu gavo?", english: "How's it going?" }
-];
 
-// ===== SHUFFLE MODE =====
+  <script>
+    const phrases = [
+      { gavari: "Mi gavo sap nuai.", english: "I'm going to the store." },
+      { gavari: "Mi amunlan hanu na car.", english: "My friends are in that car." },
+      { gavari: "Yona pa tanluo fanu sap yona bonu.", english: "She took food to her brother." },
+      { gavari: "Ni ka ti.", english: "This is for you." },
+      { gavari: "Mi fa wero ti apono.", english: "I will see you tomorrow." },
+      { gavari: "Io noa tavo kala.", english: "He doesn’t have money." },
+      { gavari: "Mi car oina, beli mi haluo.", english: "My car is old, but I like it." },
+      { gavari: "Kalu gavo?", english: "How's it going?" }
+    ];
 
-let shuffled = [];
-let index = 0;
+    let shuffled = [];
+    let index = 0;
 
-function shufflePhrases() {
-  shuffled = [...phrases];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  index = 0;
-}
+    function shufflePhrases() {
+      shuffled = [...phrases];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      index = 0;
+    }
 
-function getRandomPhrase() {
-  if (shuffled.length === 0 || index >= shuffled.length) {
+    function getRandomPhrase() {
+      if (shuffled.length === 0 || index >= shuffled.length) shufflePhrases();
+      const item = shuffled[index];
+      index++;
+
+      document.getElementById("phrase-gavari").textContent = item.gavari;
+      document.getElementById("phrase-english").textContent = item.english;
+    }
+
     shufflePhrases();
-  }
-
-  const item = shuffled[index];
-  index++;
-
-  document.getElementById("phrase-gavari").textContent = item.gavari;
-  document.getElementById("phrase-english").textContent = item.english;
-}
-
-// Run the first shuffle on page load
-shufflePhrases();
-</script>
-
-
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
