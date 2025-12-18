@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+  
 // 6x6 Mini Rooks (hot-seat)
 // Win condition: capture opponent Royal Rook (marked 👑)
 // Pieces: 4 rooks, 2 knights, 2 pawns (per both sides total on board: 8 pieces)
@@ -259,4 +261,4 @@
 
   // Boot
   init();
-})();
+});
