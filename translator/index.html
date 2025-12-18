@@ -1,261 +1,497 @@
-<!DOCTYPE html>
+# State Shorthand
+A tiny, symbol-based check-in system: **State + Direction + Cause**.
+
+It’s designed for real life: work, family, teams, journaling, ADHD brains, introverts, loud extroverts—anyone who wants to communicate *how they are* without writing a paragraph.
+
+## The Format
+**[STATE][DIRECTION] (CAUSE)**
+
+- **STATE** = how you feel right now
+- **DIRECTION** = where it’s going
+- **CAUSE** (optional) = what’s driving it
+
+Example:
+- **△→ (W)** = restless/irritated, staying that way, because of work
+
+---
+
+## State Symbols
+Pick one:
+
+- **○** = steady / okay / regulated
+- **△** = restless / irritated / unsettled
+- **✕** = overloaded / overwhelmed / too much
+- **↓** = drained / tired / low battery
+- **↑** = energized / hyped / ready to move
+
+> Tip: You can customize these meanings slightly for your household or team. The goal is “fast and true,” not “perfect.”
+
+---
+
+## Direction Arrows
+Pick one:
+
+- **↑** = improving
+- **→** = staying the same
+- **↓** = getting worse
+
+Examples:
+- **✕↑** = overwhelmed, but improving
+- **↓→** = tired, staying tired
+- **○↓** = okay, but slipping
+
+---
+
+## Cause Tags (Optional)
+Add 1 letter (or 2 if needed):
+
+- **W** = work / school
+- **B** = body (sleep, hunger, illness, hormones)
+- **M** = mind (overthinking, anxiety, focus, stress)
+- **S** = social (people, conflict, crowds)
+- **H** = home / family logistics
+- **F** = faith / spiritual (peace, dryness, conviction, etc.)
+
+Examples:
+- **✕→ (W+M)** = overwhelmed and stuck, work + mind
+- **↓↑ (B)** = tired but recovering, body-related
+- **○→ (F)** = steady and stable, faith-related
+
+---
+
+## Why This Works
+- **Privacy with signal** (no forced explanations)
+- **Low-friction honesty**
+- **Pattern spotting over time** (you’ll notice what consistently causes △→ or ✕↓)
+- **Family-friendly** (kids can use symbols only; teens/adults can add cause tags)
+
+---
+
+## Quick Examples
+- **△→ (W)** “I’m irritated and it’s not changing. Work.”
+- **✕↑ (M)** “I was overloaded, but I’m improving. Mind stress.”
+- **↓→ (B)** “I’m tired and staying tired. Body.”
+- **↑→** “I’m energized and stable.”
+- **○↓ (S)** “I’m okay but slipping because of social stuff.”
+
+---
+
+## License
+MIT — steal it, remix it, teach it, rename it, do whatever.
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grammar Basics · Gavári</title>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>State Shorthand</title>
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0b1020;
-      color: #f5f5f5;
-      margin: 0;
-      padding: 2rem 1rem 3rem;
-      display: flex;
-      justify-content: center;
+    :root{
+      --bg:#0b1020;
+      --card:#121a33;
+      --muted:rgba(255,255,255,.72);
+      --faint:rgba(255,255,255,.12);
+      --text:#f5f7ff;
+      --accent:#8ab4ff;
+      --accent2:#a7ffcf;
+      --warn:#ffd18a;
+      --danger:#ff8aa3;
+      --radius:18px;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
-
-    .container {
-      max-width: 880px;
-      width: 100%;
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 10% 0%, rgba(138,180,255,.25), transparent 55%),
+                  radial-gradient(900px 600px at 85% 15%, rgba(167,255,207,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      padding: 28px 14px 60px;
+      display:flex;
+      justify-content:center;
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 0.25rem;
+    .wrap{
+      width: min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
     }
-
-    .subtitle {
-      text-align: center;
-      opacity: 0.8;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
+    header{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:18px 18px 6px;
     }
-
-    .card {
-      background: #151a2b;
-      border-radius: 14px;
-      padding: 1.6rem;
-      margin-bottom: 1.2rem;
-      border: 1px solid #272f47;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+    h1{
+      margin:0;
+      font-size: clamp(26px, 3.2vw, 40px);
+      letter-spacing: .3px;
     }
-
-    h2 {
-      margin-top: 0;
-      margin-bottom: 0.6rem;
-      font-size: 1.2rem;
+    .sub{
+      color:var(--muted);
+      max-width: 72ch;
+      line-height:1.45;
+      font-size: 15.5px;
     }
-
-    p {
-      line-height: 1.55;
-      opacity: 0.92;
-      margin: 0.5rem 0;
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
     }
-
-    ul {
-      margin: 0.6rem 0 0 1.1rem;
-      padding: 0;
-      line-height: 1.5;
+    @media (max-width: 880px){
+      .grid{ grid-template-columns: 1fr; }
     }
-
-    li {
-      margin-bottom: 0.4rem;
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--faint);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
     }
-
-    .example {
-      margin-top: 0.7rem;
-      padding: 0.7rem 0.9rem;
-      background: #0f1423;
-      border-left: 3px solid #3f82ff;
-      border-radius: 6px;
-      font-size: 0.95rem;
+    .card .hd{
+      padding:14px 16px;
+      border-bottom: 1px solid var(--faint);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
-
-    .gv {
-      color: #b8d1ff;
-      font-weight: 600;
+    .card .hd h2{
+      margin:0;
+      font-size: 16px;
+      letter-spacing:.2px;
     }
-
-    .note {
-      font-size: 0.85rem;
-      opacity: 0.75;
-      margin-top: 0.6rem;
-    }
-
-    .links {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-
-    .btn {
-      padding: 0.55rem 0.9rem;
+    .pill{
+      font-size:12px;
+      color: rgba(255,255,255,.78);
+      border:1px solid var(--faint);
+      padding:6px 10px;
       border-radius: 999px;
-      border: 1px solid #272f47;
-      background: #0f1423;
-      color: #f5f5f5;
-      text-decoration: none;
-      font-size: 0.9rem;
+      background: rgba(0,0,0,.18);
+      white-space:nowrap;
     }
-
-    .btn:hover {
-      background: #222842;
+    .bd{ padding:14px 16px 16px; }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin: 10px 0 14px;
     }
-
-    footer {
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      opacity: 0.65;
+    button.opt{
+      cursor:pointer;
+      border-radius: 999px;
+      border: 1px solid var(--faint);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: transform .06s ease, border-color .2s ease, background .2s ease;
+      user-select:none;
     }
+    button.opt:hover{ transform: translateY(-1px); border-color: rgba(138,180,255,.35); }
+    button.opt.active{
+      border-color: rgba(138,180,255,.75);
+      background: rgba(138,180,255,.12);
+    }
+    .sym{
+      font-size: 18px;
+      width: 22px;
+      text-align:center;
+      color: var(--accent);
+    }
+    .lbl{ font-size: 13.5px; color: rgba(255,255,255,.86); }
+    .help{
+      font-size: 13px;
+      color: var(--muted);
+      line-height:1.45;
+    }
+    .output{
+      margin-top: 10px;
+      padding: 14px 14px 12px;
+      border-radius: 14px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.16);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 22px;
+      letter-spacing:.6px;
+    }
+    .desc{
+      color: rgba(255,255,255,.85);
+      font-size: 14px;
+      line-height:1.4;
+    }
+    .tiny{
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width: 520px){
+      .split{ grid-template-columns: 1fr; }
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .item{
+      padding:10px 12px;
+      border:1px solid var(--faint);
+      border-radius:14px;
+      background: rgba(0,0,0,.14);
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .item .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .item .mono strong{ color: var(--accent2); }
+    .footer{
+      padding: 2px 18px 0;
+      color: rgba(255,255,255,.6);
+      font-size: 12.5px;
+      line-height:1.5;
+    }
+    .copy{
+      cursor:pointer;
+      border-radius: 12px;
+      border: 1px solid var(--faint);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.9);
+      padding: 8px 10px;
+      font-size: 12.5px;
+    }
+    .copy:hover{ border-color: rgba(167,255,207,.5); background: rgba(167,255,207,.10); }
   </style>
 </head>
-
 <body>
-  <div class="container">
+  <div class="wrap">
+    <header>
+      <h1>State Shorthand</h1>
+      <div class="sub">
+        A tiny check-in notation: <b>State</b> + <b>Direction</b> + optional <b>Cause</b>.
+        Built for real life — fast, private, and surprisingly expressive.
+      </div>
+    </header>
 
-    <h1>Gavári Grammar</h1>
-    <div class="subtitle">
-      A short introduction to the Gavári language
+    <div class="grid">
+      <section class="card">
+        <div class="hd">
+          <h2>Build your shorthand</h2>
+          <span class="pill">Format: [STATE][ARROW] (CAUSE)</span>
+        </div>
+        <div class="bd">
+          <div class="help"><b>1) Pick a state</b></div>
+          <div class="row" id="stateRow"></div>
+
+          <div class="help"><b>2) Pick a direction</b></div>
+          <div class="row" id="dirRow"></div>
+
+          <div class="help"><b>3) Add a cause</b> (optional)</div>
+          <div class="row" id="causeRow"></div>
+
+          <div class="output">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+              <div class="code" id="outCode">—</div>
+              <button class="copy" id="copyBtn" title="Copy to clipboard">Copy</button>
+            </div>
+            <div class="desc" id="outDesc">Pick options to generate an interpretation.</div>
+            <div class="tiny" id="outTiny">Tip: kids can use just the state symbol. Teens/adults can add arrows + cause tags.</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="hd">
+          <h2>Examples people can steal</h2>
+          <span class="pill">No perfection required</span>
+        </div>
+        <div class="bd">
+          <div class="split">
+            <div class="list" id="exampleLeft"></div>
+            <div class="list" id="exampleRight"></div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="help">
+            The point isn’t “clinical accuracy.” The point is <b>fast truth</b> without a speech.
+            Customize symbols/letters to fit your house, team, or brain.
+          </div>
+        </div>
+      </aside>
     </div>
 
-    <div class="card">
-      <h2>What is Gavári?</h2>
-      <p>
-        Gavári is a constructed island language designed to feel natural, spoken,
-        and human. It favors rhythm, clarity, and meaning over strict grammatical
-        precision.
-      </p>
-      <p>
-        It is meant to be learned through usage — not through automatic translation.
-      </p>
+    <div class="footer">
+      MIT license vibes: remix freely. If it helps you talk to your family or survive a slow workday, it’s doing its job.
     </div>
-
-     <div class="card">
-      <h2>Pronouns</h2>
-      <p>
-        All Gavári pronouns are both personal and possesive. 
-      </p>
-
-      <div class="example">
-        <div class="gv">Olu, Vaha, Io, Yona, Maua, Kita, Vahau</div>
-         I, You, He, She, We, They, You all
-      </div>
-
-      <div class="example">
-        <div class="gv">Olu, Vaha, Io, Yona, Maua, Kita, Vahau</div>
-         My, Yours, His, Hers, Ours, Theirs, You all's
-      </div>
-    </div>
-    
-    <div class="card">
-      <h2>How Gavári Expresses Meaning</h2>
-      <p>
-        Gavári does not rely on heavy verb conjugation. Instead, meaning is shaped
-        by particles, word order, and context.
-      </p>
-
-      <ul>
-        <li>Time is marked with particles like <span class="gv">pa</span> (past) <span class="gv">fa</span> (future) and <span class="gv">wa</span> (conditional)</li>
-        <li>Intensity is expressed through compounds and repetition</li>
-        <li>Many ideas are built by combining simple roots</li>
-      </ul>
-
-      <div class="example">
-        <div class="gv">rual-poa</div>
-        light rain
-      </div>
-
-      <div class="example">
-        <div class="gv">rual-muia</div>
-        flood · heavy rain
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Demonstratives & “Things”</h2>
-      <p>
-        Gavári uses distance and number to shape meaning instead of strict plurality.
-      </p>
-
-      <div class="example">
-        <div class="gv">ni tālo</div>
-        this thing
-      </div>
-
-      <div class="example">
-        <div class="gv">naas tālo</div>
-        those things
-      </div>
-
-      <div class="example">
-        <div class="gv">tālo-saru</div>
-        everything
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Verbs</h2>
-      <p>
-        All Gavári verbs end in -o and are not conjugated for person or number. Also, pronouns come after verbs. 
-      </p>
-
-      <div class="example">
-        <div class="gv">pa gavo olu</div>
-         went (pa - past, gavo - go) I (olu)
-      </div>
-
-      <div class="example">
-        <div class="gv">fa wero kita</div>
-         will see (fa - future, wero - see) kita (they)
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Possesives</h2>
-      <p>
-        Possesives are formed by adding -na to a noun. Also, personal pronouns are used as possesive also.
-        i.e. OLU = I/MINE/MY
-      </p>
-
-      <div class="example">
-        <div class="gv">amun-na olu</div>
-         friend (amun) possesive marker (-na) I/mine (olu)
-      </div>
-
-      <div class="example">
-        <div class="gv">vahri-na vaha</div>
-           job/work(vahri) possesive marker (-na) yours (vaha)
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>How to Use This Site</h2>
-      <ul>
-        <li><strong>Dictionary:</strong> Browse core vocabulary and roots</li>
-        <li><strong>Phrases & Sentences:</strong> See real Gavári in use</li>
-        <li><strong>Grammar:</strong> Deeper structure and rules</li>
-      </ul>
-
-      <p class="note">
-        Automatic translation tools are intentionally not provided.
-        Gavári is meant to be understood through examples.
-      </p>
-
-      <div class="links">
-        <a class="btn" href="index.html">Dictionary</a>
-        <a class="btn" href="phrases.html">Phrases</a>
-        <a class="btn" href="grammar.html">Grammar</a>
-      </div>
-    </div>
-
-    <footer>
-      Gavári · Language & Culture
-    </footer>
-
   </div>
+
+<script>
+  const STATES = [
+    { key: "steady", sym: "○", label: "steady / okay", desc: "steady/regulated" },
+    { key: "restless", sym: "△", label: "restless / irritated", desc: "restless/irritated" },
+    { key: "overloaded", sym: "✕", label: "overloaded / too much", desc: "overloaded/overwhelmed" },
+    { key: "drained", sym: "↓", label: "drained / tired", desc: "tired/drained" },
+    { key: "energized", sym: "↑", label: "energized / hyped", desc: "energized/ready" },
+  ];
+
+  const DIRS = [
+    { key: "improving", sym: "↑", label: "improving", desc: "improving" },
+    { key: "same", sym: "→", label: "same", desc: "staying the same" },
+    { key: "worse", sym: "↓", label: "worse", desc: "getting worse" },
+  ];
+
+  const CAUSES = [
+    { key: "W", label: "W — work/school", desc: "work/school" },
+    { key: "B", label: "B — body", desc: "body (sleep/food/health)" },
+    { key: "M", label: "M — mind", desc: "mind (stress/overthinking)" },
+    { key: "S", label: "S — social", desc: "social" },
+    { key: "H", label: "H — home", desc: "home/family logistics" },
+    { key: "F", label: "F — faith", desc: "faith/spiritual" },
+  ];
+
+  let selectedState = null;
+  let selectedDir = null;
+  let selectedCauses = new Set();
+
+  function mkBtn({ sym, label }, onClick){
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.type = "button";
+    b.innerHTML = `<span class="sym">${sym ?? ""}</span><span class="lbl">${label}</span>`;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function render(){
+    const outCode = document.getElementById("outCode");
+    const outDesc = document.getElementById("outDesc");
+
+    if(!selectedState && !selectedDir && selectedCauses.size === 0){
+      outCode.textContent = "—";
+      outDesc.textContent = "Pick options to generate an interpretation.";
+      return;
+    }
+
+    const st = selectedState ? STATES.find(s => s.key === selectedState) : null;
+    const dr = selectedDir ? DIRS.find(d => d.key === selectedDir) : null;
+    const causes = [...selectedCauses];
+
+    const code = `${st ? st.sym : ""}${dr ? dr.sym : ""}${causes.length ? ` (${causes.join("+")})` : ""}`.trim();
+    outCode.textContent = code || "—";
+
+    const stDesc = st ? st.desc : "a state";
+    const drDesc = dr ? dr.desc : "";
+    const csDesc = causes.length ? causes.map(c => CAUSES.find(x => x.key === c)?.desc || c).join(" + ") : "";
+
+    let sentence = "";
+    if(st && dr){
+      sentence = `You’re ${stDesc}, and it’s ${drDesc}.`;
+    } else if(st){
+      sentence = `You’re ${stDesc}.`;
+    } else if(dr){
+      sentence = `Direction: ${drDesc}.`;
+    }
+
+    if(csDesc){
+      sentence += ` Likely driven by ${csDesc}.`;
+    }
+
+    outDesc.textContent = sentence.trim();
+  }
+
+  function setActive(rowEl, predicate){
+    [...rowEl.querySelectorAll("button.opt")].forEach(btn => {
+      btn.classList.toggle("active", predicate(btn));
+    });
+  }
+
+  function init(){
+    const stateRow = document.getElementById("stateRow");
+    const dirRow = document.getElementById("dirRow");
+    const causeRow = document.getElementById("causeRow");
+
+    // States
+    STATES.forEach(s => {
+      const btn = mkBtn({sym: s.sym, label: s.label}, () => {
+        selectedState = (selectedState === s.key) ? null : s.key;
+        setActive(stateRow, b => b.dataset.key === selectedState);
+        render();
+      });
+      btn.dataset.key = s.key;
+      stateRow.appendChild(btn);
+    });
+
+    // Directions
+    DIRS.forEach(d => {
+      const btn = mkBtn({sym: d.sym, label: d.label}, () => {
+        selectedDir = (selectedDir === d.key) ? null : d.key;
+        setActive(dirRow, b => b.dataset.key === selectedDir);
+        render();
+      });
+      btn.dataset.key = d.key;
+      dirRow.appendChild(btn);
+    });
+
+    // Causes (multi-select)
+    CAUSES.forEach(c => {
+      const btn = mkBtn({sym: c.key, label: c.label}, () => {
+        if(selectedCauses.has(c.key)) selectedCauses.delete(c.key);
+        else selectedCauses.add(c.key);
+        btn.classList.toggle("active", selectedCauses.has(c.key));
+        render();
+      });
+      btn.querySelector(".sym").style.color = "var(--accent2)";
+      causeRow.appendChild(btn);
+    });
+
+    // Examples
+    const examples = [
+      { code:"△→ (W)", text:"Restless/irritated and stuck because of work." },
+      { code:"✕↑ (M)", text:"Overloaded but improving; mind-stress easing." },
+      { code:"↓→ (B)", text:"Tired and staying tired; body needs basics." },
+      { code:"○→ (F)", text:"Steady and stable; faith-related calm." },
+      { code:"✕↓ (S)", text:"Overwhelmed and getting worse; social overload." },
+      { code:"↑→", text:"Energized and stable. Ready to move." },
+    ];
+    const left = document.getElementById("exampleLeft");
+    const right = document.getElementById("exampleRight");
+    examples.forEach((ex, i) => {
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `<div class="mono"><strong>${ex.code}</strong></div><div class="help">${ex.text}</div>`;
+      (i % 2 === 0 ? left : right).appendChild(el);
+    });
+
+    // Copy button
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const txt = document.getElementById("outCode").textContent;
+      if(!txt || txt === "—") return;
+      try{
+        await navigator.clipboard.writeText(txt);
+        const btn = document.getElementById("copyBtn");
+        const old = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = old, 900);
+      }catch(e){
+        // fallback: select text not implemented; keep it simple
+        alert("Copy failed — your browser blocked clipboard access.");
+      }
+    });
+
+    render();
+  }
+
+  init();
+</script>
 </body>
 </html>
