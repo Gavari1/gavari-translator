@@ -1,11 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const SIZE = 6;
 
-  /** @type {(null | {type:'R'|'N'|'P', color:'W'|'B', royal?:boolean})[][]} */
+  /**
+   * A board cell is either:
+   * - null (empty)
+   * - a piece: {type:'R'|'N'|'P', color:'W'|'B', royal?:boolean}
+   * - a collapsed marker: {collapsed:true}
+   */
   let board = [];
-  let turn = 'W'; // 'W' or 'B'
-  let selected = null; // {r,c} or null
-  let legalTargets = new Map(); // key "r,c" -> {kind:'move'|'capture'}
+  let turn = 'W';
+  let selected = null;
+  let legalTargets = new Map();
   let gameOver = false;
 
   const boardEl = document.getElementById('board');
@@ -54,6 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
     board[r][c] = piece;
   }
 
+  function isCollapsed(r, c) {
+    return board[r][c]?.collapsed === true;
+  }
+
+  function isPiece(cell) {
+    return cell && cell.collapsed !== true;
+  }
+
   function setStatus(msg) {
     if (msg) {
       statusEl.textContent = msg;
@@ -72,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
         sq.dataset.r = String(r);
         sq.dataset.c = String(c);
 
+        if (isCollapsed(r, c)) sq.classList.add('collapsed');
+
         const isSelected = selected && selected.r === r && selected.c === c;
         if (isSelected) sq.classList.add('selected');
 
@@ -81,12 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
           sq.classList.add(t.kind === 'capture' ? 'capture' : 'move');
         }
 
-        const piece = board[r][c];
-        if (piece) {
+        const cell = board[r][c];
+        if (isPiece(cell)) {
+          const piece = cell;
           const p = document.createElement('div');
           p.className = 'piece ' + (piece.color === 'W' ? 'white' : 'black');
 
-          // ✅ Royal rook: crown only (no "R")
+          // Royal rook: crown only (no "R")
           if (piece.royal) {
             p.textContent = '👑';
           } else {
@@ -107,7 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const r = Number(e.currentTarget.dataset.r);
     const c = Number(e.currentTarget.dataset.c);
-    const piece = board[r][c];
+
+    if (isCollapsed(r, c)) return;
+
+    const cell = board[r][c];
+    const piece = isPiece(cell) ? cell : null;
 
     const key = `${r},${c}`;
     if (selected && legalTargets.has(key)) {
@@ -131,9 +151,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function doMove(sr, sc, tr, tc) {
     const moving = board[sr][sc];
-    const target = board[tr][tc];
+    const targetCell = board[tr][tc];
 
-    if (target && target.royal) {
+    // Safety
+    if (!isPiece(moving)) return;
+    if (isCollapsed(tr, tc)) return;
+
+    // Royal capture ends game immediately
+    if (isPiece(targetCell) && targetCell.royal) {
       board[tr][tc] = moving;
       board[sr][sc] = null;
       selected = null;
@@ -144,31 +169,51 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const isCapture = isPiece(targetCell) && targetCell.color !== moving.color;
+
+    // Normal move
     board[tr][tc] = moving;
     board[sr][sc] = null;
 
+    // Pawn promotion (only if it survived and landed on a normal square)
     if (moving.type === 'P') {
       if (moving.color === 'W' && tr === 0) board[tr][tc] = { type: 'N', color: 'W' };
       if (moving.color === 'B' && tr === SIZE - 1) board[tr][tc] = { type: 'N', color: 'B' };
     }
 
+    // ✅ CAPTURE & COLLAPSE:
+    // If it was a capture, the TARGET square collapses (and anything on it is removed).
+    if (isCapture) {
+      board[tr][tc] = { collapsed: true };
+    }
+
     selected = null;
     legalTargets.clear();
+
     turn = (turn === 'W') ? 'B' : 'W';
     render();
     setStatus();
   }
 
   function computeLegalTargets(r, c) {
-    const piece = board[r][c];
+    const cell = board[r][c];
+    const piece = isPiece(cell) ? cell : null;
+
     const m = new Map();
     if (!piece) return m;
 
     const add = (rr, cc) => {
       if (!inBounds(rr, cc)) return;
+      if (isCollapsed(rr, cc)) return;
+
       const t = board[rr][cc];
-      if (!t) m.set(`${rr},${cc}`, { kind: 'move' });
-      else if (t.color !== piece.color) m.set(`${rr},${cc}`, { kind: 'capture' });
+      if (!t) {
+        m.set(`${rr},${cc}`, { kind: 'move' });
+      } else if (isPiece(t) && t.color !== piece.color) {
+        m.set(`${rr},${cc}`, { kind: 'capture' });
+      }
+      // If it's collapsed, we already returned above.
+      // If it's same-color piece, do nothing.
     };
 
     if (piece.type === 'R') {
@@ -176,12 +221,19 @@ document.addEventListener("DOMContentLoaded", () => {
       for (const [dr, dc] of dirs) {
         let rr = r + dr, cc = c + dc;
         while (inBounds(rr, cc)) {
+          if (isCollapsed(rr, cc)) break;
+
           const t = board[rr][cc];
-          if (!t) m.set(`${rr},${cc}`, { kind: 'move' });
-          else {
+          if (!t) {
+            m.set(`${rr},${cc}`, { kind: 'move' });
+          } else if (isPiece(t)) {
             if (t.color !== piece.color) m.set(`${rr},${cc}`, { kind: 'capture' });
+            break; // blocked by any piece
+          } else {
+            // Shouldn't happen, but break anyway
             break;
           }
+
           rr += dr; cc += dc;
         }
       }
@@ -196,13 +248,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const dir = (piece.color === 'W') ? -1 : 1;
 
       const fr = r + dir;
-      if (inBounds(fr, c) && board[fr][c] === null) m.set(`${fr},${c}`, { kind: 'move' });
+      if (inBounds(fr, c) && !isCollapsed(fr, c) && board[fr][c] === null) {
+        m.set(`${fr},${c}`, { kind: 'move' });
+      }
 
       for (const dc of [-1, 1]) {
         const rr = r + dir, cc = c + dc;
         if (!inBounds(rr, cc)) continue;
+        if (isCollapsed(rr, cc)) continue;
+
         const t = board[rr][cc];
-        if (t && t.color !== piece.color) m.set(`${rr},${cc}`, { kind: 'capture' });
+        if (isPiece(t) && t.color !== piece.color) {
+          m.set(`${rr},${cc}`, { kind: 'capture' });
+        }
       }
     }
 
