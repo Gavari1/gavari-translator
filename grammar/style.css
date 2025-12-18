@@ -202,4 +202,15 @@ button:hover { background: #f3f4f6; }
   .piece  { font-size: 1.05rem; }
   .piece.black, .piece.white { padding: 8px 10px; }
 }
+.square.collapsed {
+  background: #1f2937;
+  border: 1px solid #111827;
+  cursor: not-allowed;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4);
+}
 
+.square.collapsed::after {
+  content: "✕";
+  color: rgba(255,255,255,0.4);
+  font-size: 1.4rem;
+}
