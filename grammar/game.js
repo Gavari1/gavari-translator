@@ -91,10 +91,9 @@
           p.textContent = piece.type;
 
           if (piece.royal) {
-            const crown = document.createElement('span');
-            crown.className = 'crown';
-            crown.textContent = '👑';
-            p.appendChild(crown);
+            p.crown.textContent = '👑';
+          } else   { 
+            p.textContent = piece.type;
           }
 
           sq.appendChild(p);
