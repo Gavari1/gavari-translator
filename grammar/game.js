@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (t.color !== piece.color) m.set(`${rr},${cc}`, { kind: 'capture' });
             break; // blocked by any piece
           } else {
-            // Shouldn't happen, but break anyway
+            // Shouldn't happen, but break anywa
             break;
           }
 
