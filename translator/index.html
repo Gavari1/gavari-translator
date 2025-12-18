@@ -7,14 +7,11 @@
   <style>
     :root{
       --bg:#0b1020;
-      --card:#121a33;
       --muted:rgba(255,255,255,.72);
       --faint:rgba(255,255,255,.12);
       --text:#f5f7ff;
       --accent:#8ab4ff;
       --accent2:#a7ffcf;
-      --warn:#ffd18a;
-      --danger:#ff8aa3;
       --radius:18px;
       --shadow: 0 18px 50px rgba(0,0,0,.35);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -102,23 +99,31 @@
       border: 1px solid var(--faint);
       background: rgba(0,0,0,.18);
       color: var(--text);
-      padding: 10px 12px;
+      padding: 11px 14px;
       display:flex;
       align-items:center;
       gap:10px;
       transition: transform .06s ease, border-color .2s ease, background .2s ease;
       user-select:none;
+      min-width: 170px;
+      justify-content:flex-start;
     }
     button.opt:hover{ transform: translateY(-1px); border-color: rgba(138,180,255,.35); }
     button.opt.active{
       border-color: rgba(138,180,255,.75);
       background: rgba(138,180,255,.12);
     }
+
+    /* Emoji-friendly symbol slot */
     .sym{
-      font-size: 18px;
-      width: 22px;
-      text-align:center;
-      color: var(--accent);
+      width: 30px;
+      height: 22px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 20px;
+      line-height: 1;
+      flex: 0 0 30px;
     }
     .lbl{ font-size: 13.5px; color: rgba(255,255,255,.86); }
     .help{
@@ -193,6 +198,7 @@
     .copy:hover{ border-color: rgba(167,255,207,.5); background: rgba(167,255,207,.10); }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
@@ -207,7 +213,7 @@
       <section class="card">
         <div class="hd">
           <h2>Build your shorthand</h2>
-          <span class="pill">Format: [STATE][ARROW] (CAUSE)</span>
+          <span class="pill">Format: [STATE][DIR] (CAUSE)</span>
         </div>
         <div class="bd">
           <div class="help"><b>1) Pick a state</b></div>
@@ -225,7 +231,7 @@
               <button class="copy" id="copyBtn" title="Copy to clipboard">Copy</button>
             </div>
             <div class="desc" id="outDesc">Pick options to generate an interpretation.</div>
-            <div class="tiny" id="outTiny">Tip: kids can use just the state symbol. Teens/adults can add arrows + cause tags.</div>
+            <div class="tiny" id="outTiny">Tip: kids can pick a state only. Teens/adults can add direction + cause tags.</div>
           </div>
         </div>
       </section>
@@ -243,7 +249,7 @@
           <div style="height:10px"></div>
           <div class="help">
             The point isn’t “clinical accuracy.” The point is <b>fast truth</b> without a speech.
-            Customize symbols/letters to fit your house, team, or brain.
+            Customize causes to fit your life.
           </div>
         </div>
       </aside>
@@ -255,27 +261,31 @@
   </div>
 
 <script>
+  // === STATES (emoji-based) ===
   const STATES = [
-    { key: "steady", sym: "○", label: "steady / okay", desc: "steady/regulated" },
-    { key: "restless", sym: "△", label: "restless / irritated", desc: "restless/irritated" },
-    { key: "overloaded", sym: "✕", label: "overloaded / too much", desc: "overloaded/overwhelmed" },
-    { key: "drained", sym: "↓", label: "drained / tired", desc: "tired/drained" },
-    { key: "energized", sym: "↑", label: "energized / hyped", desc: "energized/ready" },
+    { key: "steady",    sym: "🙂",    label: "steady / ok",           desc: "steady/okay" },
+    { key: "restless",  sym: "😵‍💫", label: "restless / irritated",   desc: "restless/irritated" },
+    { key: "depressed", sym: "😓",    label: "depressed",             desc: "depressed/low" },
+    { key: "overloaded",sym: "😰",    label: "overloaded / too much", desc: "overloaded/overwhelmed" },
+    { key: "drained",   sym: "😵",    label: "drained / tired",       desc: "tired/drained" },
+    { key: "energized", sym: "🤩",    label: "energized / hyped",     desc: "energized/hyped" },
   ];
 
+  // === DIRECTIONS (emoji-based) ===
   const DIRS = [
-    { key: "improving", sym: "↑", label: "improving", desc: "improving" },
-    { key: "same", sym: "→", label: "same", desc: "staying the same" },
-    { key: "worse", sym: "↓", label: "worse", desc: "getting worse" },
+    { key: "improving", sym: "👍", label: "improving", desc: "improving" },
+    { key: "same",      sym: "↔️", label: "same",      desc: "staying the same" },
+    { key: "worse",     sym: "👎", label: "worse",     desc: "getting worse" },
   ];
 
+  // === CAUSE TAGS (letters) ===
   const CAUSES = [
     { key: "W", label: "W — work/school", desc: "work/school" },
-    { key: "B", label: "B — body", desc: "body (sleep/food/health)" },
-    { key: "M", label: "M — mind", desc: "mind (stress/overthinking)" },
-    { key: "S", label: "S — social", desc: "social" },
-    { key: "H", label: "H — home", desc: "home/family logistics" },
-    { key: "F", label: "F — faith", desc: "faith/spiritual" },
+    { key: "B", label: "B — body",        desc: "body (sleep/food/health)" },
+    { key: "M", label: "M — mind",        desc: "mind (stress/overthinking)" },
+    { key: "S", label: "S — social",      desc: "social" },
+    { key: "H", label: "H — home",        desc: "home/family logistics" },
+    { key: "F", label: "F — faith",       desc: "faith/spiritual" },
   ];
 
   let selectedState = null;
@@ -310,11 +320,13 @@
 
     const stDesc = st ? st.desc : "a state";
     const drDesc = dr ? dr.desc : "";
-    const csDesc = causes.length ? causes.map(c => CAUSES.find(x => x.key === c)?.desc || c).join(" + ") : "";
+    const csDesc = causes.length
+      ? causes.map(c => CAUSES.find(x => x.key === c)?.desc || c).join(" + ")
+      : "";
 
     let sentence = "";
     if(st && dr){
-      sentence = `You’re ${stDesc}, and it’s ${drDesc}.`;
+      sentence = `You’re ${stDesc} and it’s ${drDesc}.`;
     } else if(st){
       sentence = `You’re ${stDesc}.`;
     } else if(dr){
@@ -339,7 +351,7 @@
     const dirRow = document.getElementById("dirRow");
     const causeRow = document.getElementById("causeRow");
 
-    // States
+    // States (single-select)
     STATES.forEach(s => {
       const btn = mkBtn({sym: s.sym, label: s.label}, () => {
         selectedState = (selectedState === s.key) ? null : s.key;
@@ -350,7 +362,7 @@
       stateRow.appendChild(btn);
     });
 
-    // Directions
+    // Directions (single-select)
     DIRS.forEach(d => {
       const btn = mkBtn({sym: d.sym, label: d.label}, () => {
         selectedDir = (selectedDir === d.key) ? null : d.key;
@@ -361,7 +373,7 @@
       dirRow.appendChild(btn);
     });
 
-    // Causes (multi-select)
+    // Causes (multi-select, letter tags)
     CAUSES.forEach(c => {
       const btn = mkBtn({sym: c.key, label: c.label}, () => {
         if(selectedCauses.has(c.key)) selectedCauses.delete(c.key);
@@ -369,19 +381,22 @@
         btn.classList.toggle("active", selectedCauses.has(c.key));
         render();
       });
+      // Make cause letters pop a bit
+      btn.querySelector(".sym").style.fontSize = "16px";
       btn.querySelector(".sym").style.color = "var(--accent2)";
       causeRow.appendChild(btn);
     });
 
     // Examples
     const examples = [
-      { code:"△→ (W)", text:"Restless/irritated and stuck because of work." },
-      { code:"✕↑ (M)", text:"Overloaded but improving; mind-stress easing." },
-      { code:"↓→ (B)", text:"Tired and staying tired; body needs basics." },
-      { code:"○→ (F)", text:"Steady and stable; faith-related calm." },
-      { code:"✕↓ (S)", text:"Overwhelmed and getting worse; social overload." },
-      { code:"↑→", text:"Energized and stable. Ready to move." },
+      { code:"😵‍💫↔️ (W)", text:"Restless/irritated and stuck because of work." },
+      { code:"😰👍 (M)",   text:"Overloaded but improving; mind-stress easing." },
+      { code:"😵↔️ (B)",   text:"Tired and staying tired; body needs basics." },
+      { code:"🙂↔️ (F)",   text:"Steady and stable; faith-related calm." },
+      { code:"😓👎 (H)",   text:"Depressed and getting worse; home/family weight." },
+      { code:"🤩↔️",       text:"Energized and stable. Ready to move." },
     ];
+
     const left = document.getElementById("exampleLeft");
     const right = document.getElementById("exampleRight");
     examples.forEach((ex, i) => {
@@ -402,7 +417,6 @@
         btn.textContent = "Copied!";
         setTimeout(() => btn.textContent = old, 900);
       }catch(e){
-        // fallback: select text not implemented; keep it simple
         alert("Copy failed — your browser blocked clipboard access.");
       }
     });
