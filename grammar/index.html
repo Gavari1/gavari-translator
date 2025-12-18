@@ -1,4 +1,4 @@
-<!doctype html>
+doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -105,7 +105,7 @@ h1 {
 
 button {
   border: 1px solid #cbd5e1;
-  background: ffffff;
+  background: #ffffff; /* FIXED: missing # */
   color: #111827;
   padding: 8px 12px;
   border-radius: 12px;
@@ -127,9 +127,9 @@ button:hover { background: #f3f4f6; }
   gap: 8px;
   padding: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.05);
-  box-shadow: 0 22px 70px rgba(0,0,0,0.35);
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.02);
+  box-shadow: 0 22px 70px rgba(0,0,0,0.18);
 }
 
 .square {
@@ -145,8 +145,9 @@ button:hover { background: #f3f4f6; }
 
 .square:active { transform: scale(0.99); }
 
+/* board contrast */
 .light { background: #d1d5db; }
-.dark  { background: #9ca3af; }
+.dark  { background: #7f8b98; }
 
 .piece {
   font-size: 1.35rem;
@@ -155,336 +156,72 @@ button:hover { background: #f3f4f6; }
   display: flex;
   align-items: center;
   gap: 6px;
+  text-shadow: none;
 }
 
 .piece .crown { font-size: 1.05rem; opacity: 0.95; }
 
-.piece.white { color: #a7b4ff; text-shadow: none; }
-.piece.black { color: #a7b4ff; text-shadow: 0 4px 12px rgba(0,0,0,0.45); opacity: 0.95; }
+/* Same letter color for both */
+.piece.white { color: #a7b4ff; }
+.piece.black { color: #a7b4ff; opacity: 0.95; }
 
+/* Selected outline */
 .square.selected {
   outline: 3px solid rgba(124, 231, 255, 0.95);
   outline-offset: 2px;
 }
 
-.square.move::after {
-  content: "";
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  background: rgba(124, 231, 255, 0.75);
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-}
-
+/* Legal move dots */
+.square.move::after,
 .square.capture::after {
   content: "";
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: rgba(255, 131, 131, 0.80);
   position: absolute;
   bottom: 10px;
   right: 10px;
 }
 
+.square.move::after {
+  background: rgba(124, 231, 255, 0.75);
+}
+
+.square.capture::after {
+  background: rgba(255, 131, 131, 0.80);
+}
+
 .foot { margin-top: 14px; display: flex; justify-content: center; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px; opacity: 0.9; }
 .chip {
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(0,0,0,0.03);
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 0.92rem;
 }
-.chip.w { border-color: rgba(231,239,255,0.25); }
-.chip.b { border-color: rgba(167,180,255,0.25); }
 
-
-/* Give BLACK pieces diagonal stripes so they're instantly distinct */
+/* BLACK pieces get diagonal stripes */
 .piece.black {
   padding: 10px 14px;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.14);
+  border: 1px solid rgba(0,0,0,0.12);
   background:
     repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.18) 0px,
-      rgba(255,255,255,0.18) 6px,
+      rgba(255,255,255,0.25) 0px,
+      rgba(255,255,255,0.25) 6px,
       rgba(0,0,0,0.0) 6px,
       rgba(0,0,0,0.0) 12px
     ),
     rgba(20, 25, 55, 0.55);
 }
 
+/* White pieces are circles */
 .piece.white {
   padding: 10px 14px;
   border-radius: 999px;
-  border: 2px #6b7280;
+  border: 2px solid #6b7280; /* FIXED: missing solid */
   background: #e5e7eb;
 }
 
-// 6x6 Mini Rooks (hot-seat)
-// Win condition: capture opponent Royal Rook (marked 👑)
-// Pieces: 4 rooks, 2 knights, 2 pawns (per both sides total on board: 8 pieces)
-// Pawns: single-step forward, diagonal capture, promote to Knight only.
-
-(() => {
-  const SIZE = 6;
-
-  /** @type {(null | {type:'R'|'N'|'P', color:'W'|'B', royal?:boolean})[][]} */
-  let board = [];
-  let turn = 'W'; // 'W' or 'B'
-  let selected = null; // {r,c} or null
-  let legalTargets = new Map(); // key "r,c" -> {kind:'move'|'capture'}
-  let gameOver = false;
-
-  const boardEl = document.getElementById('board');
-  const statusEl = document.getElementById('status');
-  const resetBtn = document.getElementById('resetBtn');
-
-  resetBtn.addEventListener('click', () => init());
-
-  function init() {
-    board = makeEmptyBoard();
-    gameOver = false;
-    selected = null;
-    legalTargets.clear();
-    turn = 'W';
-
-    // Starting layout (row 0 = top, row 4 = bottom)
-    // White back rank at row 4: R N R _ R
-    // White pawns at row 3: b4? (actually col1) and d4 (col3)
-    place(5, 5, { type: 'R', color: 'W', royal: true });
-    place(5, 0, { type: 'R', color: 'W' });
-    place(5, 2, { type: 'N', color: 'W' });
-    place(5, 3, { type: 'R', color: 'W' });
-    place(4, 1, { type: 'P', color: 'W' });
-    place(4, 5, { type: 'P', color: 'W' });
-
-    // Black at row 0: R _ R N R (a little asymmetry makes it fun)
-    // Black pawns at row 1: col1 and col3
-    place(0, 0, { type: 'R', color: 'B', royal: true });
-    place(0, 2, { type: 'R', color: 'B' });
-    place(0, 3, { type: 'N', color: 'B' });
-    place(0, 5, { type: 'R', color: 'B' });
-    place(1, 0, { type: 'P', color: 'B' });
-    place(1, 4, { type: 'P', color: 'B' });
-
-    render();
-    setStatus();
-  }
-
-  function makeEmptyBoard() {
-    return Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => null));
-  }
-
-  function place(r, c, piece) {
-    board[r][c] = piece;
-  }
-
-  function setStatus(msg) {
-    if (msg) {
-      statusEl.textContent = msg;
-      return;
-    }
-    if (gameOver) return;
-    statusEl.textContent = (turn === 'W' ? 'White' : 'Black') + " to move";
-  }
-
-  function render() {
-    boardEl.innerHTML = '';
-    for (let r = 0; r < SIZE; r++) {
-      for (let c = 0; c < SIZE; c++) {
-        const sq = document.createElement('div');
-        sq.className = 'square ' + (((r + c) % 2 === 0) ? 'light' : 'dark');
-        sq.dataset.r = String(r);
-        sq.dataset.c = String(c);
-
-        const isSelected = selected && selected.r === r && selected.c === c;
-        if (isSelected) sq.classList.add('selected');
-
-        const key = `${r},${c}`;
-        if (legalTargets.has(key)) {
-          const t = legalTargets.get(key);
-          sq.classList.add(t.kind === 'capture' ? 'capture' : 'move');
-        }
-
-        const piece = board[r][c];
-        if (piece) {
-          const p = document.createElement('div');
-          p.className = 'piece ' + (piece.color === 'W' ? 'white' : 'black');
-          p.textContent = piece.type;
-
-          if (piece.royal) {
-            const crown = document.createElement('span');
-            crown.className = 'crown';
-            crown.textContent = '👑';
-            p.appendChild(crown);
-          }
-
-          sq.appendChild(p);
-        }
-
-        sq.addEventListener('click', onSquareClick);
-        boardEl.appendChild(sq);
-      }
-    }
-  }
-
-  function onSquareClick(e) {
-    if (gameOver) return;
-
-    const r = Number(e.currentTarget.dataset.r);
-    const c = Number(e.currentTarget.dataset.c);
-    const piece = board[r][c];
-
-    // If we clicked a legal target, perform move.
-    const key = `${r},${c}`;
-    if (selected && legalTargets.has(key)) {
-      doMove(selected.r, selected.c, r, c);
-      return;
-    }
-
-    // Otherwise: selection logic
-    if (!piece) {
-      // Clicking empty square clears selection
-      selected = null;
-      legalTargets.clear();
-      render();
-      return;
-    }
-
-    // Only select your own piece
-    if (piece.color !== turn) {
-      // ignore (or you can set a little message)
-      return;
-    }
-
-    selected = { r, c };
-    legalTargets = computeLegalTargets(r, c);
-    render();
-  }
-
-  function doMove(sr, sc, tr, tc) {
-    const moving = board[sr][sc];
-    const target = board[tr][tc];
-
-    // Capture check for Royal Rook
-    if (target && target.royal) {
-      board[tr][tc] = moving;
-      board[sr][sc] = null;
-      selected = null;
-      legalTargets.clear();
-      gameOver = true;
-      render();
-      setStatus((turn === 'W' ? 'White' : 'Black') + " wins! Captured the Royal Rook 👑");
-      return;
-    }
-
-    // Normal move
-    board[tr][tc] = moving;
-    board[sr][sc] = null;
-
-    // Pawn promotion to Knight only
-    if (moving.type === 'P') {
-      if (moving.color === 'W' && tr === 0) {
-        board[tr][tc] = { type: 'N', color: 'W' };
-      }
-      if (moving.color === 'B' && tr === SIZE - 1) {
-        board[tr][tc] = { type: 'N', color: 'B' };
-      }
-    }
-
-    selected = null;
-    legalTargets.clear();
-
-    // Switch turn
-    turn = (turn === 'W') ? 'B' : 'W';
-    render();
-    setStatus();
-  }
-
-  function computeLegalTargets(r, c) {
-    const piece = board[r][c];
-    const m = new Map();
-    if (!piece) return m;
-
-    const add = (rr, cc) => {
-      if (!inBounds(rr, cc)) return;
-      const t = board[rr][cc];
-      if (!t) {
-        m.set(`${rr},${cc}`, { kind: 'move' });
-      } else if (t.color !== piece.color) {
-        m.set(`${rr},${cc}`, { kind: 'capture' });
-      }
-    };
-
-    if (piece.type === 'R') {
-      // Rook rays: up, down, left, right
-      const dirs = [
-        [-1, 0],
-        [ 1, 0],
-        [ 0,-1],
-        [ 0, 1],
-      ];
-      for (const [dr, dc] of dirs) {
-        let rr = r + dr, cc = c + dc;
-        while (inBounds(rr, cc)) {
-          const t = board[rr][cc];
-          if (!t) {
-            m.set(`${rr},${cc}`, { kind: 'move' });
-          } else {
-            if (t.color !== piece.color) {
-              m.set(`${rr},${cc}`, { kind: 'capture' });
-            }
-            break; // blocked
-          }
-          rr += dr; cc += dc;
-        }
-      }
-    }
-
-    if (piece.type === 'N') {
-      const jumps = [
-        [-2,-1], [-2, 1],
-        [-1,-2], [-1, 2],
-        [ 1,-2], [ 1, 2],
-        [ 2,-1], [ 2, 1],
-      ];
-      for (const [dr, dc] of jumps) add(r + dr, c + dc);
-    }
-
-    if (piece.type === 'P') {
-      // White moves "up" (toward row 0), Black moves "down" (toward row 4)
-      const dir = (piece.color === 'W') ? -1 : 1;
-
-      // Forward one if empty
-      const fr = r + dir;
-      if (inBounds(fr, c) && board[fr][c] === null) {
-        m.set(`${fr},${c}`, { kind: 'move' });
-      }
-
-      // Diagonal captures
-      for (const dc of [-1, 1]) {
-        const rr = r + dir;
-        const cc = c + dc;
-        if (!inBounds(rr, cc)) continue;
-        const t = board[rr][cc];
-        if (t && t.color !== piece.color) {
-          m.set(`${rr},${cc}`, { kind: 'capture' });
-        }
-      }
-    }
-
-    return m;
-  }
-
-  function inBounds(r, c) {
-    return r >= 0 && r < SIZE && c >= 0 && c < SIZE;
-  }
-
-  // Boot
-  init();
-})();
