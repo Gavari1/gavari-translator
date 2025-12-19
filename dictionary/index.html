@@ -56,9 +56,7 @@
       opacity: 0.9;
     }
 
-    .tab-btn:hover {
-      background: #222842;
-    }
+    .tab-btn:hover { background: #222842; }
 
     .tab-btn.active {
       border-color: #3f82ff;
@@ -66,21 +64,16 @@
       opacity: 1;
     }
 
-    .tab-panel {
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
     /* ---------- CONTROLS (Alphabet ABOVE Search) ---------- */
     .controls {
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 0.45rem;           /* tight spacing */
-      margin-bottom: 0.9rem;  /* tight spacing */
+      gap: 0.45rem;
+      margin-bottom: 0.9rem;
     }
 
     .alpha-bar {
@@ -89,7 +82,7 @@
       gap: 0.25rem;
       justify-content: center;
       font-size: 0.8rem;
-      margin: 0;              /* no weird offsets */
+      margin: 0;
       padding: 0.1rem 0;
     }
 
@@ -102,18 +95,14 @@
       cursor: pointer;
     }
 
-    .alpha-btn:hover {
-      background: #222842;
-    }
+    .alpha-btn:hover { background: #222842; }
 
     .alpha-btn.disabled {
       opacity: 0.35;
       cursor: default;
     }
 
-    .search-box {
-      width: 100%;
-    }
+    .search-box { width: 100%; }
 
     label {
       font-size: 0.85rem;
@@ -133,10 +122,7 @@
       font-size: 0.95rem;
     }
 
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
+    textarea { min-height: 80px; resize: vertical; }
 
     input[type="text"]:focus, textarea:focus {
       outline: none;
@@ -151,9 +137,7 @@
       padding-right: 0.25rem;
     }
 
-    .letter-section {
-      margin-bottom: 1.25rem;
-    }
+    .letter-section { margin-bottom: 1.25rem; }
 
     .letter-heading {
       font-size: 1.1rem;
@@ -182,9 +166,7 @@
       border-bottom: 1px solid #272f47;
     }
 
-    tr:nth-child(even) td {
-      background: #111727;
-    }
+    tr:nth-child(even) td { background: #111727; }
 
     .col-en { width: 40%; font-weight: 500; }
     .col-gv { width: 30%; color: #b8d1ff; }
@@ -197,7 +179,7 @@
       line-height: 1.4;
     }
 
-    /* ---------- PHRASEBOOK (simple scroll list) ---------- */
+    /* ---------- PHRASEBOOK ---------- */
     .phrase-list {
       margin-top: 0.75rem;
       max-height: 70vh;
@@ -246,16 +228,12 @@
 
   <div class="card">
 
-    <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" data-tab="tab-dict">Dictionary</button>
       <button class="tab-btn" data-tab="tab-phrases">Phrases & Sentences</button>
     </div>
 
-    <!-- DICTIONARY TAB -->
     <div id="tab-dict" class="tab-panel active">
-
-      <!-- Alphabet ABOVE Search -->
       <div class="controls">
         <div class="alpha-bar" id="alphaBar"></div>
 
@@ -264,7 +242,7 @@
           <input
             id="searchInput"
             type="text"
-            placeholder="Type to filter… e.g. 'water', 'veru', 'house'"
+            placeholder="Type to filter… e.g. 'love', 'nox', 'buonum diam'"
           />
         </div>
       </div>
@@ -273,18 +251,15 @@
 
       <div class="hint">
         <strong>How to update this page:</strong><br />
-        Scroll down in the code to the <code>dictionaryEntries</code> array and just
-        keep adding objects like:
-        <code>{ english: "house", gavari: "fale", notes: "also ‘home’" }</code>.<br />
-        The page will automatically sort them A–Z and group them by first letter.
+        Scroll down in the code to the <code>dictionaryEntries</code> array and add objects like:
+        <code>{ english: "promise", gavari: "promissum", notes: "noun" }</code>.
       </div>
     </div>
 
-    <!-- PHRASES TAB -->
     <div id="tab-phrases" class="tab-panel">
       <div class="hint" style="margin-top:0;">
         <strong>Phrases & Sentences:</strong><br />
-        Just scroll to see all phrases and sentences. 
+        Just scroll to see all phrases and sentences.
       </div>
 
       <div id="phraseList" class="phrase-list"></div>
@@ -294,290 +269,164 @@
 
   <script>
     // ---------------------------------------------
-    // 1) DICTIONARY WORD LIST
+    // 1) DICTIONARY WORD LIST (ROMANCE ALTLANG ONLY)
     // ---------------------------------------------
     const dictionaryEntries = [
-      { english: "above", gavari: "alun" },
-      { english: "after", gavari: "yalu" },
-      { english: "afternoon", gavari: "daru" },
-      { english: "and", gavari: "onu" },
-      { english: "again", gavari: "galua" },
-      { english: "a little", gavari: "poa" },
-      { english: "a lot", gavari: "muia" },
-      { english: "air (warm night air)", gavari: "torai" },
-      { english: "always", gavari: "saru" },
-      { english: "also", gavari: "tambu" },
-      { english: "and", gavari: "onu" },
-      { english: "anxious", gavari: "wonu-noku" },
-      { english: "angry", gavari: "henira" },
-      { english: "angry person", gavari: "heni-tana" },
-      { english: "ash", gavari: "duku" },
-      { english: "at", gavari: "ke" },
-      { english: "baby fruit", gavari: "sali", notes: "same root as ‘fruit’" },
-      { english: "bad", gavari: "nelu" },
-      { english: "be able to", gavari: "polno" },
-      { english: "beautiful", gavari: "belo" },
-      { english: "beer", gavari: "cewua" },
-      { english: "below", gavari: "belun" },
-      { english: "big", gavari: "faru" },
-      { english: "big house", gavari: "fale-faru" },
-      { english: "boat", gavari: "wa'a" },
-      { english: "bored", gavari: "ma'la" },
-      { english: "boss", gavari: "manu" },
-      { english: "bowl", gavari: "kiso" },
-      { english: "break (on break)", gavari: "ra'no" },
-      { english: "breathe", gavari: "ho'no" },
-      { english: "breakfast", gavari: "ramu-fanu" },
-      { english: "breezy", gavari: "wonu-wonu" },
-      { english: "bring", gavari: "tanluo" },
-      { english: "brother", gavari: "bonu" },
-      { english: "but", gavari: "beli" },
-      { english: "buy", gavari: "nuaio" },
-      { english: "calm", gavari: "hona-noku" },
-      { english: "can", gavari: "polno" },
-      { english: "car", gavari: "car" },
-      { english: "chair", gavari: "se'lo" },
-      { english: "child", gavari: "conuah" },
-      { english: "children", gavari: "conuahlan" },
-      { english: "chill", gavari: "hona-noku" },
-      { english: "cloud", gavari: "oal" },
-      { english: "cloudy", gavari: "oalwa" },
-      { english: "cold", gavari: "geli" },
-      { english: "cold night", gavari: "noru-geli" },
-      { english: "cold wind", gavari: "kisan" },
-      { english: "culture", gavari: "gavári-pesta" },
-      { english: "cup", gavari: "hona-poa" },
-      { english: "current", gavari: "wāru", notes: "water or time" },
-      { english: "cubicle", gavari: "fa'lo-hanu" },
-      { english: "day", gavari: "ramua" },
-      { english: "deep water", gavari: "rimo" },
-      { english: "dessert", gavari: "gavoa" },
-      { english: "desk", gavari: "la'po" },
-      { english: "destroy", gavari: "paluo" },
-      { english: "dinner", gavari: "noru-fanu" },
-      { english: "do", gavari: "pavo" },
-      { english: "door", gavari: "kisun" },
-      { english: "drizzle", gavari: "rual-poa" },
-      { english: "drink", gavari: "inuo" },
-      { english: "drive", gavari: "keheo" },
-      { english: "dusk", gavari: "noru-poa" },
-      { english: "eat", gavari: "meao" },
-      { english: "evening", gavari: "noru" },
-      { english: "family", gavari: "famua" },
-      { english: "family unit", gavari: "fale-tana" },
-      { english: "feel", gavari: "lāumo" },
-      { english: "few", gavari: "poa" },
-      { english: "fisherman", gavari: "hona-tana" },
-      { english: "fog", gavari: "mura" },
-      { english: "foggy", gavari: "murawa" },
-      { english: "food", gavari: "fanu" },
-      { english: "forest", gavari: "nara" },
-      { english: "friend", gavari: "amun" },
-      { english: "friends", gavari: "amunlan" },
-      { english: "fruit", gavari: "sali" },
-      { english: "get", gavari: "maguo" },
-      { english: "give", gavari: "daro" },
-      { english: "glass of water", gavari: "hona-poa" },
-      { english: "go", gavari: "gavo" },
-      { english: "good", gavari: "bilu" },
-      { english: "grandchild", gavari: "conuahyalu" },
-      { english: "grandfather", gavari: "fonuahbaru" },
-      { english: "grandmother", gavari: "monuahbaru" },
-      { english: "happy", gavari: "felin" },
-      { english: "happy person", gavari: "veru-tana" },
-      { english: "has", gavari: "tavo" },
-      { english: "he", gavari: "io" },
-      { english: "hello", gavari: "salo" },
-      { english: "help", gavari: "ajulo" },
-      { english: "here", gavari: "nia" },
-      { english: "hers", gavari: "yona" },
-      { english: "hill", gavari: "panu" },
-      { english: "his", gavari: "io" },
-      { english: "home", gavari: "fale" },
-      { english: "homeland", gavari: "gavári-veru" },
-      { english: "hot", gavari: "heni" },
-      { english: "hot sun", gavari: "veru-muia" },
-      { english: "house", gavari: "fale" },
-      { english: "houses", gavari: "falelan" },
-      { english: "how", gavari: "kalu" },
-      { english: "hazy", gavari: "veru-poa" },
-      { english: "hurt", gavari: "paluo", notes: "verb: ruin/hurt/destroy" },
-      { english: "i", gavari: "olu" },
-      { english: "in", gavari: "ke" },
-      { english: "inside", gavari: "hanu" },
-      { english: "job", gavari: "vahri" },
-      { english: "journey", gavari: "gava-muia" },
-      { english: "lake", gavari: "hona-muia" },
-      { english: "later", gavari: "larug" },
-      { english: "left", gavari: "leroa" },
-      { english: "light", gavari: "welo" },
-      { english: "light rain", gavari: "rual-poa" },
-      { english: "like", gavari: "haluo" },
-      { english: "living room", gavari: "famua-fale" },
-      { english: "long day", gavari: "ramua-muia" },
-      { english: "love", gavari: "aluo" },
-      { english: "lunch", gavari: "ramua-fanu" },
-      { english: "lunchbox", gavari: "tavin" },
-      { english: "make", gavari: "pavo" },
-      { english: "many", gavari: "muia" },
-      { english: "market", gavari: "pesta-fanu" },
-      { english: "me", gavari: "olu" },
-      { english: "meeting", gavari: "sa'no" },
-      { english: "mist", gavari: "velu" },
-      { english: "money", gavari: "kala" },
-      { english: "morning", gavari: "veru" },
-      { english: "mother", gavari: "monuah" },
-      { english: "much", gavari: "muia" },
-      { english: "my", gavari: "olu" },
-      { english: "need", gavari: "lango" },
-      { english: "neighborhood", gavari: "pesta-fale" },
-      { english: "neighbor", gavari: "nayboa" },
-      { english: "night", gavari: "noru" },
-      { english: "nice", gavari: "belo" },
-      { english: "new", gavari: "ninu" },
-      { english: "no", gavari: "noa" },
-      { english: "not", gavari: "noa" },
-      { english: "now", gavari: "keia" },
-      { english: "ocean", gavari: "moro" },
-      { english: "of", gavari: "mo" },
-      { english: "old", gavari: "oina" },
-      { english: "on", gavari: "ke" },
-      { english: "open space", gavari: "wāna" },
-      { english: "ours", gavari: "maua" },
-      { english: "outside", gavari: "lanu" },
-      { english: "people", gavari: "tanalan" },
-      { english: "person", gavari: "tana" },
-      { english: "rain", gavari: "rual" },
-      { english: "right", gavari: "eroa" },
-      { english: "sad", gavari: "sasu" },
-      { english: "say", gavari: "savo" },
-      { english: "see", gavari: "wero" },
-      { english: "she", gavari: "yona" },
-      { english: "shore", gavari: "wina" },
-      { english: "sleep", gavari: "napao" },
-      { english: "small", gavari: "kani" },
-      { english: "storm", gavari: "stara" },
-      { english: "store", gavari: "nuai" },
-      { english: "sun", gavari: "veru" },
-      { english: "table", gavari: "velan" },
-      { english: "talk", gavari: "fulo" },
-      { english: "tired", gavari: "lena" },
-      { english: "today", gavari: "ramu" },
-      { english: "tomorrow", gavari: "apono" },
-      { english: "want", gavari: "wivo" },
-      { english: "water", gavari: "hona" },
-      { english: "we", gavari: "maua" },
-      { english: "when", gavari: "nagu" },
-      { english: "where", gavari: "lam" },
-      { english: "why", gavari: "kap" },
-      { english: "wind", gavari: "wonu" },
-      { english: "with", gavari: "talu" },
-      { english: "work", gavari: "vahro" },
-      { english: "you", gavari: "vaha" },
-      { english: "they", gavari: "kita" },
-      { english: "their", gavari: "kita" },
-      { english: "this", gavari: "ni" },
-      { english: "that", gavari: "na" },
-      { english: "these", gavari: "niis" }, 
-      { english: "those", gavari: "naas" },
-      { english: "those things", gavari: "naas tālo" },
-      { english: "these things", gavari: "niis tālo" },
-      { english: "that thing", gavari: "na tālo" },
-      { english: "this thing", gavari: "ni tālo" },
-      { english: "everything", gavari: "tālo-saru" },
-      { english: "come", gavari: "kalo" },
-      { english: "wait", gavari: "sāno" },
-      { english: "ready", gavari: "mālu" },
-      { english: "on break", gavari: "ra'no" },
-{ english: "pantry", gavari: "fale-fanu" },
-{ english: "parking lot", gavari: "ka'no-pesta" },
-{ english: "pot", gavari: "maron" },
-{ english: "rainclouds", gavari: "oal-hona" },
-{ english: "rainstorm", gavari: "stara-poa" },
-{ english: "rainy", gavari: "rualwa" },
-{ english: "roof", gavari: "fenai" },
-{ english: "ruin", gavari: "paluo" },
-{ english: "sand", gavari: "kela" },
-{ english: "scatterbrained", gavari: "wonu-noku" },
-{ english: "school", gavari: "skolu" },
-{ english: "schools", gavari: "skolulan" },
-{ english: "should", gavari: "delo" },
-{ english: "shy", gavari: "noru-tana" },
-{ english: "sister", gavari: "sonu" },
-{ english: "slow moving", gavari: "gavo-poa" },
-{ english: "small house", gavari: "fale-kani" },
-{ english: "snow", gavari: "sneul" },
-{ english: "snowy", gavari: "sneulwa" },
-{ english: "son", gavari: "sunua" },
-{ english: "sons", gavari: "sunualan" },
-{ english: "storm surge", gavari: "moroha" },
-{ english: "stormy", gavari: "starawa" },
-{ english: "stores", gavari: "nuailan" },
-{ english: "street", gavari: "pesta" },
-{ english: "streets", gavari: "pestalan" },
-{ english: "street food", gavari: "pesta-fanu" },
-{ english: "strong sun", gavari: "veru-muia" },
-{ english: "strong wind", gavari: "wonu-muia" },
-{ english: "student", gavari: "haluola" },
-{ english: "study", gavari: "haluno" },
-{ english: "sunny", gavari: "veruwa" },
-{ english: "talk to", gavari: "fulo sap" },
-{ english: "take", gavari: "tanluo" },
-{ english: "taking a break", gavari: "ra'no" },
-{ english: "task", gavari: "ka'nu" },
-{ english: "teacher", gavari: "halu" },
-{ english: "them", gavari: "kita" },
-{ english: "there", gavari: "nua" },
-{ english: "thing", gavari: "tālo" },
-{ english: "this afternoon", gavari: "daran" },
-{ english: "this evening", gavari: "noran" },
-{ english: "this morning", gavari: "veran" },
-{ english: "timid", gavari: "kani-famua" },
-{ english: "tonight", gavari: "noran" },
-{ english: "too", gavari: "tambu" },
-{ english: "too many", gavari: "vuia muia" },
-{ english: "too much", gavari: "vuia muia" },
-{ english: "tourists", gavari: "veru-tana" },
-{ english: "village road", gavari: "fale-pesta" },
-{ english: "volcano", gavari: "verdag-hona" },
-{ english: "warm night", gavari: "noru-heni" },
-{ english: "watch", gavari: "wero" },
-{ english: "waters", gavari: "honalan" },
-{ english: "week", gavari: "ramu-muia" },
-{ english: "weekend", gavari: "verdag" },
-{ english: "what", gavari: "wohanu" },
-{ english: "which", gavari: "wohu" },
-{ english: "window", gavari: "torun" },
-{ english: "windy", gavari: "wonuwa" },
-{ english: "work area", gavari: "fa'lo-hanu" },
-{ english: "work meeting", gavari: "sa'no" },
-{ english: "your", gavari: "vaha" },
-{ english: "flood", gavari: "rual-muia" },
+      // PRONOUNS
+      { english: "I", gavari: "io", notes: "pronoun" },
+      { english: "you (intimate singular)", gavari: "tu", notes: "pronoun" },
+      { english: "you (formal singular)", gavari: "voi", notes: "pronoun" },
+      { english: "we", gavari: "nos", notes: "pronoun" },
+      { english: "you (plural)", gavari: "vos", notes: "pronoun" },
+      { english: "he / it (masculine or general)", gavari: "el", notes: "pronoun" },
+      { english: "she", gavari: "ela", notes: "pronoun" },
+      { english: "they", gavari: "eli", notes: "pronoun" },
+      { english: "it (neutral)", gavari: "id", notes: "pronoun" },
+
+      // POSSESSIVES (gendered, no plural agreement)
+      { english: "my (feminine noun)", gavari: "meus", notes: "possessive; unchanged for plural nouns" },
+      { english: "my (masculine noun)", gavari: "meum", notes: "possessive; unchanged for plural nouns" },
+      { english: "your (feminine noun)", gavari: "teus", notes: "possessive; unchanged for plural nouns" },
+      { english: "your (masculine noun)", gavari: "teum", notes: "possessive; unchanged for plural nouns" },
+      { english: "his / her / their (feminine noun)", gavari: "seus", notes: "possessive; unchanged for plural nouns" },
+      { english: "his / her / their (masculine noun)", gavari: "seum", notes: "possessive; unchanged for plural nouns" },
+
+      // CORE LOVE & INNER LIFE
+      { english: "to love (passionately)", gavari: "amara" },
+      { english: "love (tender, eternal)", gavari: "lumia" },
+      { english: "desire (noun)", gavari: "desidera", notes: "also: deseo (verb)" },
+      { english: "to desire", gavari: "deseo", notes: "alt/paired with desidera in notes" },
+      { english: "passion", gavari: "passione" },
+      { english: "burning (emotion)", gavari: "ardora", notes: "emotion / inner burn" },
+      { english: "ardent / burning", gavari: "ardens", notes: "adjective/quality" },
+      { english: "tenderness", gavari: "tenerezza" },
+      { english: "tender feeling / tender", gavari: "tenara" },
+      { english: "to miss deeply", gavari: "mancara" },
+      { english: "to be jealous", gavari: "gelara" },
+      { english: "to feel bliss / happiness", gavari: "felicara" },
+      { english: "to feel sadness", gavari: "tristara" },
+      { english: "to please", gavari: "piacera" },
+      { english: "to promise", gavari: "prometara", notes: "verb" },
+      { english: "promise", gavari: "promissum", notes: "noun" },
+      { english: "to forgive", gavari: "perdona" },
+      { english: "to confess", gavari: "confessara" },
+      { english: "delirium", gavari: "delirius" },
+      { english: "calm / peace", gavari: "calma" },
+      { english: "inner fire", gavari: "fuoco" },
+      { english: "shiver / thrill", gavari: "brivido" },
+      { english: "tear", gavari: "lácrama" },
+      { english: "sigh", gavari: "sospiro" },
+      { english: "to laugh", gavari: "risere" },
+      { english: "to smile", gavari: "sorridara" },
+      { english: "to remember", gavari: "recordara" },
+      { english: "to dream", gavari: "sonoara" },
+      { english: "to eternalize", gavari: "eternare" },
+
+      // BODY & INTIMACY
+      { english: "heart", gavari: "cor", notes: "modern" },
+      { english: "heart (older poetic)", gavari: "cora", notes: "older / poetic variant" },
+      { english: "soul", gavari: "anima" },
+      { english: "breath", gavari: "spiritus" },
+      { english: "skin", gavari: "pellis" },
+      { english: "lips", gavari: "labra" },
+      { english: "kiss (noun)", gavari: "baisa", notes: "also: baciara (verb)" },
+      { english: "to kiss", gavari: "baciara", notes: "also: baisa (noun)" },
+      { english: "to touch", gavari: "tocara" },
+      { english: "to hold tight", gavari: "strinara" },
+      { english: "embrace / hug", gavari: "abrazara" },
+      { english: "veil", gavari: "velum" },
+      { english: "eyes", gavari: "oculi" },
+
+      // NATURE & COSMOS
+      { english: "night", gavari: "nox" },
+      { english: "dawn", gavari: "aurora" },
+      { english: "day", gavari: "giorno" },
+      { english: "morning", gavari: "mattina" },
+      { english: "sea", gavari: "marena" },
+      { english: "sun", gavari: "solara" },
+      { english: "moon", gavari: "lunara" },
+      { english: "sky / heaven", gavari: "cielora" },
+      { english: "wave", gavari: "ondara" },
+      { english: "sand", gavari: "sabina" },
+      { english: "flower", gavari: "florens" },
+      { english: "rose", gavari: "rosara" },
+
+      // FOOD & TABLE
+      { english: "bread", gavari: "pane" },
+      { english: "wine", gavari: "vinora" },
+      { english: "goblet / glass", gavari: "calira" },
+      { english: "olive", gavari: "olivara" },
+      { english: "pasta", gavari: "pastora" },
+      { english: "cheese", gavari: "formara" },
+      { english: "sweet / dessert", gavari: "dolcara" },
+      { english: "fruit", gavari: "frutta" },
+      { english: "coffee", gavari: "caffè" },
+
+      // DAILY LIFE
+      { english: "house / home", gavari: "casa" },
+      { english: "street / road", gavari: "strada" },
+      { english: "market", gavari: "mercato" },
+      { english: "friend", gavari: "amico" },
+      { english: "family", gavari: "famiglia" },
+      { english: "work", gavari: "lavoro" },
+      { english: "time / weather", gavari: "tempo" },
+      { english: "beautiful", gavari: "bello" },
+      { english: "to have", gavari: "habera" },
+
+      // ACTIONS & MOVEMENT
+      { english: "to walk", gavari: "camminare" },
+      { english: "to eat", gavari: "mangadere" },
+      { english: "to drink", gavari: "bere" },
+      { english: "to dance", gavari: "ballara" },
+
+      // CONNECTORS & PARTICLES
+      { english: "and", gavari: "e" },
+      { english: "but", gavari: "ma" },
+      { english: "but (older / poetic contrast)", gavari: "sed" },
+      { english: "or", gavari: "o" },
+      { english: "with", gavari: "com" },
+      { english: "when", gavari: "quuando" },
+      { english: "because", gavari: "perquia" },
+      { english: "while", gavari: "mentire" },
+      { english: "after", gavari: "dopo" },
+      { english: "before", gavari: "antura" },
+      { english: "until", gavari: "usque" },
+      { english: "under", gavari: "sotto" },
+      { english: "in (inside)", gavari: "intra" },
+      { english: "to / towards", gavari: "adara" },
+      { english: "on / upon / above", gavari: "supra" },
+      { english: "near / close", gavari: "proxa" },
+      { english: "around", gavari: "circa" },
+
+      // GREETINGS & SOCIAL
+      { english: "good morning", gavari: "buonum diam" },
+      { english: "hello / goodbye", gavari: "ciao" },
+      { english: "thank you", gavari: "gratia" },
     ];
 
     // ---------------------------------------------
-    // 2) PHRASEBOOK LIST
+    // 2) PHRASEBOOK LIST (ALTLANG PHRASES)
     // ---------------------------------------------
     const phrasebookEntries = [
       {
-        english: "I would run to my house.",
-        gavari: "Wa la’lelo olu sap fale-na olu.",
-        notes: "wa = would · sap = motion toward · fale-na olu = my house"
+        english: "My star, eternal love. Your breath inflames my heart.",
+        gavari: "Stella mea, lumia eterna. Spiritus teus cor meum inflama.",
+        notes: "Uses: lumia, spiritus, cor, inflama (borrowed verb form if you keep it); adjust anytime."
       },
       {
-        english: "I would run to my house, but I felt light rain when I went seaward.",
-        gavari: "Wa la’lelo olu sap fale-na olu, beli pa lāumo olu rual-poa nagu pa gavo-mōro.",
-        notes: "beli = but · pa = past · rual-poa = light rain · -mōro = seaward"
-      },
-       {
-        english: "I went to the store to buy food",
-        gavari: "Pa gavo olu nuai nuaio fanu",
-        notes: "gavo = go · pa = past · nuaio = to buy · fanu = food"
+        english: "I whisper your name in the night.",
+        gavari: "Susurrus nomen teus in nox.",
+        notes: "If you later add 'susurrus' officially, keep this; otherwise swap the verb."
       },
       {
-        english: "After the storm, the ground is quiet",
-        gavari: "Yalu stara, wāna bilu",
-        notes: "yalu = after · stara = storm · wāna = open ground · bilu = good/quiet"
+        english: "Good morning, my love. Coffee?",
+        gavari: "Buonum diam, lumia meum. Caffè?",
+        notes: "Endearment + daily life."
+      },
+      {
+        english: "We walk to the market for fresh fruit.",
+        gavari: "Nos camminare adara mercato per frutta fresca.",
+        notes: "If you don’t want 'per' or 'fresca', replace later."
       }
     ];
 
