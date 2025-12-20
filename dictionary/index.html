@@ -7,8 +7,7 @@
 
   <style>
     :root {
-      /* Night-light taupe */
-      --bg: #d8cbb8;
+      --bg: #d8cbb8;                 /* night-light taupe */
       --panel: rgba(255,255,255,0.78);
       --border: rgba(17, 24, 39, 0.18);
       --text: #111827;
@@ -34,9 +33,7 @@
       outline: none;
     }
 
-    textarea:focus {
-      border-color: rgba(17, 24, 39, 0.35);
-    }
+    textarea:focus { border-color: rgba(17, 24, 39, 0.35); }
 
     .row {
       display: flex;
@@ -56,15 +53,9 @@
       cursor: pointer;
     }
 
-    button:active {
-      transform: translateY(1px);
-    }
+    button:active { transform: translateY(1px); }
 
-    .hint {
-      opacity: 0.75;
-      font-size: 13px;
-      margin-top: 8px;
-    }
+    .hint { opacity: 0.75; font-size: 13px; margin-top: 8px; }
   </style>
 </head>
 
@@ -80,8 +71,15 @@
     <button id="clear">Clear</button>
 
     <label>
+      Suffix mode:
+      <select id="suffixMode">
+        <option value="single" selected>Single</option>
+        <option value="aeo">AEO Rotate</option>
+      </select>
+    </label>
+
+    <label>
       Suffix:
-      <!-- Now populated dynamically (a–z) -->
       <select id="suffix"></select>
     </label>
 
@@ -98,15 +96,15 @@
   <textarea id="output" readonly></textarea>
 
   <div class="hint">
-    Rule: move first letter to end + add suffix (encode).
-    Remove suffix + move last letter to front (decode).
-    Apostrophes inside words are preserved. Have fun with it! 🙂
+    Rule: move first letter to end + add suffix (encode). Remove suffix + move last letter to front (decode).
+    AEO Rotate counts only word tokens (punctuation doesn’t affect the cycle). Apostrophes inside words are preserved. 🙂
   </div>
 
 <script>
   const inputEl = document.getElementById("input");
   const outputEl = document.getElementById("output");
   const suffixEl = document.getElementById("suffix");
+  const suffixModeEl = document.getElementById("suffixMode");
   const capsEl = document.getElementById("caps");
   const clearBtn = document.getElementById("clear");
 
@@ -124,7 +122,17 @@
     }
   })();
 
-  // Tokenizer that keeps internal apostrophes together (supports ' and ’)
+  // (Optional UX) Disable manual suffix picker when in AEO mode
+  function syncSuffixUI() {
+    const mode = suffixModeEl.value;
+    suffixEl.disabled = (mode === "aeo");
+    suffixEl.style.opacity = (mode === "aeo") ? "0.55" : "1";
+  }
+  suffixModeEl.addEventListener("change", syncSuffixUI);
+  syncSuffixUI();
+
+  // Tokenizer: keeps internal apostrophes together (supports ' and ’)
+  // Words = letters possibly containing internal apostrophes. Everything else preserved.
   function tokenize(text) {
     return text.match(/[A-Za-z]+(?:['’][A-Za-z]+)*|[^A-Za-z]+/g) || [];
   }
@@ -159,17 +167,35 @@
     return preserveCaps ? applyCapsStyle(plain, style) : plain;
   }
 
+  // Picks suffix per word depending on mode.
+  // wordIndex counts ONLY actual word tokens (commas/spaces don’t increment it).
+  function getSuffixForWord(wordIndex) {
+    const mode = suffixModeEl.value;
+    if (mode === "aeo") {
+      const cycle = ["a", "e", "o"];
+      return cycle[wordIndex % cycle.length];
+    }
+    return suffixEl.value;
+  }
+
   function transform(text, mode) {
-    const suffix = suffixEl.value;
     const preserveCaps = capsEl.value === "yes";
-    return tokenize(text).map(tok => {
+    const tokens = tokenize(text);
+
+    let wordIndex = 0; // counts only word tokens
+    const out = tokens.map(tok => {
       if (/^[A-Za-z]/.test(tok)) {
-        return mode === "encode"
+        const suffix = getSuffixForWord(wordIndex);
+        const result = (mode === "encode")
           ? encodeWord(tok, suffix, preserveCaps)
           : decodeWord(tok, suffix, preserveCaps);
+        wordIndex++;
+        return result;
       }
-      return tok;
-    }).join("");
+      return tok; // punctuation/space/etc.
+    });
+
+    return out.join("");
   }
 
   document.getElementById("encode").onclick = () =>
