@@ -64,7 +64,7 @@
       <h1>English → Fake Latin Translator</h1>
       <p>
         Words in the dictionary swap directly (e.g. <b>is → est</b>). Anything not found gets a rotating suffix:
-        <b>-us</b>, <b>-um</b>, <b>-ibus</b>.
+        <b>-us</b>, <b>-um</b>, <b>-orum</b>.
       </p>
     </header>
 
@@ -93,7 +93,7 @@
         <textarea id="output" readonly placeholder="Output appears here..."></textarea>
 
         <div class="small">
-          Suffix cycle (unknown words only): <code>-us → -um → -ibus → (repeat)</code>
+          Suffix cycle (unknown words only): <code>-us → -um → -orum → (repeat)</code>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@
     });
 
     // Unknown-word suffix cycle (revolves per unknown word encountered)
-    const SUFFIXES = ["us", "um", "ibus"];
+    const SUFFIXES = ["us", "um", "orum"];
     let suffixIndex = 0;
 
     const inputEl = document.getElementById("input");
