@@ -217,13 +217,14 @@
       <div class="screen">
         <div class="row">
           <div class="label">
-            RULES: vowel swap (A↔O, E↔I, U↔Y). Then: “the NOUN” → NOUN+en. Plural: “the cars” → “the corens”.
+            RULES: vowel swap (A↔O, E↔I, U↔Y). Then “the NOUN” → NOUN+en. Plural: “the cars” → “corens”. Also: words ending i/e → +g, a/o → +k.
           </div>
         </div>
 
         <div class="split">
           <div>
-            <textarea id="inText" placeholder="Type text...">The car is in the street. The cars are in the store.</textarea>
+            <textarea id="inText" placeholder="Type text...">The car is in the street.
+The cars are in the store.</textarea>
           </div>
           <div>
             <div class="label" style="margin:0 0 6px;">OUTPUT</div>
@@ -247,7 +248,7 @@
     </div>
 
     <div class="foot">
-      <div>Note: noun detection is “the + next word.” Plural = ends with <code>s</code>.</div>
+      <div>Note: “the” is removed; it becomes <code>NOUNen</code> or <code>NOUNens</code> after vowel swap.</div>
       <div>Live mode: typing updates output automatically.</div>
     </div>
   </div>
@@ -269,6 +270,10 @@
       return text.match(/[A-Za-z']+|\s+|[^A-Za-z'\s]+/g) || [];
     }
 
+    function isWordToken(tok) {
+      return /^[A-Za-z']+$/.test(tok);
+    }
+
     // Vowel swap: A↔O, E↔I, U↔Y (and Y↔U), preserving case.
     function vowelSwapWord(w) {
       const map = {
@@ -278,20 +283,24 @@
       return w.replace(/[aeiouyAEIOUY]/g, ch => map[ch] || ch);
     }
 
-    function isWordToken(tok) {
-      return /^[A-Za-z']+$/.test(tok);
-    }
+    // Ending rule:
+    // ends in i/e -> add g
+    // ends in a/o -> add k
+    function applyEndingRule(w) {
+      if (!w) return w;
+      const last = w[w.length - 1];
 
-    function isWhitespace(tok) {
-      return /^\s+$/.test(tok);
+      if (last === 'i' || last === 'I') return w + 'g';
+      if (last === 'e' || last === 'E') return w + 'g';
+      if (last === 'a' || last === 'A') return w + 'k';
+      if (last === 'o' || last === 'O') return w + 'k';
+
+      return w;
     }
 
     // Transform "the NOUN" into:
-    // - singular: drop "the", output swapped(noun) + "en"
-    // - plural (noun ends with s/S): keep literal "the", output swapped(stem) + "ens"
-    // Matches your examples:
-    //   "the car"  -> "coren"
-    //   "the cars" -> "the corens"
+    // - singular: NOUN+en   (NO "the" kept)
+    // - plural (noun ends with s/S): stem + "ens"  (NO "the" kept)
     function translateText(src) {
       const toks = tokenize(src);
       const out = [];
@@ -300,52 +309,42 @@
       while (i < toks.length) {
         const tok = toks[i];
 
-        // Look for the word "the" (any case) as a standalone word token
+        // Detect standalone "the"
         if (isWordToken(tok) && tok.toLowerCase() === "the") {
-          // Find the next word token (skipping whitespace/punct in between)
+          // Find next word token (skipping non-words)
           let j = i + 1;
-          while (j < toks.length && !isWordToken(toks[j])) {
-            // If it's whitespace or punctuation, we will only keep it
-            // IF we are also going to keep "the" (plural case).
-            j++;
-          }
+          while (j < toks.length && !isWordToken(toks[j])) j++;
 
           if (j < toks.length && isWordToken(toks[j])) {
             const noun = toks[j];
 
-            // Determine plural by a simple trailing-s rule
-            const isPlural = noun.length > 1 && /[sS]$/.test(noun) && !/[sS]{2}$/.test(noun);
+            // plural = ends with s/S (simple rule)
+            const isPlural = noun.length > 1 && /[sS]$/.test(noun);
 
             if (isPlural) {
-              // Keep literal "the" + the original spacing/punct between the and noun
-              out.push("the");
-
-              // Preserve any original tokens between 'the' and noun (usually spaces)
-              for (let k = i + 1; k < j; k++) out.push(toks[k]);
-
-              // Stem (drop final s), swap vowels, then add "ens"
-              const stem = noun.slice(0, -1);
-              const swappedStem = vowelSwapWord(stem);
-              out.push(swappedStem + "ens");
-
+              // drop 'the' and drop any spacing/punct between it and noun
+              const stem = noun.slice(0, -1);           // cars -> car
+              const swappedStem = vowelSwapWord(stem);  // car -> cor
+              out.push(applyEndingRule(swappedStem + "ens"));
               i = j + 1;
               continue;
             } else {
-              // Singular: DROP 'the' and ALSO drop any whitespace/punct between it and noun,
-              // then output swapped(noun) + "en"
               const swappedNoun = vowelSwapWord(noun);
-              out.push(swappedNoun + "en");
-
+              out.push(applyEndingRule(swappedNoun + "en"));
               i = j + 1;
               continue;
             }
           }
-          // If "the" isn't followed by a word, just fall through and treat normally
+          // If "the" isn't followed by a word, fall through and treat normally
         }
 
-        // Normal tokens:
-        if (isWordToken(tok)) out.push(vowelSwapWord(tok));
-        else out.push(tok);
+        // Normal tokens
+        if (isWordToken(tok)) {
+          const swapped = vowelSwapWord(tok);
+          out.push(applyEndingRule(swapped));
+        } else {
+          out.push(tok);
+        }
 
         i++;
       }
@@ -389,7 +388,9 @@
       inText.focus();
     }
 
+    // Live update
     inText.addEventListener('input', translateNow);
+
     btnTranslate.addEventListener('click', translateNow);
     btnCopy.addEventListener('click', copyOutput);
     btnClear.addEventListener('click', clearAll);
