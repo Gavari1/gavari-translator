@@ -306,25 +306,38 @@
       return s.replace(/[aeiouyAEIOUY]/g, ch => map[ch] || ch);
     }
 
+    // NEW: split input into sentences (keeps ending punctuation with each sentence)
+    function splitSentences(text) {
+      return text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+    }
+
     function translateNow() {
       const src = inText.value || "";
-      const finalPunct = extractFinalPunct(src);
+      const sentences = splitSentences(src);
 
-      let words = tokenizeWords(src);
-      words = stripPunctFromLastToken(words, finalPunct);
+      const braidedSentences = [];
 
-      const braided = braidWords(words);
+      for (const sentence of sentences) {
+        const finalPunct = extractFinalPunct(sentence);
 
-      // Re-attach final punctuation to LAST output word
-      if (braided.length && finalPunct) {
-        braided[braided.length - 1] = braided[braided.length - 1] + finalPunct;
+        let words = tokenizeWords(sentence);
+        words = stripPunctFromLastToken(words, finalPunct);
+
+        const braided = braidWords(words);
+
+        // Re-attach final punctuation to LAST output word (per sentence)
+        if (braided.length && finalPunct) {
+          braided[braided.length - 1] = braided[braided.length - 1] + finalPunct;
+        }
+
+        braidedSentences.push(braided.join(" "));
       }
 
       // Apply vowel swap AFTER braiding + punctuation placement
-      const out = vowelSwap(braided.join(" "));
+      const out = vowelSwap(braidedSentences.join(" "));
       outText.value = out;
 
-      countWords.textContent = `WORDS: ${words.length}`;
+      countWords.textContent = `WORDS: ${tokenizeWords(src).length}`;
       countChars.textContent = `CHARS: ${src.length}`;
     }
 
