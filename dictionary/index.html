@@ -247,7 +247,7 @@
     </div>
 
     <div class="foot">
-      <div>Tip: punctuation stays attached to its word (e.g., <code>store.</code>).</div>
+      <div>Tip: final punctuation moves to the last output word (e.g., <code>store.</code> → last word).</div>
       <div>Live mode: typing updates output automatically.</div>
     </div>
   </div>
@@ -261,9 +261,28 @@
     const countWords = document.getElementById('countWords');
     const countChars = document.getElementById('countChars');
 
-    // Split on whitespace but keep punctuation attached to words (simple + matches your examples)
+    // Split on whitespace into tokens
     function tokenizeWords(text) {
       return (text.trim().match(/\S+/g) || []);
+    }
+
+    // Pull ONLY final sentence punctuation from the very end of the input.
+    // Handles ., !, ?, ... and combos like "?!"
+    function extractFinalPunct(text) {
+      const trimmed = text.trim();
+      const m = trimmed.match(/[.!?]+$/);
+      return m ? m[0] : "";
+    }
+
+    // Remove final sentence punctuation from the last token ONLY (if present)
+    function stripPunctFromLastToken(tokens, finalPunct) {
+      if (!tokens.length || !finalPunct) return tokens;
+      const lastIdx = tokens.length - 1;
+
+      if (tokens[lastIdx].endsWith(finalPunct)) {
+        tokens[lastIdx] = tokens[lastIdx].slice(0, -finalPunct.length);
+      }
+      return tokens;
     }
 
     function braidWords(words) {
@@ -283,9 +302,19 @@
 
     function translateNow() {
       const src = inText.value || "";
-      const words = tokenizeWords(src);
-      const braided = braidWords(words).join(" ");
-      outText.value = braided;
+      const finalPunct = extractFinalPunct(src);
+
+      let words = tokenizeWords(src);
+      words = stripPunctFromLastToken(words, finalPunct);
+
+      const braided = braidWords(words);
+
+      // Re-attach final punctuation to LAST output word
+      if (braided.length && finalPunct) {
+        braided[braided.length - 1] = braided[braided.length - 1] + finalPunct;
+      }
+
+      outText.value = braided.join(" ");
 
       countWords.textContent = `WORDS: ${words.length}`;
       countChars.textContent = `CHARS: ${src.length}`;
