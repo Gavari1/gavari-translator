@@ -300,8 +300,8 @@
     // A↔O, E↔I, U↔Y (and Y↔U), preserving capitalization
     function vowelSwap(s) {
       const map = {
-        a:"o", o:"a", e:"i", i:"e", u:"y", y:"u",
-        A:"O", O:"A", E:"I", I:"E", U:"Y", Y:"U"
+        a:"a", o:"o", e:"e", i:"i", u:"u", y:"y",
+        A:"A", O:"O", E:"E", I:"I", U:"U", Y:"Y"
       };
       return s.replace(/[aeiouyAEIOUY]/g, ch => map[ch] || ch);
     }
